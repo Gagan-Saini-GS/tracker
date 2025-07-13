@@ -32,12 +32,12 @@ class OnboardingScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 16, top: 100),
                   child: SizedBox(
-                    height: 425,
+                    height: 350,
                     child: Center(
                       child: Image.asset(
                         'assets/images/man.png',
                         fit: BoxFit.contain,
-                        height: 425,
+                        height: 350,
                       ),
                     ),
                   ),
