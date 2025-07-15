@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker/screens/home/balance_card.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/getGreeting.dart';
@@ -108,81 +107,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   // Transaction History Section
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 0,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                'Transactions History',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                'See all',
-                                style: TextStyle(
-                                  color: Color(0xFF63B5AF),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Expanded(
-                            child: ListView(
-                              children: [
-                                // Transaction List
-                                TransactionItem(
-                                  icon: Icons.work,
-                                  iconBg: Color(0xFFE5F8ED),
-                                  iconAsset:
-                                      'assets/images/man.png', // Placeholder, replace with Upwork logo asset if available
-                                  title: 'Upwork',
-                                  date: 'Today',
-                                  amount: '+ 850.00',
-                                  isIncome: true,
-                                ),
-                                TransactionItem(
-                                  icon: Icons.person,
-                                  iconBg: Color(0xFFE5E5E5),
-                                  iconAsset: null,
-                                  title: 'Transfer',
-                                  date: 'Yesterday',
-                                  amount: '- 85.00',
-                                  isIncome: false,
-                                ),
-                                TransactionItem(
-                                  icon: Icons.account_balance_wallet,
-                                  iconBg: Color(0xFFE5F8ED),
-                                  iconAsset: null,
-                                  title: 'Paypal',
-                                  date: 'Jan 30, 2022',
-                                  amount: '+ ₹ 1,406.00',
-                                  isIncome: true,
-                                ),
-                                TransactionItem(
-                                  icon: Icons.ondemand_video,
-                                  iconBg: Color(0xFFFDECEA),
-                                  iconAsset: null,
-                                  title: 'Youtube',
-                                  date: 'Jan 16, 2022',
-                                  amount: '- 11.99',
-                                  isIncome: false,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _buildTransactionHistory(),
                 ],
               ),
             ),
@@ -192,60 +117,134 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF63B5AF),
-        onPressed: () {},
+        onPressed: () {
+          context.go('/add-transaction');
+        },
         elevation: 4,
         child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-}
 
-class _Avatar extends StatelessWidget {
-  final String image;
-  const _Avatar({required this.image});
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(radius: 28, backgroundImage: AssetImage(image));
+  Expanded _buildTransactionHistory() {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  'Transactions History',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Text(
+                  'See all',
+                  style: TextStyle(
+                    color: Color(0xFF63B5AF),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  // Transaction List
+                  TransactionItem(
+                    icon: Icons.work,
+                    iconBg: Color(0xFFE5F8ED),
+                    iconAsset:
+                        'assets/images/man.png', // Placeholder, replace with Upwork logo asset if available
+                    title: 'Upwork',
+                    date: 'Today',
+                    amount: '+ 850.00',
+                    isIncome: true,
+                  ),
+                  TransactionItem(
+                    icon: Icons.person,
+                    iconBg: Color(0xFFE5E5E5),
+                    iconAsset: null,
+                    title: 'Transfer',
+                    date: 'Yesterday',
+                    amount: '- 85.00',
+                    isIncome: false,
+                  ),
+                  TransactionItem(
+                    icon: Icons.account_balance_wallet,
+                    iconBg: Color(0xFFE5F8ED),
+                    iconAsset: null,
+                    title: 'Paypal',
+                    date: 'Jan 30, 2022',
+                    amount: '+ ₹ 1,406.00',
+                    isIncome: true,
+                  ),
+                  TransactionItem(
+                    icon: Icons.ondemand_video,
+                    iconBg: Color(0xFFFDECEA),
+                    iconAsset: null,
+                    title: 'Youtube',
+                    date: 'Jan 16, 2022',
+                    amount: '- 11.99',
+                    isIncome: false,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
-                  // const SizedBox(height: 30),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: const [
-                  //     Text(
-                  //       'Send Again',
-                  //       style: TextStyle(
-                  //         fontWeight: FontWeight.bold,
-                  //         fontSize: 16,
-                  //       ),
-                  //     ),
-                  //     Text(
-                  //       'See all',
-                  //       style: TextStyle(
-                  //         color: Color(0xFF63B5AF),
-                  //         fontWeight: FontWeight.w600,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 16),
-                  // SizedBox(
-                  //   height: 60,
-                  //   child: ListView(
-                  //     scrollDirection: Axis.horizontal,
-                  //     children: [
-                  //       _Avatar(image: 'assets/images/man.png'),
-                  //       const SizedBox(width: 12),
-                  //       _Avatar(image: 'assets/images/man.png'),
-                  //       const SizedBox(width: 12),
-                  //       _Avatar(image: 'assets/images/man.png'),
-                  //       const SizedBox(width: 12),
-                  //       _Avatar(image: 'assets/images/man.png'),
-                  //       const SizedBox(width: 12),
-                  //       _Avatar(image: 'assets/images/man.png'),
-                  //     ],
-                  //   ),
-                  // ),
+// class _Avatar extends StatelessWidget {
+//   final String image;
+//   const _Avatar({required this.image});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return CircleAvatar(radius: 28, backgroundImage: AssetImage(image));
+//   }
+// }
+
+// const SizedBox(height: 30),
+// Row(
+//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//   children: const [
+//     Text(
+//       'Send Again',
+//       style: TextStyle(
+//         fontWeight: FontWeight.bold,
+//         fontSize: 16,
+//       ),
+//     ),
+//     Text(
+//       'See all',
+//       style: TextStyle(
+//         color: Color(0xFF63B5AF),
+//         fontWeight: FontWeight.w600,
+//       ),
+//     ),
+//   ],
+// ),
+// const SizedBox(height: 16),
+// SizedBox(
+//   height: 60,
+//   child: ListView(
+//     scrollDirection: Axis.horizontal,
+//     children: [
+//       _Avatar(image: 'assets/images/man.png'),
+//       const SizedBox(width: 12),
+//       _Avatar(image: 'assets/images/man.png'),
+//       const SizedBox(width: 12),
+//       _Avatar(image: 'assets/images/man.png'),
+//       const SizedBox(width: 12),
+//       _Avatar(image: 'assets/images/man.png'),
+//       const SizedBox(width: 12),
+//       _Avatar(image: 'assets/images/man.png'),
+//     ],
+//   ),
+// ),

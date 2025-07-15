@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:tracker/screens/transaction/add_transaction_screen.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/onboarding/onboarding_screen.dart';
 import '../screens/home/home_screen.dart';
@@ -23,6 +24,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/add-transaction',
+      builder: (context, state) => const AddTransactionScreen(),
     ),
   ],
 );
