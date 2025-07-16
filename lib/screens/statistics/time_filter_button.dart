@@ -6,7 +6,7 @@ import 'package:tracker/utils/capitalize.dart';
 enum TimeFilter { day, week, month, year }
 
 // Provider for the selected time filter
-final timeFilterProvider = StateProvider<TimeFilter>((ref) => TimeFilter.month);
+final timeFilterProvider = StateProvider<TimeFilter>((ref) => TimeFilter.day);
 
 class TimeFilterButtons extends ConsumerWidget {
   const TimeFilterButtons({super.key});

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
 import 'package:tracker/screens/statistics/graph_screen.dart';
 import 'package:tracker/screens/statistics/time_filter_button.dart';

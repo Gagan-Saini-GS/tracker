@@ -23,15 +23,15 @@ final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
   switch (filter) {
     case TimeFilter.day:
       return [
-        ChartData('8 AM', 100),
-        ChartData('12 PM', 250, const Color(0xFF63B5AF)),
+        ChartData('8 AM', 100, const Color(0xFF63B5AF)),
+        ChartData('12 PM', 250),
         ChartData('4 PM', 150),
         ChartData('8 PM', 300),
       ];
     case TimeFilter.week:
       return [
         ChartData('Mon', 120),
-        ChartData('Tue', 280),
+        ChartData('Tue', 280, const Color(0xFF63B5AF)),
         ChartData('Wed', 190),
         ChartData('Thu', 350),
         ChartData('Fri', 220, const Color(0xFF63B5AF)),
@@ -84,6 +84,7 @@ class ReusableLineChart extends ConsumerWidget {
     return Container(
       height: 250, // Fixed height for the chart
       padding: const EdgeInsets.symmetric(horizontal: 8),
+      // decoration: BoxDecoration(border: Border.all(width: 2)),
       child: Stack(
         children: [
           SfCartesianChart(
@@ -92,7 +93,7 @@ class ReusableLineChart extends ConsumerWidget {
               majorGridLines: const MajorGridLines(
                 width: 0,
               ), // Remove vertical grid lines
-              axisLine: const AxisLine(width: 0), // Remove X-axis line
+              axisLine: const AxisLine(width: 1), // Remove X-axis line
               labelStyle: TextStyle(
                 color: Colors.grey[600],
               ), // X-axis label color
@@ -101,11 +102,12 @@ class ReusableLineChart extends ConsumerWidget {
               ), // Remove X-axis ticks
             ),
             primaryYAxis: NumericAxis(
-              isVisible: false, // Hide Y-axis
+              // isVisible: false, // Hide Y-axis
               majorGridLines: const MajorGridLines(
-                width: 0,
+                width: 1,
               ), // Remove horizontal grid lines
-              axisLine: const AxisLine(width: 0), // Remove Y-axis line
+              axisLine: const AxisLine(width: 1), // Remove Y-axis line
+              majorTickLines: const MajorTickLines(width: 0),
             ),
             series: <CartesianSeries>[
               SplineAreaSeries<ChartData, String>(
@@ -173,24 +175,24 @@ class ReusableLineChart extends ConsumerWidget {
             ],
           ),
           // Custom tooltip for the highlighted point (if needed, otherwise SfCartesianChart's tooltip can be used)
-          if (highlightedPoint.x != '')
-            Positioned(
-              left: _getPointXPosition(highlightedPoint.x, chartData, context),
-              top:
-                  _getPointYPosition(highlightedPoint.y, chartData, context) -
-                  50, // Adjust position
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF63B5AF),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '\$${highlightedPoint.y.toStringAsFixed(0)}',
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ),
-            ),
+          // if (highlightedPoint.x != '')
+          //   Positioned(
+          //     left: _getPointXPosition(highlightedPoint.x, chartData, context),
+          //     top:
+          //         _getPointYPosition(highlightedPoint.y, chartData, context) -
+          //         50, // Adjust position
+          //     child: Container(
+          //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          //       decoration: BoxDecoration(
+          //         color: const Color(0xFF63B5AF),
+          //         borderRadius: BorderRadius.circular(8),
+          //       ),
+          //       child: Text(
+          //         '\$${highlightedPoint.y.toStringAsFixed(0)}',
+          //         style: const TextStyle(color: Colors.white, fontSize: 12),
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );

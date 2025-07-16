@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Provider for the selected expense type
-final expenseTypeProvider = StateProvider<String>((ref) => 'Expense');
+final expenseTypeProvider = StateProvider<String>((ref) => 'Income');
 
 class ExpenseTypeDropdown extends ConsumerWidget {
   const ExpenseTypeDropdown({super.key});
