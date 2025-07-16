@@ -298,23 +298,24 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       backgroundColor: const Color(0xFF63B5AF),
       appBar: AppBar(
         backgroundColor: const Color(0xFF63B5AF),
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: const Text(
-            'Add Transaction',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 24,
-            ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
+          onPressed: () => context.go('/home'),
+        ),
+        title: const Text(
+          'Add Transaction',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
           ),
         ),
         elevation: 0,
       ),
-      body: SizedBox(
-        width: double.infinity,
-        child: Expanded(child: _buildTransactionForm()),
-      ),
+      body: SizedBox(width: double.infinity, child: _buildTransactionForm()),
     );
   }
 }

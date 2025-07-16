@@ -13,10 +13,10 @@ class BottomNavBar extends StatelessWidget {
       case 1:
         context.go('/statistics');
         break;
-      case 2:
+      case 3:
         context.go('/wallet');
         break;
-      case 3:
+      case 4:
         context.go('/profile');
         break;
       default:
@@ -29,8 +29,8 @@ class BottomNavBar extends StatelessWidget {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       notchMargin: 0,
-      height: 60, // Reduced from default ~80
-      padding: EdgeInsets.zero, // Remove padding to let Container handle it
+      height: 60,
+      padding: EdgeInsets.zero,
       child: Row(
         mainAxisAlignment: currentIndex == 0
             ? MainAxisAlignment.spaceAround
@@ -39,8 +39,8 @@ class BottomNavBar extends StatelessWidget {
           _buildIconButton(Icons.home_outlined, 0, context),
           _buildIconButton(Icons.data_saver_off_outlined, 1, context),
           if (currentIndex == 0) const SizedBox(width: 40),
-          _buildIconButton(Icons.account_balance_wallet_outlined, 2, context),
-          _buildIconButton(Icons.person_outline, 3, context),
+          _buildIconButton(Icons.account_balance_wallet_outlined, 3, context),
+          _buildIconButton(Icons.person_outline, 4, context),
         ],
       ),
     );
@@ -57,7 +57,7 @@ class BottomNavBar extends StatelessWidget {
           icon,
           color: currentIndex == index
               ? const Color(0xFF63B5AF)
-              : Colors.grey[400],
+              : Colors.grey[500],
         ),
         onPressed: () => _onTap(context, index),
       ),
