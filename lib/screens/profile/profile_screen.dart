@@ -181,40 +181,63 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                // Handle back button press
-              },
-            ),
-            centerTitle: true,
+            // leading: IconButton(
+            //   icon: const Icon(Icons.arrow_back, color: Colors.white),
+            //   onPressed: () {
+            //     // Handle back button press
+            //   },
+            // ),
+            // centerTitle: true,
             title: const Text(
               'Profile',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 24,
               ),
             ),
             actions: [
               Container(
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                   color: Colors.white.withAlpha(65),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                // padding: const EdgeInsets.all(4),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.notifications_none,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    // Handle Notification click
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle Download click
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      Icons.notifications_none,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
                 ),
               ),
             ],
+
+            // actions: [
+            //   Container(
+            //     margin: EdgeInsets.only(right: 10),
+            //     decoration: BoxDecoration(
+            //       color: Colors.white.withAlpha(65),
+            //       borderRadius: BorderRadius.circular(10),
+            //     ),
+            //     // padding: const EdgeInsets.all(4),
+            //     child: IconButton(
+            //       icon: const Icon(
+            //         Icons.notifications_none,
+            //         color: Colors.white,
+            //       ),
+            //       onPressed: () {
+            //         // Handle Notification click
+            //       },
+            //     ),
+            //   ),
+            // ],
           ),
         ),
       ],
