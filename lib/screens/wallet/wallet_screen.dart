@@ -8,7 +8,7 @@ class WalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: const Center(child: Text('Wallet Screen')),
-      bottomNavigationBar: BottomNavBar(currentIndex: 3),
+      bottomNavigationBar: BottomNavBar(currentIndex: 2),
     );
   }
 }
