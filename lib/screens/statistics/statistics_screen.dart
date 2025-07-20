@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
 import 'package:tracker/screens/statistics/graph_screen.dart';
 import 'package:tracker/screens/statistics/time_filter_button.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
-class StatisticsScreen extends StatelessWidget {
+class StatisticsScreen extends ConsumerWidget {
   const StatisticsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transactions = ref.watch(transactionListProvider);
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -52,113 +57,76 @@ class StatisticsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TimeFilterButtons(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TimeFilterButtons(),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
+              child: ExpenseTypeDropdown(),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
-                child: ExpenseTypeDropdown(),
-              ),
-            ),
-            const ReusableLineChart(),
+          ),
+          const ReusableLineChart(),
 
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Top Spending',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Top Spending',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                  Icon(Icons.sort, color: Colors.grey[600]),
-                ],
-              ),
+                ),
+                Icon(Icons.sort, color: Colors.grey[600]),
+              ],
             ),
-            const SizedBox(height: 10),
-            // Example of spending list items
-            _buildSpendingListItem(
-              context,
-              'Starbucks',
-              'Jan 12, 2022',
-              '- \$150.00',
-              Colors.red,
-              'https://placehold.co/40x40/00704A/ffffff?text=SB', // Placeholder for Starbucks logo
-            ),
-            _buildSpendingListItem(
-              context,
-              'Transfer',
-              'Yesterday',
-              '- \$85.00',
-              const Color(0xFF2D9C9A),
-              'https://placehold.co/40x40/2D9C9A/ffffff?text=TR', // Placeholder for Transfer icon
-              isHighlighted: true,
-            ),
-            _buildSpendingListItem(
-              context,
-              'Youtube',
-              'Jan 16, 2022',
-              '- \$11.99',
-              Colors.red,
-              'https://placehold.co/40x40/FF0000/ffffff?text=YT', // Placeholder for Youtube logo
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: transactions.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No Transactions Yet.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      final tx = transactions[index];
+                      return TransactionItem(
+                        icon: tx.isIncome ? Icons.work : Icons.ondemand_video,
+                        iconBg: tx.isIncome
+                            ? Color(0xFFE5F8ED)
+                            : Color(0xFFFDECEA),
+                        iconAsset: null,
+                        title: tx.name,
+                        date:
+                            "${tx.date.day.toString().padLeft(2, '0')}/${tx.date.month.toString().padLeft(2, '0')}/${tx.date.year}",
+                        amount:
+                            "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
+                        isIncome: tx.isIncome,
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 1),
-    );
-  }
-
-  Widget _buildSpendingListItem(
-    BuildContext context,
-    String title,
-    String date,
-    String amount,
-    Color amountColor,
-    String imageUrl, {
-    bool isHighlighted = false,
-  }) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      elevation: isHighlighted ? 2 : 1,
-      shadowColor: isHighlighted ? const Color(0xFF63B5AF) : Colors.black87,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: isHighlighted
-          ? const Color(0xFFE0F2F1)
-          : Colors.white, // Light teal for highlighted
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          // backgroundImage: NetworkImage(imageUrl),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        subtitle: Text(date, style: TextStyle(color: Colors.grey[600])),
-        trailing: Text(
-          amount,
-          style: TextStyle(
-            color: amountColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      ),
     );
   }
 }

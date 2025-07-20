@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/balance_card.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/getGreeting.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFF63B5AF),
       body: Stack(
@@ -105,7 +107,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   // Transaction History Section
-                  _buildTransactionHistory(),
+                  _buildTransactionHistory(ref),
                 ],
               ),
             ),
@@ -125,7 +127,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Expanded _buildTransactionHistory() {
+  Expanded _buildTransactionHistory(WidgetRef ref) {
+    final transactions = ref.watch(transactionListProvider);
+
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
@@ -149,78 +153,37 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    // Transaction List
-                    TransactionItem(
-                      icon: Icons.work,
-                      iconBg: Color(0xFFE5F8ED),
-                      iconAsset:
-                          'assets/images/man.png', // Placeholder, replace with Upwork logo asset if available
-                      title: 'Upwork',
-                      date: 'Today',
-                      amount: '+ 850.00',
-                      isIncome: true,
+              child: transactions.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No Transactions Yet.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      itemCount: transactions.length,
+                      itemBuilder: (context, index) {
+                        final tx = transactions[index];
+                        return TransactionItem(
+                          icon: tx.isIncome ? Icons.work : Icons.ondemand_video,
+                          iconBg: tx.isIncome
+                              ? Color(0xFFE5F8ED)
+                              : Color(0xFFFDECEA),
+                          iconAsset: null,
+                          title: tx.name,
+                          date:
+                              "${tx.date.day.toString().padLeft(2, '0')}/${tx.date.month.toString().padLeft(2, '0')}/${tx.date.year}",
+                          amount:
+                              "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
+                          isIncome: tx.isIncome,
+                        );
+                      },
                     ),
-                    TransactionItem(
-                      icon: Icons.person,
-                      iconBg: Color(0xFFE5E5E5),
-                      iconAsset: null,
-                      title: 'Transfer',
-                      date: 'Yesterday',
-                      amount: '- 85.00',
-                      isIncome: false,
-                    ),
-                    TransactionItem(
-                      icon: Icons.account_balance_wallet,
-                      iconBg: Color(0xFFE5F8ED),
-                      iconAsset: null,
-                      title: 'Paypal',
-                      date: 'Jan 30, 2022',
-                      amount: '+ ₹ 1,406.00',
-                      isIncome: true,
-                    ),
-                    TransactionItem(
-                      icon: Icons.ondemand_video,
-                      iconBg: Color(0xFFFDECEA),
-                      iconAsset: null,
-                      title: 'Youtube',
-                      date: 'Jan 16, 2022',
-                      amount: '- 11.99',
-                      isIncome: false,
-                    ),
-                    TransactionItem(
-                      icon: Icons.ondemand_video,
-                      iconBg: Color(0xFFFDECEA),
-                      iconAsset: null,
-                      title: 'Youtube',
-                      date: 'Jan 16, 2022',
-                      amount: '- 11.99',
-                      isIncome: false,
-                    ),
-                    TransactionItem(
-                      icon: Icons.ondemand_video,
-                      iconBg: Color(0xFFFDECEA),
-                      iconAsset: null,
-                      title: 'Youtube',
-                      date: 'Jan 16, 2022',
-                      amount: '- 11.99',
-                      isIncome: false,
-                    ),
-                    TransactionItem(
-                      icon: Icons.ondemand_video,
-                      iconBg: Color(0xFFFDECEA),
-                      iconAsset: null,
-                      title: 'Youtube',
-                      date: 'Jan 16, 2022',
-                      amount: '- 11.99',
-                      isIncome: false,
-                    ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),

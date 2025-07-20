@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracker/providers/transaction_provider.dart';
 
-class BalanceCard extends StatelessWidget {
+class BalanceCard extends ConsumerWidget {
   const BalanceCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final totalBalance = ref.watch(transactionListProvider);
+
+    final totalAmount = totalBalance.fold(
+      0.0,
+      (sum, item) => sum + (item.isIncome ? item.amount : -item.amount),
+    );
+    final totalIncome = totalBalance.fold(
+      0.0,
+      (sum, item) => sum + (item.isIncome ? item.amount : 0),
+    );
+    final totalExpense = totalBalance.fold(
+      0.0,
+      (sum, item) => sum + (item.isIncome ? 0 : item.amount),
+    );
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -37,8 +54,8 @@ class BalanceCard extends StatelessWidget {
             ],
           ),
           // const SizedBox(height: 10),
-          const Text(
-            '₹ 2,548.00',
+          Text(
+            '₹ ${totalAmount.toStringAsFixed(2)}',
             style: TextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -48,15 +65,15 @@ class BalanceCard extends StatelessWidget {
           const SizedBox(height: 18),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               _BalanceDetail(
                 label: 'Income',
-                amount: '₹ 1,840.00',
+                amount: totalIncome,
                 icon: Icons.arrow_downward,
               ),
               _BalanceDetail(
                 label: 'Expenses',
-                amount: '₹ 284.00',
+                amount: totalExpense,
                 icon: Icons.arrow_upward,
               ),
             ],
@@ -69,7 +86,7 @@ class BalanceCard extends StatelessWidget {
 
 class _BalanceDetail extends StatelessWidget {
   final String label;
-  final String amount;
+  final double amount;
   final IconData icon;
   const _BalanceDetail({
     required this.label,
@@ -98,7 +115,7 @@ class _BalanceDetail extends StatelessWidget {
               style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
             Text(
-              amount,
+              '₹ ${amount.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

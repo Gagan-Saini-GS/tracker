@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/models/transaction.dart';
+import 'package:tracker/providers/transaction_provider.dart';
 
-class AddTransactionScreen extends StatefulWidget {
+class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
 
   @override
-  State<AddTransactionScreen> createState() => _AddTransactionScreenState();
+  ConsumerState<AddTransactionScreen> createState() =>
+      _AddTransactionScreenState();
 }
 
-class _AddTransactionScreenState extends State<AddTransactionScreen>
+class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _formKey = GlobalKey<FormState>();
@@ -76,6 +80,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       final transactionType = _isIncome ? 'Income' : 'Expense';
       final name = _nameController.text.trim();
       final amount = double.parse(_amountController.text.trim());
+
+      final transaction = Transaction(
+        name: name,
+        amount: amount,
+        date: _selectedDate,
+        isIncome: _isIncome,
+      );
+
+      ref.read(transactionListProvider.notifier).addTransaction(transaction);
 
       // Clear the form
       _clearForm();

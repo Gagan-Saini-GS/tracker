@@ -198,37 +198,37 @@ class ReusableLineChart extends ConsumerWidget {
     );
   }
 
-  // Helper to approximate X position for custom tooltip
-  double _getPointXPosition(
-    String xValue,
-    List<ChartData> data,
-    BuildContext context,
-  ) {
-    final index = data.indexWhere((element) => element.x == xValue);
-    if (index == -1) return 0;
+  // // Helper to approximate X position for custom tooltip
+  // double _getPointXPosition(
+  //   String xValue,
+  //   List<ChartData> data,
+  //   BuildContext context,
+  // ) {
+  //   final index = data.indexWhere((element) => element.x == xValue);
+  //   if (index == -1) return 0;
 
-    final chartWidth =
-        MediaQuery.of(context).size.width - 32; // Subtract padding
-    final segmentWidth = chartWidth / (data.length - 1);
-    return (index * segmentWidth) +
-        16 -
-        20; // Adjust for padding and tooltip width
-  }
+  //   final chartWidth =
+  //       MediaQuery.of(context).size.width - 32; // Subtract padding
+  //   final segmentWidth = chartWidth / (data.length - 1);
+  //   return (index * segmentWidth) +
+  //       16 -
+  //       20; // Adjust for padding and tooltip width
+  // }
 
-  // Helper to approximate Y position for custom tooltip
-  double _getPointYPosition(
-    double yValue,
-    List<ChartData> data,
-    BuildContext context,
-  ) {
-    final maxVal = data.map((e) => e.y).reduce((a, b) => a > b ? a : b);
-    final minVal = data.map((e) => e.y).reduce((a, b) => a < b ? a : b);
-    final chartHeight = 250.0; // Chart height
-    final yAxisRange = maxVal - minVal;
-    if (yAxisRange == 0) return chartHeight / 2; // Avoid division by zero
+  // // Helper to approximate Y position for custom tooltip
+  // double _getPointYPosition(
+  //   double yValue,
+  //   List<ChartData> data,
+  //   BuildContext context,
+  // ) {
+  //   final maxVal = data.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+  //   final minVal = data.map((e) => e.y).reduce((a, b) => a < b ? a : b);
+  //   final chartHeight = 250.0; // Chart height
+  //   final yAxisRange = maxVal - minVal;
+  //   if (yAxisRange == 0) return chartHeight / 2; // Avoid division by zero
 
-    final normalizedY = (yValue - minVal) / yAxisRange;
-    return chartHeight -
-        (normalizedY * chartHeight); // Invert for screen coordinates
-  }
+  //   final normalizedY = (yValue - minVal) / yAxisRange;
+  //   return chartHeight -
+  //       (normalizedY * chartHeight); // Invert for screen coordinates
+  // }
 }
