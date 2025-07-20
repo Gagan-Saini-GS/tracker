@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
-                  vertical: 40,
+                  vertical: 20,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,8 +78,6 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 50),
-                    // Balance Card
-                    // BalanceCard(),
                   ],
                 ),
               ),
@@ -149,48 +147,79 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView(
-                children: [
-                  // Transaction List
-                  TransactionItem(
-                    icon: Icons.work,
-                    iconBg: Color(0xFFE5F8ED),
-                    iconAsset:
-                        'assets/images/man.png', // Placeholder, replace with Upwork logo asset if available
-                    title: 'Upwork',
-                    date: 'Today',
-                    amount: '+ 850.00',
-                    isIncome: true,
-                  ),
-                  TransactionItem(
-                    icon: Icons.person,
-                    iconBg: Color(0xFFE5E5E5),
-                    iconAsset: null,
-                    title: 'Transfer',
-                    date: 'Yesterday',
-                    amount: '- 85.00',
-                    isIncome: false,
-                  ),
-                  TransactionItem(
-                    icon: Icons.account_balance_wallet,
-                    iconBg: Color(0xFFE5F8ED),
-                    iconAsset: null,
-                    title: 'Paypal',
-                    date: 'Jan 30, 2022',
-                    amount: '+ ₹ 1,406.00',
-                    isIncome: true,
-                  ),
-                  TransactionItem(
-                    icon: Icons.ondemand_video,
-                    iconBg: Color(0xFFFDECEA),
-                    iconAsset: null,
-                    title: 'Youtube',
-                    date: 'Jan 16, 2022',
-                    amount: '- 11.99',
-                    isIncome: false,
-                  ),
-                ],
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    // Transaction List
+                    TransactionItem(
+                      icon: Icons.work,
+                      iconBg: Color(0xFFE5F8ED),
+                      iconAsset:
+                          'assets/images/man.png', // Placeholder, replace with Upwork logo asset if available
+                      title: 'Upwork',
+                      date: 'Today',
+                      amount: '+ 850.00',
+                      isIncome: true,
+                    ),
+                    TransactionItem(
+                      icon: Icons.person,
+                      iconBg: Color(0xFFE5E5E5),
+                      iconAsset: null,
+                      title: 'Transfer',
+                      date: 'Yesterday',
+                      amount: '- 85.00',
+                      isIncome: false,
+                    ),
+                    TransactionItem(
+                      icon: Icons.account_balance_wallet,
+                      iconBg: Color(0xFFE5F8ED),
+                      iconAsset: null,
+                      title: 'Paypal',
+                      date: 'Jan 30, 2022',
+                      amount: '+ ₹ 1,406.00',
+                      isIncome: true,
+                    ),
+                    TransactionItem(
+                      icon: Icons.ondemand_video,
+                      iconBg: Color(0xFFFDECEA),
+                      iconAsset: null,
+                      title: 'Youtube',
+                      date: 'Jan 16, 2022',
+                      amount: '- 11.99',
+                      isIncome: false,
+                    ),
+                    TransactionItem(
+                      icon: Icons.ondemand_video,
+                      iconBg: Color(0xFFFDECEA),
+                      iconAsset: null,
+                      title: 'Youtube',
+                      date: 'Jan 16, 2022',
+                      amount: '- 11.99',
+                      isIncome: false,
+                    ),
+                    TransactionItem(
+                      icon: Icons.ondemand_video,
+                      iconBg: Color(0xFFFDECEA),
+                      iconAsset: null,
+                      title: 'Youtube',
+                      date: 'Jan 16, 2022',
+                      amount: '- 11.99',
+                      isIncome: false,
+                    ),
+                    TransactionItem(
+                      icon: Icons.ondemand_video,
+                      iconBg: Color(0xFFFDECEA),
+                      iconAsset: null,
+                      title: 'Youtube',
+                      date: 'Jan 16, 2022',
+                      amount: '- 11.99',
+                      isIncome: false,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
