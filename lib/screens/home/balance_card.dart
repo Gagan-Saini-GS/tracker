@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/utils/constants.dart';
 
 class BalanceCard extends ConsumerWidget {
   const BalanceCard({super.key});
@@ -26,11 +27,11 @@ class BalanceCard extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 68, 139, 134),
+        color: balanceCardGreenColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(100),
+            color: blackColor.withAlpha(100),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -41,23 +42,23 @@ class BalanceCard extends ConsumerWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Total Balance',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: whiteColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              Icon(Icons.more_horiz, color: Colors.white),
+              Icon(Icons.more_horiz, color: whiteColor),
             ],
           ),
           // const SizedBox(height: 10),
           Text(
             '₹ ${totalAmount.toStringAsFixed(2)}',
             style: TextStyle(
-              color: Colors.white,
+              color: whiteColor,
               fontSize: 32,
               fontWeight: FontWeight.bold,
             ),
@@ -100,24 +101,21 @@ class _BalanceDetail extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha(50),
+            color: whiteColor.withAlpha(50),
             borderRadius: BorderRadius.circular(10),
           ),
           padding: const EdgeInsets.all(8),
-          child: Icon(icon, color: Colors.white, size: 20),
+          child: Icon(icon, color: whiteColor, size: 20),
         ),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
+            Text(label, style: TextStyle(color: whiteColor, fontSize: 14)),
             Text(
               '₹ ${amount.toStringAsFixed(2)}',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: whiteColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),

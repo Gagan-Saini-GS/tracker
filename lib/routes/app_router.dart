@@ -8,7 +8,7 @@ import '../screens/wallet/wallet_screen.dart';
 import '../screens/profile/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/',
   routes: [
     GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
     GoRoute(

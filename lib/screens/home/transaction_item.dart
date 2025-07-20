@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker/utils/constants.dart';
 
 class TransactionItem extends StatelessWidget {
   final IconData icon;
@@ -38,7 +39,7 @@ class TransactionItem extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset(iconAsset!, fit: BoxFit.contain),
                   )
-                : Icon(icon, color: Colors.black, size: 28),
+                : Icon(icon, color: blackColor, size: 28),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -52,19 +53,14 @@ class TransactionItem extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                Text(
-                  date,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
+                Text(date, style: TextStyle(color: grayColor, fontSize: 12)),
               ],
             ),
           ),
           Text(
             '${isIncome ? '+ ' : '- '}₹ ${amount.replaceAll(RegExp(r'[^0-9.,]'), '')}',
             style: TextStyle(
-              color: isIncome
-                  ? const Color(0xFF3CB371)
-                  : const Color(0xFFE74C3C),
+              color: isIncome ? greenColor : redColor,
               fontWeight: FontWeight.bold,
               fontSize: 15,
             ),

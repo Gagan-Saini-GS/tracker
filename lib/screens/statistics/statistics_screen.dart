@@ -6,6 +6,7 @@ import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
 import 'package:tracker/screens/statistics/graph_screen.dart';
 import 'package:tracker/screens/statistics/time_filter_button.dart';
+import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
 class StatisticsScreen extends ConsumerWidget {
@@ -17,21 +18,21 @@ class StatisticsScreen extends ConsumerWidget {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: whiteColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.black87),
+        //   icon: const Icon(Icons.arrow_back, color: blackColor),
         //   onPressed: () {
         //     context.go("/home");
         //   },
         // ),
         // centerTitle: true,
-        title: const Text(
+        title: Text(
           'Statistics',
           style: TextStyle(
-            color: Colors.black87,
+            color: blackColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -41,8 +42,8 @@ class StatisticsScreen extends ConsumerWidget {
             margin: const EdgeInsets.only(right: 10),
             decoration: BoxDecoration(
               color: selectedExpenseType == "Income"
-                  ? const Color(0xFF63B5AF).withAlpha(65)
-                  : const Color(0xFFE83559).withAlpha(65),
+                  ? greenColor.withAlpha(65)
+                  : redColor.withAlpha(65),
               borderRadius: BorderRadius.circular(8),
             ),
             child: GestureDetector(
@@ -54,8 +55,8 @@ class StatisticsScreen extends ConsumerWidget {
                 child: Icon(
                   Icons.file_download_outlined,
                   color: selectedExpenseType == "Income"
-                      ? const Color(0xFF63B5AF)
-                      : const Color(0xFFE83559),
+                      ? greenColor
+                      : redColor,
                   size: 24,
                 ),
               ),
@@ -76,12 +77,7 @@ class StatisticsScreen extends ConsumerWidget {
               child: ExpenseTypeDropdown(),
             ),
           ),
-          Divider(
-            height: 1,
-            color: Colors.grey[300],
-            indent: 16,
-            endIndent: 16,
-          ),
+          Divider(height: 1, color: grayColor, indent: 16, endIndent: 16),
           const SizedBox(height: 20),
 
           const ReusableLineChart(),
@@ -92,28 +88,28 @@ class StatisticsScreen extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Top Spending',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: blackColor,
                   ),
                 ),
-                Icon(Icons.sort, color: Colors.grey[600]),
+                Icon(Icons.sort, color: grayColor),
               ],
             ),
           ),
           const SizedBox(height: 10),
           Expanded(
             child: transactions.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'No Transactions Yet.',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey,
+                        color: grayColor,
                       ),
                     ),
                   )
@@ -125,8 +121,8 @@ class StatisticsScreen extends ConsumerWidget {
                       return TransactionItem(
                         icon: tx.isIncome ? Icons.work : Icons.ondemand_video,
                         iconBg: tx.isIncome
-                            ? Color(0xFFE5F8ED)
-                            : Color(0xFFFDECEA),
+                            ? greenColor.withAlpha(65)
+                            : redColor.withAlpha(65),
                         iconAsset: null,
                         title: tx.name,
                         date:

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/utils/constants.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -99,7 +100,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
           content: Text(
             '$transactionType added successfully! $name - ₹$amount',
           ),
-          backgroundColor: const Color(0xFF0C4C48),
+          backgroundColor: darkGreenColor,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -108,9 +109,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     } else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Please fill in all required fields correctly'),
-          backgroundColor: Color.fromARGB(255, 231, 15, 15),
+          backgroundColor: darkRedColor,
           duration: Duration(seconds: 2),
         ),
       );
@@ -122,10 +123,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       padding: EdgeInsets.all(14),
       height: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: whiteColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(100),
+            color: blackColor.withAlpha(100),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -139,7 +140,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
             // Custom Tab Bar - 50% width each
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(color: Colors.grey[200]),
+              decoration: BoxDecoration(color: whiteColor),
               child: Row(
                 children: [
                   // Income Tab - 50% width
@@ -150,15 +151,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
                           color: _isIncome
-                              ? const Color(0xFF63B5AF)
-                              : const Color(0xFFD2F5F2),
+                              ? greenColor
+                              : greenColor.withAlpha(65),
                           borderRadius: BorderRadius.circular(7),
                         ),
                         child: Text(
                           'Income',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: _isIncome ? Colors.white : Colors.grey[500],
+                            color: _isIncome ? whiteColor : grayColor,
                             fontWeight: _isIncome
                                 ? FontWeight.w800
                                 : FontWeight.w500,
@@ -175,16 +176,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
-                          color: !_isIncome
-                              ? const Color(0xFFE83559)
-                              : const Color(0xFFFFE2E2),
+                          color: !_isIncome ? redColor : redColor.withAlpha(65),
                           borderRadius: BorderRadius.circular(7),
                         ),
                         child: Text(
                           'Expense',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: !_isIncome ? Colors.white : Colors.grey[500],
+                            color: !_isIncome ? whiteColor : grayColor,
                             fontWeight: !_isIncome
                                 ? FontWeight.w800
                                 : FontWeight.w500,
@@ -277,10 +276,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                     child: ElevatedButton(
                       onPressed: _addTransaction,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isIncome
-                            ? const Color(0xFF63B5AF)
-                            : const Color(0xFFE83559),
-                        foregroundColor: Colors.white,
+                        backgroundColor: _isIncome ? greenColor : redColor,
+                        foregroundColor: whiteColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -308,20 +305,17 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF63B5AF),
+      backgroundColor: greenColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF63B5AF),
+        backgroundColor: _isIncome ? greenColor : redColor,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-          ),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: whiteColor),
           onPressed: () => context.go('/home'),
         ),
-        title: const Text(
-          'Add Transaction',
+        title: Text(
+          'Add ${_isIncome ? "Income" : "Expense"}',
           style: TextStyle(
-            color: Colors.white,
+            color: whiteColor,
             fontWeight: FontWeight.w600,
             fontSize: 24,
           ),

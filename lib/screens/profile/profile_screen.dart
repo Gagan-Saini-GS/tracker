@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: whiteColor,
       body: CustomScrollView(
         slivers: [
           SliverPersistentHeader(
@@ -34,18 +35,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'Gagan Saini',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: blackColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '@gsprocoder',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  style: TextStyle(fontSize: 16, color: grayColor),
                 ),
                 const SizedBox(height: 20),
 
@@ -111,29 +112,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Card(
       elevation: isActive ? 2 : 1,
-      shadowColor: isActive ? const Color(0xFF63B5AF) : Colors.black87,
+      shadowColor: isActive ? greenColor : blackColor,
       // margin: const EdgeInsets.symmetric(vertical: 6.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: isActive ? Colors.white : Colors.grey[50],
+      color: isActive ? whiteColor : lightGrayColor,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: isActive
-              ? const Color(0xFF63B5AF)
-              : Colors.transparent,
-          child: Icon(icon, color: isActive ? Colors.white : Colors.grey[600]),
+          backgroundColor: isActive ? greenColor : Colors.transparent,
+          child: Icon(icon, color: isActive ? whiteColor : grayColor),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w500, color: blackColor),
         ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Colors.grey,
-        ),
+        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: grayColor),
         onTap: () {
           setState(() {
             activeId = id;
@@ -164,9 +156,9 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         ClipPath(
           clipper: CustomShapeClipper(),
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF2D9C9A), Color(0xFF43B4B1)],
+                colors: profileGradient,
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -182,16 +174,16 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
             backgroundColor: Colors.transparent,
             elevation: 0,
             // leading: IconButton(
-            //   icon: const Icon(Icons.arrow_back, color: Colors.white),
+            //   icon: const Icon(Icons.arrow_back, color: whiteColor),
             //   onPressed: () {
             //     // Handle back button press
             //   },
             // ),
             // centerTitle: true,
-            title: const Text(
+            title: Text(
               'Profile',
               style: TextStyle(
-                color: Colors.white,
+                color: whiteColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
@@ -200,7 +192,7 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
               Container(
                 margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(65),
+                  color: whiteColor.withAlpha(65),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: GestureDetector(
@@ -211,7 +203,7 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                     padding: const EdgeInsets.all(6),
                     child: Icon(
                       Icons.notifications_none,
-                      color: Colors.white,
+                      color: whiteColor,
                       size: 24,
                     ),
                   ),
@@ -223,14 +215,14 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
             //   Container(
             //     margin: EdgeInsets.only(right: 10),
             //     decoration: BoxDecoration(
-            //       color: Colors.white.withAlpha(65),
+            //       color: whiteColor.withAlpha(65),
             //       borderRadius: BorderRadius.circular(10),
             //     ),
             //     // padding: const EdgeInsets.all(4),
             //     child: IconButton(
             //       icon: const Icon(
             //         Icons.notifications_none,
-            //         color: Colors.white,
+            //         color: whiteColor,
             //       ),
             //       onPressed: () {
             //         // Handle Notification click

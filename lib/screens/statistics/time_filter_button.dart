@@ -4,6 +4,7 @@ import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/utils/capitalize.dart';
+import 'package:tracker/utils/constants.dart';
 
 class TimeFilterButtons extends ConsumerWidget {
   const TimeFilterButtons({super.key});
@@ -28,16 +29,16 @@ class TimeFilterButtons extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? selectedExpenseType == "Income"
-                          ? const Color(0xFF63B5AF)
-                          : const Color(0xFFE83559)
-                    : Colors.grey[200],
+                          ? greenColor
+                          : redColor
+                    : grayColor.withAlpha(50),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Text(
                   filter.name.capitalize(),
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
+                    color: isSelected ? whiteColor : blackColor,
                     fontWeight: isSelected
                         ? FontWeight.bold
                         : FontWeight.normal,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/utils/constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,28 +24,25 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF6AB7A8),
+      backgroundColor: scaffoldColor,
       body: Stack(
         children: [
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 76, 157, 151),
-                  Color.fromARGB(255, 12, 76, 72),
-                ],
+                colors: splashGradient,
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          const Center(
+          Center(
             child: Text(
               'Tracker',
               style: TextStyle(
-                color: Colors.white,
+                color: whiteColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 40,
                 letterSpacing: 1.5,

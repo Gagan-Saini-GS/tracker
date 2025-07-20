@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/utils/constants.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -7,19 +8,16 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6FCFB),
+      backgroundColor: scaffoldColor,
       body: SafeArea(
         child: Stack(
           children: [
             Container(
               width: double.infinity,
               height: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Color.fromARGB(255, 229, 246, 245),
-                    Color.fromARGB(255, 206, 238, 236),
-                  ],
+                  colors: onboardingGradient,
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -44,11 +42,11 @@ class OnboardingScreen extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    const Text(
+                    Text(
                       'Spend Smarter\nSave More',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFF4B807A),
+                        color: greenColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
                       ),
@@ -75,18 +73,18 @@ class OnboardingScreen extends StatelessWidget {
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF63B5AF), Color(0xFF438883)],
+                              gradient: LinearGradient(
+                                colors: buttonGradient,
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                               borderRadius: BorderRadius.circular(32),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Text(
                                 'Get Started',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: whiteColor,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -100,19 +98,19 @@ class OnboardingScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
+                        Text(
                           'Already Have Account? ',
                           style: TextStyle(
-                            color: Color(0xFF7A9B97),
+                            color: greenColor.withGreen(160),
                             fontSize: 14,
                           ),
                         ),
                         GestureDetector(
                           onTap: () {},
-                          child: const Text(
+                          child: Text(
                             'Log In',
                             style: TextStyle(
-                              color: Color(0xFF4B807A),
+                              color: greenColor.withGreen(180),
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                               decoration: TextDecoration.underline,

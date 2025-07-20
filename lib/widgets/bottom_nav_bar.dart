@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/utils/constants.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -55,9 +56,7 @@ class BottomNavBar extends StatelessWidget {
         iconSize: 25, // Reduced icon size
         icon: Icon(
           icon,
-          color: currentIndex == index
-              ? const Color(0xFF63B5AF)
-              : Colors.grey[500],
+          color: currentIndex == index ? greenColor : grayColor.withAlpha(150),
         ),
         onPressed: () => _onTap(context, index),
       ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/balance_card.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
+import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/getGreeting.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
@@ -13,7 +14,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFF63B5AF),
+      backgroundColor: greenColor,
       body: Stack(
         children: [
           // Background top decoration (optional, for effect)
@@ -24,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha(25),
+                color: whiteColor.withAlpha(25),
                 shape: BoxShape.circle,
               ),
             ),
@@ -50,16 +51,13 @@ class HomeScreen extends ConsumerWidget {
                           children: [
                             Text(
                               getGreeting(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(color: whiteColor, fontSize: 14),
                             ),
                             const SizedBox(height: 2),
-                            const Text(
+                            Text(
                               'Gagan Saini',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: whiteColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -68,13 +66,13 @@ class HomeScreen extends ConsumerWidget {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(65),
+                            color: whiteColor.withAlpha(65),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           padding: const EdgeInsets.all(8),
-                          child: const Icon(
+                          child: Icon(
                             Icons.notifications_none,
-                            color: Colors.white,
+                            color: whiteColor,
                           ),
                         ),
                       ],
@@ -89,8 +87,8 @@ class HomeScreen extends ConsumerWidget {
           Positioned.fill(
             top: 220,
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: whiteColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
@@ -116,12 +114,12 @@ class HomeScreen extends ConsumerWidget {
       ),
       bottomNavigationBar: BottomNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF63B5AF),
+        backgroundColor: greenColor,
         onPressed: () {
           context.go('/add-transaction');
         },
         elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: whiteColor),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -137,7 +135,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   'Transactions History',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -145,7 +143,7 @@ class HomeScreen extends ConsumerWidget {
                 Text(
                   'See all',
                   style: TextStyle(
-                    color: Color(0xFF63B5AF),
+                    color: greenColor,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -154,13 +152,13 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 10),
             Expanded(
               child: transactions.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
                         'No Transactions Yet.',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey,
+                          color: grayColor,
                         ),
                       ),
                     )
@@ -172,8 +170,8 @@ class HomeScreen extends ConsumerWidget {
                         return TransactionItem(
                           icon: tx.isIncome ? Icons.work : Icons.ondemand_video,
                           iconBg: tx.isIncome
-                              ? Color(0xFFE5F8ED)
-                              : Color(0xFFFDECEA),
+                              ? greenColor.withAlpha(65)
+                              : redColor.withAlpha(65),
                           iconAsset: null,
                           title: tx.name,
                           date:

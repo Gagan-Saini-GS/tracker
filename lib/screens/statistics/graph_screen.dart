@@ -5,6 +5,7 @@ import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
+import 'package:tracker/utils/constants.dart';
 
 class ReusableLineChart extends ConsumerWidget {
   const ReusableLineChart({super.key});
@@ -34,9 +35,7 @@ class ReusableLineChart extends ConsumerWidget {
                 width: 0,
               ), // Remove vertical grid lines
               axisLine: const AxisLine(width: 1), // Remove X-axis line
-              labelStyle: TextStyle(
-                color: Colors.grey[600],
-              ), // X-axis label color
+              labelStyle: TextStyle(color: grayColor), // X-axis label color
               majorTickLines: const MajorTickLines(
                 width: 0,
               ), // Remove X-axis ticks
@@ -55,21 +54,21 @@ class ReusableLineChart extends ConsumerWidget {
                 xValueMapper: (ChartData data, _) => data.x,
                 yValueMapper: (ChartData data, _) => data.y,
                 color: selectedExpenseType == "Income"
-                    ? const Color(0xFF63B5AF).withAlpha(100)
-                    : const Color(0xFFE83559).withAlpha(100), // Area fill color
+                    ? greenColor.withAlpha(100)
+                    : redColor.withAlpha(100), // Area fill color
                 gradient: LinearGradient(
                   colors: [
                     selectedExpenseType == "Income"
-                        ? const Color(0xFF63B5AF).withAlpha(100)
-                        : const Color(0xFFE83559).withAlpha(100),
+                        ? greenColor.withAlpha(100)
+                        : redColor.withAlpha(100),
                     Colors.transparent,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
                 borderColor: selectedExpenseType == "Income"
-                    ? const Color(0xFF63B5AF)
-                    : const Color(0xFFE83559), // Line color
+                    ? greenColor
+                    : redColor, // Line color
                 borderWidth: 2,
                 splineType: SplineType.natural, // Smooth curve
                 markerSettings: MarkerSettings(
@@ -78,8 +77,8 @@ class ReusableLineChart extends ConsumerWidget {
                   width: 8,
                   shape: DataMarkerType.circle,
                   color: selectedExpenseType == "Income"
-                      ? const Color(0xFF63B5AF)
-                      : const Color(0xFFE83559),
+                      ? greenColor
+                      : redColor,
                 ),
                 // Data label settings for the highlighted point
                 dataLabelSettings: DataLabelSettings(
@@ -103,16 +102,13 @@ class ReusableLineChart extends ConsumerWidget {
                             ),
                             decoration: BoxDecoration(
                               color: selectedExpenseType == "Income"
-                                  ? const Color(0xFF63B5AF)
-                                  : const Color(0xFFE83559),
+                                  ? greenColor
+                                  : redColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '₹${data.y.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
+                              style: TextStyle(color: whiteColor, fontSize: 12),
                             ),
                           );
                         }
@@ -132,12 +128,12 @@ class ReusableLineChart extends ConsumerWidget {
           //     child: Container(
           //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           //       decoration: BoxDecoration(
-          //         color: const Color(0xFF63B5AF),
+          //         color: greenColor,
           //         borderRadius: BorderRadius.circular(8),
           //       ),
           //       child: Text(
           //         '\$${highlightedPoint.y.toStringAsFixed(0)}',
-          //         style: const TextStyle(color: Colors.white, fontSize: 12),
+          //         style: const TextStyle(color: whiteColor, fontSize: 12),
           //       ),
           //     ),
           //   ),
