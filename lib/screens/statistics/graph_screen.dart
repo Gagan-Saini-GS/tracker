@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:tracker/screens/statistics/time_filter_button.dart';
+import 'package:tracker/enums/timefilter.dart';
+import 'package:tracker/providers/expense_type_provider.dart';
+import 'package:tracker/providers/time_filter_provider.dart';
 
 // --- 1. Data Model ---
 class ChartData {
@@ -34,7 +36,7 @@ final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
         ChartData('Tue', 280, const Color(0xFF63B5AF)),
         ChartData('Wed', 190),
         ChartData('Thu', 350),
-        ChartData('Fri', 220, const Color(0xFF63B5AF)),
+        ChartData('Fri', 220),
         ChartData('Sat', 400),
         ChartData('Sun', 300),
       ];
@@ -52,11 +54,11 @@ final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
       return [
         ChartData('Jan', 5000),
         ChartData('Feb', 6500),
-        ChartData('Mar', 5800),
+        ChartData('Mar', 5800, const Color(0xFF63B5AF)),
         ChartData('Apr', 7200),
         ChartData('May', 6000),
         ChartData('Jun', 7500),
-        ChartData('Jul', 6800, const Color(0xFF63B5AF)),
+        ChartData('Jul', 6800),
         ChartData('Aug', 8000),
         ChartData('Sep', 7100),
         ChartData('Oct', 8500),
@@ -73,6 +75,7 @@ class ReusableLineChart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timeFilter = ref.watch(timeFilterProvider);
+    final selectedExpenseType = ref.watch(expenseTypeProvider);
     final chartData = ref.watch(chartDataProvider(timeFilter));
 
     // Find the data point to highlight (e.g., the one with a specific color)
@@ -114,18 +117,22 @@ class ReusableLineChart extends ConsumerWidget {
                 dataSource: chartData,
                 xValueMapper: (ChartData data, _) => data.x,
                 yValueMapper: (ChartData data, _) => data.y,
-                color: const Color(
-                  0xFF63B5AF,
-                ).withAlpha(100), // Area fill color
+                color: selectedExpenseType == "Income"
+                    ? const Color(0xFF63B5AF).withAlpha(100)
+                    : const Color(0xFFE83559).withAlpha(100), // Area fill color
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF63B5AF).withAlpha(100),
+                    selectedExpenseType == "Income"
+                        ? const Color(0xFF63B5AF).withAlpha(100)
+                        : const Color(0xFFE83559).withAlpha(100),
                     Colors.transparent,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderColor: const Color(0xFF63B5AF), // Line color
+                borderColor: selectedExpenseType == "Income"
+                    ? const Color(0xFF63B5AF)
+                    : const Color(0xFFE83559), // Line color
                 borderWidth: 2,
                 splineType: SplineType.natural, // Smooth curve
                 markerSettings: MarkerSettings(
@@ -133,7 +140,9 @@ class ReusableLineChart extends ConsumerWidget {
                   height: 8,
                   width: 8,
                   shape: DataMarkerType.circle,
-                  color: const Color(0xFF63B5AF),
+                  color: selectedExpenseType == "Income"
+                      ? const Color(0xFF63B5AF)
+                      : const Color(0xFFE83559),
                 ),
                 // Data label settings for the highlighted point
                 dataLabelSettings: DataLabelSettings(
@@ -156,11 +165,13 @@ class ReusableLineChart extends ConsumerWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF63B5AF),
+                              color: selectedExpenseType == "Income"
+                                  ? const Color(0xFF63B5AF)
+                                  : const Color(0xFFE83559),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              '\$${data.y.toStringAsFixed(0)}',
+                              '₹${data.y.toStringAsFixed(0)}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
@@ -13,6 +14,7 @@ class StatisticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionListProvider);
+    final selectedExpenseType = ref.watch(expenseTypeProvider);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -38,7 +40,9 @@ class StatisticsScreen extends ConsumerWidget {
           Container(
             margin: const EdgeInsets.only(right: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFF63B5AF).withAlpha(65),
+              color: selectedExpenseType == "Income"
+                  ? const Color(0xFF63B5AF).withAlpha(65)
+                  : const Color(0xFFE83559).withAlpha(65),
               borderRadius: BorderRadius.circular(8),
             ),
             child: GestureDetector(
@@ -49,7 +53,9 @@ class StatisticsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(6),
                 child: Icon(
                   Icons.file_download_outlined,
-                  color: const Color(0xFF63B5AF),
+                  color: selectedExpenseType == "Income"
+                      ? const Color(0xFF63B5AF)
+                      : const Color(0xFFE83559),
                   size: 24,
                 ),
               ),
@@ -70,6 +76,14 @@ class StatisticsScreen extends ConsumerWidget {
               child: ExpenseTypeDropdown(),
             ),
           ),
+          Divider(
+            height: 1,
+            color: Colors.grey[300],
+            indent: 16,
+            endIndent: 16,
+          ),
+          const SizedBox(height: 20),
+
           const ReusableLineChart(),
 
           const SizedBox(height: 20),

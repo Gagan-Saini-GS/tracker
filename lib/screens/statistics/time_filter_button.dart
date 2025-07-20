@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracker/enums/timefilter.dart';
+import 'package:tracker/providers/expense_type_provider.dart';
+import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/utils/capitalize.dart';
-
-// Enum for time filters
-enum TimeFilter { day, week, month, year }
-
-// Provider for the selected time filter
-final timeFilterProvider = StateProvider<TimeFilter>((ref) => TimeFilter.day);
 
 class TimeFilterButtons extends ConsumerWidget {
   const TimeFilterButtons({super.key});
@@ -14,6 +11,7 @@ class TimeFilterButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedFilter = ref.watch(timeFilterProvider);
+    final selectedExpenseType = ref.watch(expenseTypeProvider);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -28,7 +26,11 @@ class TimeFilterButtons extends ConsumerWidget {
               margin: const EdgeInsets.symmetric(horizontal: 0),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF63B5AF) : Colors.grey[200],
+                color: isSelected
+                    ? selectedExpenseType == "Income"
+                          ? const Color(0xFF63B5AF)
+                          : const Color(0xFFE83559)
+                    : Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
