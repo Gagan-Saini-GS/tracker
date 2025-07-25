@@ -8,17 +8,17 @@ class BalanceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final totalBalance = ref.watch(transactionListProvider);
+    final transactions = ref.watch(transactionListProvider);
 
-    final totalAmount = totalBalance.fold(
+    final totalAmount = transactions.fold(
       0.0,
       (sum, item) => sum + (item.isIncome ? item.amount : -item.amount),
     );
-    final totalIncome = totalBalance.fold(
+    final totalIncome = transactions.fold(
       0.0,
       (sum, item) => sum + (item.isIncome ? item.amount : 0),
     );
-    final totalExpense = totalBalance.fold(
+    final totalExpense = transactions.fold(
       0.0,
       (sum, item) => sum + (item.isIncome ? 0 : item.amount),
     );
