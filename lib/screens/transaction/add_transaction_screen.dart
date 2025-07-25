@@ -22,7 +22,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
   final _dateController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
-  bool _isIncome = true;
+  bool _isIncome = false;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         setState(() {
-          _isIncome = _tabController.index == 0;
+          _isIncome = _tabController.index == 1;
         });
         // Clear form data when switching tabs
         _clearForm();
@@ -143,10 +143,34 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
               decoration: BoxDecoration(color: whiteColor),
               child: Row(
                 children: [
-                  // Income Tab - 50% width
+                  // Expense Tab - 50% width
                   Expanded(
                     child: GestureDetector(
                       onTap: () => {_tabController.animateTo(0), _clearForm()},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: !_isIncome ? redColor : redColor.withAlpha(65),
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                        child: Text(
+                          'Expense',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: !_isIncome ? whiteColor : grayColor,
+                            fontWeight: !_isIncome
+                                ? FontWeight.w800
+                                : FontWeight.w500,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Income Tab - 50% width
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => {_tabController.animateTo(1), _clearForm()},
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
@@ -161,30 +185,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                           style: TextStyle(
                             color: _isIncome ? whiteColor : grayColor,
                             fontWeight: _isIncome
-                                ? FontWeight.w800
-                                : FontWeight.w500,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Expense Tab - 50% width
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => {_tabController.animateTo(1), _clearForm()},
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: !_isIncome ? redColor : redColor.withAlpha(65),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        child: Text(
-                          'Expense',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: !_isIncome ? whiteColor : grayColor,
-                            fontWeight: !_isIncome
                                 ? FontWeight.w800
                                 : FontWeight.w500,
                             fontSize: 20,
