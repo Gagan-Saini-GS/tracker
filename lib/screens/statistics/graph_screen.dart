@@ -19,7 +19,7 @@ class ReusableLineChart extends ConsumerWidget {
     // Find the data point to highlight (e.g., the one with a specific color)
     final highlightedPoint = chartData.firstWhere(
       (data) => data.pointColor != null,
-      orElse: () => ChartData('', 0), // Return a dummy if no highlight
+      orElse: () => ChartData("", "", 0), // Return a dummy if no highlight
     );
 
     return Container(
@@ -51,8 +51,8 @@ class ReusableLineChart extends ConsumerWidget {
             series: <CartesianSeries>[
               SplineAreaSeries<ChartData, String>(
                 dataSource: chartData,
-                xValueMapper: (ChartData data, _) => data.x,
-                yValueMapper: (ChartData data, _) => data.y,
+                xValueMapper: (ChartData data, _) => data.time,
+                yValueMapper: (ChartData data, _) => data.amount,
                 color: selectedExpenseType == "Income"
                     ? greenColor.withAlpha(100)
                     : redColor.withAlpha(100), // Area fill color
@@ -82,7 +82,7 @@ class ReusableLineChart extends ConsumerWidget {
                 ),
                 // Data label settings for the highlighted point
                 dataLabelSettings: DataLabelSettings(
-                  isVisible: highlightedPoint.x == ''
+                  isVisible: highlightedPoint.time == ''
                       ? false
                       : true, // Only show if a point is highlighted
                   labelAlignment: ChartDataLabelAlignment.top,
@@ -94,7 +94,7 @@ class ReusableLineChart extends ConsumerWidget {
                         int pointIndex,
                         int seriesIndex,
                       ) {
-                        if (data.x == highlightedPoint.x) {
+                        if (data.x == highlightedPoint.amount) {
                           return Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,

@@ -1,56 +1,70 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/models/chart_data.dart';
-import 'package:tracker/utils/constants.dart';
+import 'package:tracker/providers/expense_type_provider.dart';
+import 'package:tracker/providers/transaction_provider.dart';
+
+final now = DateTime.now();
+final today = DateTime(now.year, now.month, now.day);
 
 final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
   ref,
   filter,
 ) {
-  // In a real application, you would fetch data based on the filter
-  // For demonstration, we'll generate dummy data.
+  final transactions = ref.watch(transactionListProvider);
+  final selectedExpenseType = ref.watch(expenseTypeProvider);
+
+  // Determine the start date based on the selected range.
+  DateTime startDate;
   switch (filter) {
-    case TimeFilter.day:
-      return [
-        ChartData('8 AM', 100, greenColor),
-        ChartData('12 PM', 250),
-        ChartData('4 PM', 150),
-        ChartData('8 PM', 300),
-      ];
     case TimeFilter.week:
-      return [
-        ChartData('Mon', 120),
-        ChartData('Tue', 280, greenColor),
-        ChartData('Wed', 190),
-        ChartData('Thu', 350),
-        ChartData('Fri', 220),
-        ChartData('Sat', 400),
-        ChartData('Sun', 300),
-      ];
+      // The last 7 days means we go back 6 days from today.
+      startDate = today.subtract(const Duration(days: 6));
+      break;
     case TimeFilter.month:
-      return [
-        ChartData('Mar', 1230),
-        ChartData('Apr', 850),
-        ChartData('May', 1900, greenColor),
-        ChartData('Jun', 1500),
-        ChartData('Jul', 1700),
-        ChartData('Aug', 1300),
-        ChartData('Sep', 1600),
-      ];
+      // The last 30 days means we go back 29 days from today.
+      startDate = today.subtract(const Duration(days: 29));
+      break;
     case TimeFilter.year:
-      return [
-        ChartData('Jan', 5000),
-        ChartData('Feb', 6500),
-        ChartData('Mar', 5800, greenColor),
-        ChartData('Apr', 7200),
-        ChartData('May', 6000),
-        ChartData('Jun', 7500),
-        ChartData('Jul', 6800),
-        ChartData('Aug', 8000),
-        ChartData('Sep', 7100),
-        ChartData('Oct', 8500),
-        ChartData('Nov', 7800),
-        ChartData('Dec', 9000),
-      ];
+      // The last year (365 days).
+      startDate = today.subtract(const Duration(days: 365));
+      break;
+    case TimeFilter.day:
+      // If just "Today", the start and end dates are the same.
+      startDate = today;
+      break;
   }
+
+  // switch (filter) {
+  //   case TimeFilter.day:
+  return transactions
+      .where((transaction) {
+        final transactionDate = DateTime(
+          transaction.date.year,
+          transaction.date.month,
+          transaction.date.day,
+        );
+        // Check if the transaction's date and show only if within the selected range.
+        final bool isInDateRange =
+            !transactionDate.isBefore(startDate) &&
+            !transactionDate.isAfter(today);
+
+        // Match the dropdown value type
+        final bool isCorrectType = selectedExpenseType == "Income"
+            ? transaction.isIncome
+            : !transaction.isIncome;
+
+        return isInDateRange && isCorrectType;
+      })
+      .map((transaction) {
+        final String hour = transaction.date.hour == 0
+            ? "00"
+            : transaction.date.hour.toString();
+        final String minute = transaction.date.minute == 0
+            ? "00"
+            : transaction.date.minute.toString();
+
+        return ChartData(transaction.name, '$hour:$minute', transaction.amount);
+      })
+      .toList();
 });
