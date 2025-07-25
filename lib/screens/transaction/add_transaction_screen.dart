@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatDate.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -37,7 +38,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
         _clearForm();
       }
     });
-    _dateController.text = _formatDate(_selectedDate);
+    _dateController.text = formatDateTime(_selectedDate);
   }
 
   @override
@@ -49,29 +50,46 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     super.dispose();
   }
 
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-  }
-
   void _clearForm() {
     _nameController.clear();
     _amountController.clear();
     _selectedDate = DateTime.now();
-    _dateController.text = _formatDate(_selectedDate);
+    _dateController.text = formatDateTime(_selectedDate);
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  // This function now handles picking both date and time.
+  Future<void> _selectDateAndTime(BuildContext context) async {
+    // 1. Pick the Date
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-        _dateController.text = _formatDate(_selectedDate);
-      });
+
+    // If the user didn't cancel the date picker
+    if (pickedDate != null) {
+      // 2. Pick the Time
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDate),
+      );
+
+      // If the user didn't cancel the time picker
+      if (pickedTime != null) {
+        // 3. Combine the date and time into a new DateTime object
+        setState(() {
+          _selectedDate = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+          // Update the text field with the new formatted date and time
+          _dateController.text = formatDateTime(_selectedDate);
+        });
+      }
     }
   }
 
@@ -263,7 +281,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                       suffixIcon: const Icon(Icons.calendar_today_outlined),
                     ),
                     readOnly: true,
-                    onTap: () => _selectDate(context),
+                    onTap: () => _selectDateAndTime(context),
                   ),
 
                   // Spacer to push button to bottom

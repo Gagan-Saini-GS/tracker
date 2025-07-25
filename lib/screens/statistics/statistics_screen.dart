@@ -7,6 +7,7 @@ import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
 import 'package:tracker/screens/statistics/graph_screen.dart';
 import 'package:tracker/screens/statistics/time_filter_button.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
 class StatisticsScreen extends ConsumerWidget {
@@ -125,8 +126,7 @@ class StatisticsScreen extends ConsumerWidget {
                             : redColor.withAlpha(65),
                         iconAsset: null,
                         title: tx.name,
-                        date:
-                            "${tx.date.day.toString().padLeft(2, '0')}/${tx.date.month.toString().padLeft(2, '0')}/${tx.date.year}",
+                        date: formatDateTimeWithMonthName(tx.date),
                         amount:
                             "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
                         isIncome: tx.isIncome,

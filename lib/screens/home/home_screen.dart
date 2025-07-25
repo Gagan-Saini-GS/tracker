@@ -5,6 +5,7 @@ import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/balance_card.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/utils/getGreeting.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
@@ -174,8 +175,7 @@ class HomeScreen extends ConsumerWidget {
                               : redColor.withAlpha(65),
                           iconAsset: null,
                           title: tx.name,
-                          date:
-                              "${tx.date.day.toString().padLeft(2, '0')}/${tx.date.month.toString().padLeft(2, '0')}/${tx.date.year}",
+                          date: formatDateTimeWithMonthName(tx.date),
                           amount:
                               "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
                           isIncome: tx.isIncome,

@@ -57,11 +57,11 @@ final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
         return isInDateRange && isCorrectType;
       })
       .map((transaction) {
-        final String hour = transaction.date.hour == 0
-            ? "00"
+        final String hour = transaction.date.hour < 9
+            ? "0${transaction.date.hour}"
             : transaction.date.hour.toString();
-        final String minute = transaction.date.minute == 0
-            ? "00"
+        final String minute = transaction.date.minute == 9
+            ? "0${transaction.date.minute}"
             : transaction.date.minute.toString();
 
         return ChartData(transaction.name, '$hour:$minute', transaction.amount);
