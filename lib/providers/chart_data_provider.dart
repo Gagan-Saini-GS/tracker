@@ -66,5 +66,7 @@ final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
 
         return ChartData(transaction.name, '$hour:$minute', transaction.amount);
       })
+      .toList()
+      .reversed
       .toList();
 });
