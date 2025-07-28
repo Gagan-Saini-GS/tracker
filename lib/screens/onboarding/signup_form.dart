@@ -14,7 +14,7 @@ class SignupForm extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: greenColor,
+        backgroundColor: darkGreenColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: whiteColor),
@@ -32,94 +32,138 @@ class SignupForm extends ConsumerWidget {
         ),
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: onboardingGradient,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "Create Account",
+                      style: TextStyle(
+                        color: darkGreenColor.withAlpha(200),
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "Hi! Welcome to Artha.\n Please fill all the details to start.",
+                      style: TextStyle(
+                        color: blackColor.withAlpha(200),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
+              const SizedBox(height: 32),
+              TextFormField(
+                onChanged: formNotifier.setName,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Enter name',
+                  errorText: form.nameError,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "false";
+                  }
+                  return "true";
+                },
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                onChanged: formNotifier.setEmail,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'Enter email',
+                  errorText: form.emailError,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                onChanged: formNotifier.setPassword,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  hintText: 'Enter password',
+                  errorText: form.passwordError,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: form.isLoading
+                      ? null
+                      : () {
+                          formNotifier.submit(context, ref);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: darkGreenColor,
+                    foregroundColor: whiteColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                  child: form.isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: whiteColor,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Register', style: TextStyle(fontSize: 20)),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(
-                    onChanged: formNotifier.setName,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      hintText: 'Enter name',
-                      errorText: form.nameError,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                  Text(
+                    'Already Have Account? ',
+                    style: TextStyle(
+                      color: blackColor.withAlpha(200),
+                      fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    onChanged: formNotifier.setEmail,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Enter email',
-                      errorText: form.emailError,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  GestureDetector(
+                    onTap: () {
+                      context.go("/login");
+                    },
+                    child: Text(
+                      'Log In',
+                      style: TextStyle(
+                        color: darkGreenColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    onChanged: formNotifier.setPassword,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Enter password',
-                      errorText: form.passwordError,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: form.isLoading
-                          ? null
-                          : () {
-                              formNotifier.submit(context, ref);
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: darkGreenColor,
-                        foregroundColor: whiteColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: form.isLoading
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: whiteColor,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text('Register'),
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

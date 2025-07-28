@@ -13,9 +13,8 @@ class LoginForm extends ConsumerWidget {
     final formNotifier = ref.read(loginFormProvider.notifier);
 
     return Scaffold(
-      // backgroundColor: scaffoldColor,
       appBar: AppBar(
-        backgroundColor: greenColor,
+        backgroundColor: darkGreenColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: whiteColor),
@@ -33,82 +32,119 @@ class LoginForm extends ConsumerWidget {
         ),
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: onboardingGradient,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "Sign In",
+                      style: TextStyle(
+                        color: darkGreenColor.withAlpha(200),
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "Hi! Welcome Back, you've been missed.",
+                      style: TextStyle(
+                        color: blackColor.withAlpha(200),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
+              const SizedBox(height: 32),
+              TextField(
+                onChanged: formNotifier.setEmail,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'Enter Email',
+                  errorText: form.emailError,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                onChanged: formNotifier.setPassword,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  hintText: 'Enter password',
+                  errorText: form.passwordError,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: form.isLoading
+                      ? null
+                      : () {
+                          formNotifier.submit(context, ref);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: darkGreenColor,
+                    foregroundColor: whiteColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                  child: form.isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Login', style: TextStyle(fontSize: 20)),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(
-                    onChanged: formNotifier.setEmail,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Enter Email',
-                      errorText: form.emailError,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                  Text(
+                    "Don't Have Account? ",
+                    style: TextStyle(
+                      color: blackColor.withAlpha(200),
+                      fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    onChanged: formNotifier.setPassword,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Enter password',
-                      errorText: form.passwordError,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  GestureDetector(
+                    onTap: () {
+                      context.go("/signup");
+                    },
+                    child: Text(
+                      'Create account',
+                      style: TextStyle(
+                        color: darkGreenColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: form.isLoading
-                          ? null
-                          : () {
-                              formNotifier.submit(context, ref);
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: darkGreenColor,
-                        foregroundColor: whiteColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: form.isLoading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text('Login'),
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
