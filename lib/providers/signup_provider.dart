@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/providers/api_service_provider.dart';
+import 'package:tracker/providers/auth_token_provider.dart';
 
 class SignupFormState {
   final String name;
@@ -86,17 +88,47 @@ class SignupFormNotifier extends StateNotifier<SignupFormState> {
     return emailRegex.hasMatch(email);
   }
 
-  Future<void> submit(BuildContext context) async {
+  Future<void> submit(BuildContext context, WidgetRef ref) async {
     if (!_validate() && !mounted) return;
 
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(
+      isLoading: true,
+      emailError: null,
+      passwordError: null,
+    );
 
-    await Future.delayed(const Duration(seconds: 2)); // Fake API
+    try {
+      final api = ref.read(apiServiceProvider);
+      final authTokenStorage = ref.read(authTokenStorageProvider);
 
-    state = state.copyWith(isLoading: false);
-
-    context.go("/home");
-    // TODO: Handle real signup logic
+      final response = await api.post('auth/signup', {
+        'name': state.name,
+        'email': state.email,
+        'password': state.password,
+      });
+      // Assume response contains a 'token' field
+      final token = response['data']['accessToken'] as String?;
+      debugPrint("Token $token");
+      if (token != null) {
+        await authTokenStorage.saveToken(token);
+        ref.read(authTokenProvider.notifier).state = token;
+        if (mounted) {
+          context.go("/home");
+        }
+      } else {
+        state = state.copyWith(
+          emailError: 'Registration failed',
+          passwordError: 'Invalid credentials',
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(
+        emailError: 'Registration failed',
+        passwordError: 'Invalid credentials',
+      );
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
   }
 }
 

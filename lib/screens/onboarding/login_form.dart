@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/login_provider.dart';
 import 'package:tracker/utils/constants.dart';
 
@@ -13,6 +14,24 @@ class LoginForm extends ConsumerWidget {
 
     return Scaffold(
       // backgroundColor: scaffoldColor,
+      appBar: AppBar(
+        backgroundColor: greenColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: whiteColor),
+          onPressed: () {
+            context.go("/onboarding");
+          },
+        ),
+        title: Text(
+          'Login Into Artha',
+          style: TextStyle(
+            color: whiteColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: [

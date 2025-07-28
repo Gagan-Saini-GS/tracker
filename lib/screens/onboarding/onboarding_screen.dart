@@ -9,6 +9,18 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: scaffoldColor,
+      appBar: AppBar(
+        backgroundColor: scaffoldColor,
+        title: Text(
+          "Artha",
+          style: TextStyle(
+            color: whiteColor,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Stack(
           children: [

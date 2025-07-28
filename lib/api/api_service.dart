@@ -29,7 +29,6 @@ class ApiService {
       headers: _buildHeaders(),
       body: jsonEncode(body),
     );
-    debugPrint("Base Response: $response");
     return _processResponse(response);
   }
 

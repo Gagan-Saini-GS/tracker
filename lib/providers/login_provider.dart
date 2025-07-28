@@ -84,14 +84,6 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       final api = ref.read(apiServiceProvider);
       final authTokenStorage = ref.read(authTokenStorageProvider);
 
-      debugPrint("====================");
-      debugPrint(state.email);
-      debugPrint(state.emailError);
-      debugPrint("====================");
-      debugPrint(state.password);
-      debugPrint(state.passwordError);
-      debugPrint("====================");
-
       final response = await api.post('auth/login', {
         'email': state.email,
         'password': state.password,
