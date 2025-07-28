@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:tracker/screens/onboarding/login_form.dart';
+import 'package:tracker/screens/onboarding/signup_form.dart';
 import 'package:tracker/screens/transaction/add_transaction_screen.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/onboarding/onboarding_screen.dart';
@@ -15,6 +17,8 @@ final GoRouter appRouter = GoRouter(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
     ),
+    GoRoute(path: '/login', builder: (context, state) => const LoginForm()),
+    GoRoute(path: '/signup', builder: (context, state) => const SignupForm()),
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     GoRoute(
       path: '/statistics',

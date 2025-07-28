@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tracker/providers/auth_token_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  String activeId = "invite_friends";
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  String activeId = "logout";
 
   @override
   Widget build(BuildContext context) {
@@ -68,35 +71,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         children: [
           _buildMenuListItem(
-            id: "invite_friends",
-            icon: Icons.diamond_outlined,
-            title: 'Invite Friends',
+            id: "logout",
+            icon: Icons.logout_outlined,
+            title: 'Logout',
           ),
-          _buildMenuListItem(
-            id: "account_info",
-            icon: Icons.person_outline,
-            title: 'Account info',
-          ),
-          _buildMenuListItem(
-            id: "personal_profile",
-            icon: Icons.group_outlined,
-            title: 'Personal profile',
-          ),
-          _buildMenuListItem(
-            id: "message_center",
-            icon: Icons.mail_outline,
-            title: 'Message center',
-          ),
-          _buildMenuListItem(
-            id: "security",
-            icon: Icons.shield_outlined,
-            title: 'Login and security',
-          ),
-          _buildMenuListItem(
-            id: "privacy",
-            icon: Icons.lock_outline,
-            title: 'Data and privacy',
-          ),
+          // _buildMenuListItem(
+          //   id: "invite_friends",
+          //   icon: Icons.diamond_outlined,
+          //   title: 'Invite Friends',
+          // ),
+          // _buildMenuListItem(
+          //   id: "account_info",
+          //   icon: Icons.person_outline,
+          //   title: 'Account info',
+          // ),
+          // _buildMenuListItem(
+          //   id: "personal_profile",
+          //   icon: Icons.group_outlined,
+          //   title: 'Personal profile',
+          // ),
+          // _buildMenuListItem(
+          //   id: "message_center",
+          //   icon: Icons.mail_outline,
+          //   title: 'Message center',
+          // ),
+          // _buildMenuListItem(
+          //   id: "security",
+          //   icon: Icons.shield_outlined,
+          //   title: 'Login and security',
+          // ),
+          // _buildMenuListItem(
+          //   id: "privacy",
+          //   icon: Icons.lock_outline,
+          //   title: 'Data and privacy',
+          // ),
         ],
       ),
     );
@@ -109,6 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String title,
   }) {
     final isActive = id == activeId;
+    final authNotifier = ref.read(authTokenStorageProvider);
 
     return Card(
       elevation: isActive ? 2 : 1,
@@ -126,10 +135,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(fontWeight: FontWeight.w500, color: blackColor),
         ),
         trailing: Icon(Icons.arrow_forward_ios, size: 16, color: grayColor),
-        onTap: () {
-          setState(() {
-            activeId = id;
-          });
+        onTap: () async {
+          // setState(() {
+          //   activeId = id;
+          // });
+          await authNotifier.deleteToken();
+          context.go("/");
         },
       ),
     );

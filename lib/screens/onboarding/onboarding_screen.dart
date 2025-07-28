@@ -67,7 +67,7 @@ class OnboardingScreen extends StatelessWidget {
                             elevation: 4,
                           ),
                           onPressed: () {
-                            context.go('/home');
+                            context.go('/signup');
                           },
                           child: Container(
                             width: double.infinity,
@@ -82,7 +82,7 @@ class OnboardingScreen extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                'Get Started',
+                                'Register',
                                 style: TextStyle(
                                   color: whiteColor,
                                   fontSize: 18,
@@ -106,7 +106,9 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            context.go("/login");
+                          },
                           child: Text(
                             'Log In',
                             style: TextStyle(
