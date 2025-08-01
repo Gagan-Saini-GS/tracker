@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:tracker/providers/auth_token_provider.dart';
 import 'package:tracker/providers/logout_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';

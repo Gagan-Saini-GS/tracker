@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker/api/api_service.dart';
 import 'package:tracker/providers/api_service_provider.dart';
 import 'package:tracker/providers/auth_token_provider.dart';
-import 'package:tracker/storage/auth_token_storage.dart';
 
 class LogoutState {
   final bool isLoggingOut;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/api_service_provider.dart';
-import 'package:tracker/providers/auth_token_provider.dart';
 
 class SignupFormState {
   final String name;
@@ -99,7 +98,6 @@ class SignupFormNotifier extends StateNotifier<SignupFormState> {
 
     try {
       final api = ref.read(apiServiceProvider);
-      final authTokenStorage = ref.read(authTokenStorageProvider);
 
       final response = await api.post('auth/signup', {
         'name': state.name,

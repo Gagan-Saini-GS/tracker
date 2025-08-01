@@ -1,5 +1,3 @@
-import 'package:logger/logger.dart';
-
 class Transaction {
   final String id;
   final String name;

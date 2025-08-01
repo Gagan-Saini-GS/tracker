@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/api/api_service.dart';
 import 'package:tracker/providers/api_service_provider.dart';
 import 'package:tracker/providers/auth_token_provider.dart';
-import 'package:tracker/storage/auth_token_storage.dart';
 
 class RefreshTokenState {
   final bool isRefreshing;
