@@ -105,21 +105,14 @@ class SignupFormNotifier extends StateNotifier<SignupFormState> {
         'name': state.name,
         'email': state.email,
         'password': state.password,
+        'currency': 'INR', // Default currency as per API docs
       });
-      // Assume response contains a 'token' field
-      final token = response['data']['accessToken'] as String?;
-      debugPrint("Token $token");
-      if (token != null) {
-        await authTokenStorage.saveToken(token);
-        ref.read(authTokenProvider.notifier).state = token;
-        if (mounted) {
-          context.go("/home");
-        }
-      } else {
-        state = state.copyWith(
-          emailError: 'Registration failed',
-          passwordError: 'Invalid credentials',
-        );
+
+      // Signup successful, navigate to login or show success message
+      debugPrint("Signup successful: ${response['message']}");
+      if (mounted) {
+        // Navigate back to login screen after successful signup
+        context.go("/onboarding");
       }
     } catch (e) {
       state = state.copyWith(

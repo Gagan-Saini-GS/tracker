@@ -9,11 +9,25 @@ import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/utils/getGreeting.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch recent transactions when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(transactionListProvider.notifier).fetchRecentTransactions();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: greenColor,
       body: Stack(
@@ -106,7 +120,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   // Transaction History Section
-                  _buildTransactionHistory(ref),
+                  _buildTransactionHistory(),
                 ],
               ),
             ),
@@ -126,7 +140,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Expanded _buildTransactionHistory(WidgetRef ref) {
+  Expanded _buildTransactionHistory() {
     final transactions = ref.watch(transactionListProvider);
 
     return Expanded(

@@ -127,8 +127,7 @@ class StatisticsScreen extends ConsumerWidget {
                         iconAsset: null,
                         title: tx.name,
                         date: formatDateTimeWithMonthName(tx.date),
-                        amount:
-                            "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
+                        amount: "${tx.isIncome ? '+' : '-'} ₹${tx.amount}",
                         isIncome: tx.isIncome,
                       );
                     },

@@ -88,12 +88,16 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         'email': state.email,
         'password': state.password,
       });
-      // Assume response contains a 'token' field
-      final token = response['data']['accessToken'] as String?;
-      debugPrint("Token $token");
-      if (token != null) {
-        await authTokenStorage.saveToken(token);
-        ref.read(authTokenProvider.notifier).state = token;
+      // Extract access token and refresh token from response
+      final accessToken = response['data']['accessToken'] as String?;
+      final refreshToken = response['data']['refreshToken'] as String?;
+      debugPrint("Access Token: $accessToken");
+      debugPrint("Refresh Token: $refreshToken");
+
+      if (accessToken != null && refreshToken != null) {
+        await authTokenStorage.saveToken(accessToken);
+        await authTokenStorage.saveRefreshToken(refreshToken);
+        ref.read(authTokenProvider.notifier).state = accessToken;
         if (mounted) {
           context.go("/home");
         }

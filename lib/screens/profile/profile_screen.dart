@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/auth_token_provider.dart';
+import 'package:tracker/providers/logout_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
@@ -17,6 +18,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final logoutState = ref.watch(logoutProvider);
+
+    // Show error message if logout fails
+    if (logoutState.error != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(logoutState.error!),
+            backgroundColor: Colors.red,
+          ),
+        );
+        ref.read(logoutProvider.notifier).clearError();
+      });
+    }
     return Scaffold(
       backgroundColor: whiteColor,
       body: CustomScrollView(
@@ -117,7 +132,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required String title,
   }) {
     final isActive = id == activeId;
-    final authNotifier = ref.read(authTokenStorageProvider);
+    final logoutState = ref.watch(logoutProvider);
 
     return Card(
       elevation: isActive ? 2 : 1,
@@ -128,20 +143,39 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isActive ? greenColor : Colors.transparent,
-          child: Icon(icon, color: isActive ? whiteColor : grayColor),
+          child: logoutState.isLoggingOut
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(whiteColor),
+                  ),
+                )
+              : Icon(icon, color: isActive ? whiteColor : grayColor),
         ),
         title: Text(
           title,
           style: TextStyle(fontWeight: FontWeight.w500, color: blackColor),
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: grayColor),
-        onTap: () async {
-          // setState(() {
-          //   activeId = id;
-          // });
-          await authNotifier.deleteToken();
-          context.go("/");
-        },
+        trailing: logoutState.isLoggingOut
+            ? SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(grayColor),
+                ),
+              )
+            : Icon(Icons.arrow_forward_ios, size: 16, color: grayColor),
+        onTap: logoutState.isLoggingOut
+            ? null
+            : () async {
+                // setState(() {
+                //   activeId = id;
+                // });
+                await ref.read(logoutProvider.notifier).logout(context);
+              },
       ),
     );
   }
