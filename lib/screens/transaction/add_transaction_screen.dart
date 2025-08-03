@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
@@ -21,6 +22,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
+  final _noteController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
   bool _isIncome = false;
@@ -47,6 +49,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     _nameController.dispose();
     _amountController.dispose();
     _dateController.dispose();
+    _noteController.dispose();
     super.dispose();
   }
 
@@ -55,6 +58,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     _amountController.clear();
     _selectedDate = DateTime.now();
     _dateController.text = formatDateTime(_selectedDate);
+    _noteController.clear();
   }
 
   // This function now handles picking both date and time.
@@ -99,11 +103,13 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       final transactionType = _isIncome ? 'Income' : 'Expense';
       final name = _nameController.text.trim();
       final amount = double.parse(_amountController.text.trim());
+      final note = _noteController.text.trim();
 
       final transaction = Transaction(
         id: '',
         name: name,
         amount: amount,
+        note: note,
         date: _selectedDate,
         isIncome: _isIncome,
       );
@@ -284,6 +290,20 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                     ),
                     readOnly: true,
                     onTap: () => _selectDateAndTime(context),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Note Field
+                  TextFormField(
+                    controller: _noteController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Note',
+                      hintText: 'Enter transaction note',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
 
                   // Spacer to push button to bottom

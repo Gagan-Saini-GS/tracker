@@ -15,6 +15,7 @@ class TransactionListNotifier extends StateNotifier<List<Transaction>> {
           type: transaction.isIncome ? 'Income' : 'Expense',
           amount: transaction.amount,
           date: transaction.date.toIso8601String(),
+          note: transaction.note,
         );
     state = [transaction, ...state];
   }
