@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:logger/logger.dart';
-import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
@@ -19,15 +17,6 @@ class TransactionDetailsBottomSheet extends ConsumerStatefulWidget {
 
 class _TransactionDetailsBottomSheetState
     extends ConsumerState<TransactionDetailsBottomSheet> {
-  final Transaction _detailsFuture = Transaction(
-    id: '',
-    name: "Hello",
-    amount: 500,
-    date: DateTime(2025),
-    isIncome: false,
-    note: "JFLSDKjll",
-  );
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +25,6 @@ class _TransactionDetailsBottomSheetState
           .read(transactionListProvider.notifier)
           .getTransactionDetailsById(widget.transactionId);
     });
-    // _detailsFuture = getTransactionDetailsById(widget.transactionId);
   }
 
   @override
