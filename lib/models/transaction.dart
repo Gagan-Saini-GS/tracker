@@ -25,4 +25,9 @@ class Transaction {
       note: json['note'] ?? '',
     );
   }
+
+  @override
+  String toString() {
+    return 'Id: $id, Name: $name, Amount: $amount, Date: $date, isIncome: $isIncome, Note: $note';
+  }
 }

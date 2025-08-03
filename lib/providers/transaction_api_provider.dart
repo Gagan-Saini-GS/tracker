@@ -153,6 +153,31 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
     }
   }
 
+  Future<Transaction?> getTransactionDetailsById(String transactionId) async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      final tokenInterceptor = ref.read(tokenInterceptorProvider);
+
+      final response = await tokenInterceptor.makeAuthenticatedRequest(
+        'transactions/$transactionId',
+        'GET',
+      );
+
+      final transactionData = response['data'];
+      final transaction = Transaction.fromJson(transactionData);
+
+      state = state.copyWith(isLoading: false);
+      return transaction;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to fetch transaction details: ${e.toString()}',
+      );
+      return null;
+    }
+  }
+
   void clearError() {
     state = state.copyWith(error: null);
   }

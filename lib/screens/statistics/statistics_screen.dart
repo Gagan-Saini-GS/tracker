@@ -15,7 +15,7 @@ class StatisticsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(transactionListProvider);
+    final transactions = ref.watch(transactionListProvider).transactions;
     final selectedExpenseType = ref.watch(expenseTypeProvider);
 
     return Scaffold(
@@ -129,6 +129,7 @@ class StatisticsScreen extends ConsumerWidget {
                         date: formatDateTimeWithMonthName(tx.date),
                         amount: "${tx.isIncome ? '+' : '-'} ₹${tx.amount}",
                         isIncome: tx.isIncome,
+                        transactionId: tx.id,
                       );
                     },
                   ),

@@ -25,7 +25,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final transactions = ref.watch(transactionListProvider);
+    final transactions = ref.watch(transactionListProvider).transactions;
 
     final calculatedAmount = _calculateTotalBalance(transactions);
 
@@ -120,6 +120,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                         date: formatDateTimeWithMonthName(tx.date),
                         amount: tx.amount.toStringAsFixed(2),
                         isIncome: tx.isIncome,
+                        transactionId: tx.id,
                       );
                     },
                   ),

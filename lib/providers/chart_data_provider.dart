@@ -11,7 +11,7 @@ final chartDataProvider = Provider.family<List<ChartData>, TimeFilter>((
   ref,
   filter,
 ) {
-  final transactions = ref.watch(transactionListProvider);
+  final transactions = ref.watch(transactionListProvider).transactions;
   final selectedExpenseType = ref.watch(expenseTypeProvider);
 
   // Determine the start date based on the selected range.

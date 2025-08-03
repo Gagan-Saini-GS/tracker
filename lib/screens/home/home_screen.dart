@@ -141,7 +141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Expanded _buildTransactionHistory() {
-    final transactions = ref.watch(transactionListProvider);
+    final transactions = ref.watch(transactionListProvider).transactions;
 
     return Expanded(
       child: Container(
@@ -193,6 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           amount:
                               "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
                           isIncome: tx.isIncome,
+                          transactionId: tx.id,
                         );
                       },
                     ),
