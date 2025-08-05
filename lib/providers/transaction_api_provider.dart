@@ -128,13 +128,14 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
     }
   }
 
-  Future<bool> deleteTransaction(String transactionId) async {
+  Future<bool> deleteTransaction(String transactionId, String date) async {
     try {
       final tokenInterceptor = ref.read(tokenInterceptorProvider);
 
       await tokenInterceptor.makeAuthenticatedRequest(
         'transactions/$transactionId',
         'DELETE',
+        body: {'date': date},
       );
 
       // Remove from current state

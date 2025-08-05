@@ -33,10 +33,11 @@ class ApiService {
   }
 
   // DELETE request
-  Future<dynamic> delete(String endpoint) async {
+  Future<dynamic> delete(String endpoint, Map<String, dynamic> body) async {
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint'),
       headers: _buildHeaders(),
+      body: jsonEncode(body),
     );
     return _processResponse(response);
   }

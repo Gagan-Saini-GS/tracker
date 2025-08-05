@@ -60,7 +60,7 @@ class TokenInterceptor {
       case 'POST':
         return await apiService.post(endpoint, body ?? {});
       case 'DELETE':
-        return await apiService.delete(endpoint);
+        return await apiService.delete(endpoint, body ?? {});
       default:
         throw Exception('Unsupported HTTP method: $method');
     }

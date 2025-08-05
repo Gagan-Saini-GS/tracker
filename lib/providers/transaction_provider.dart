@@ -113,6 +113,30 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  Future<bool> deleteTransaction(String transactionId, String date) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final bool success = await ref
+          .read(transactionApiProvider.notifier)
+          .deleteTransaction(transactionId, date);
+
+      if (success) {
+        // Remove the deleted transaction from the current state
+        final updatedTransactions = state.transactions
+            .where((transaction) => transaction.id != transactionId)
+            .toList();
+        state = state.copyWith(transactions: updatedTransactions);
+      }
+
+      return success;
+    } catch (e) {
+      Logger().e(e);
+      throw Exception("Can't delete transaction, Please try again");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
 }
 
 final transactionListProvider =
