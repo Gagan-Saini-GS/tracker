@@ -34,7 +34,10 @@ class TransactionItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: transactionId != null ? Colors.grey.withOpacity(0.05) : null,
+          color: transactionId != null ? grayColor.withAlpha(10) : null,
+          // color: transactionId != null
+          //     ? (isIncome ? greenColor.withAlpha(40) : redColor.withAlpha(30))
+          //     : null,
         ),
         child: Row(
           children: [

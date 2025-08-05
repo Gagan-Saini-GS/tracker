@@ -120,7 +120,9 @@ class StatisticsScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final tx = transactions[index];
                       return TransactionItem(
-                        icon: tx.isIncome ? Icons.work : Icons.ondemand_video,
+                        icon: tx.isIncome
+                            ? Icons.trending_up_outlined
+                            : Icons.trending_down_outlined,
                         iconBg: tx.isIncome
                             ? greenColor.withAlpha(65)
                             : redColor.withAlpha(65),
