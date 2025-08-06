@@ -7,4 +7,9 @@ class ChartData {
   final String time;
   final double amount;
   final Color? pointColor;
+
+  @override
+  String toString() {
+    return "Title $title, Amount $amount, $time $time";
+  }
 }

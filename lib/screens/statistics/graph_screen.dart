@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
@@ -7,17 +8,62 @@ import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/utils/constants.dart';
 
-class ReusableLineChart extends ConsumerWidget {
+class ReusableLineChart extends ConsumerStatefulWidget {
   const ReusableLineChart({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReusableLineChart> createState() => _ReusableLineChart();
+}
+
+class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch transaction history when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Calling fetchChartData to get real data for chart.
+      final timeFilter = ref.read(timeFilterProvider);
+      ref
+          .read(chartDataProvider(timeFilter).notifier)
+          .fetchChartData(timeFilter);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final timeFilter = ref.watch(timeFilterProvider);
     final selectedExpenseType = ref.watch(expenseTypeProvider);
-    final chartData = ref.watch(chartDataProvider(timeFilter));
+    final chartDataState = ref.watch(chartDataProvider(timeFilter));
+    Logger().f("UI Chart Data ${chartDataState.transactions}");
+
+    if (chartDataState.isLoading) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: whiteColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              backgroundColor: greenColor,
+              color: whiteColor,
+              strokeWidth: 5,
+            ),
+            SizedBox(height: 16),
+            Text("Loading transactions...", style: TextStyle(fontSize: 18)),
+          ],
+        ),
+      );
+    }
 
     // Find the data point to highlight (e.g., the one with a specific color)
-    final highlightedPoint = chartData.firstWhere(
+    final highlightedPoint = chartDataState.transactions.firstWhere(
       (data) => data.pointColor != null,
       orElse: () => ChartData("", "", 0), // Return a dummy if no highlight
     );
@@ -50,7 +96,7 @@ class ReusableLineChart extends ConsumerWidget {
             ),
             series: <CartesianSeries>[
               SplineAreaSeries<ChartData, String>(
-                dataSource: chartData,
+                dataSource: chartDataState.transactions,
                 xValueMapper: (ChartData data, _) => data.time,
                 yValueMapper: (ChartData data, _) => data.amount,
                 color: selectedExpenseType == "Income"
@@ -121,9 +167,9 @@ class ReusableLineChart extends ConsumerWidget {
           // Custom tooltip for the highlighted point (if needed, otherwise SfCartesianChart's tooltip can be used)
           // if (highlightedPoint.x != '')
           //   Positioned(
-          //     left: _getPointXPosition(highlightedPoint.x, chartData, context),
+          //     left: _getPointXPosition(highlightedPoint.x, chartDataState, context),
           //     top:
-          //         _getPointYPosition(highlightedPoint.y, chartData, context) -
+          //         _getPointYPosition(highlightedPoint.y, chartDataState, context) -
           //         50, // Adjust position
           //     child: Container(
           //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
