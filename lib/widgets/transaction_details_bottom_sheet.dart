@@ -123,6 +123,24 @@ class _TransactionDetailsBottomSheetState
           ),
           const SizedBox(height: 16),
 
+          Row(
+            children: [
+              const Text(
+                "Amount",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+              ),
+              const Spacer(),
+              Text(
+                '${details.isIncome ? '+ ' : '- '}₹ ${details.amount.toString().replaceAll(RegExp(r'[^0-9.,]'), '')}',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: details.isIncome ? greenColor : redColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           const Text(
             "Date",
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
