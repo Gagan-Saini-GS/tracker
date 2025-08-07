@@ -68,7 +68,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           ),
           Center(
             child: Text(
-              'Tracker',
+              'Artha',
               style: TextStyle(
                 color: whiteColor,
                 fontWeight: FontWeight.bold,
