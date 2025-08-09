@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:tracker/api/api_service.dart';
 import 'package:tracker/storage/auth_token_storage.dart';
 

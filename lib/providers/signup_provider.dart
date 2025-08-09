@@ -99,7 +99,7 @@ class SignupFormNotifier extends StateNotifier<SignupFormState> {
     try {
       final api = ref.read(apiServiceProvider);
 
-      final response = await api.post('auth/signup', {
+      await api.post('auth/signup', {
         'name': state.name,
         'email': state.email,
         'password': state.password,
