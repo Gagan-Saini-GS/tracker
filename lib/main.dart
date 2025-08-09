@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'routes/app_router.dart';
+import 'utils/config.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize configuration
+  await Config.initialize();
+
   runApp(ProviderScope(child: MyApp()));
 }
 

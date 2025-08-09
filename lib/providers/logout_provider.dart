@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker/api/api_service.dart';
 import 'package:tracker/providers/api_service_provider.dart';
 import 'package:tracker/providers/auth_token_provider.dart';
+import 'package:tracker/utils/config.dart';
 
 class LogoutState {
   final bool isLoggingOut;
@@ -32,7 +33,7 @@ class LogoutNotifier extends StateNotifier<LogoutState> {
 
       if (refreshToken != null) {
         // Create API service without auth token for logout call
-        final apiService = ApiService(baseUrl: 'http://10.0.2.2:8000/');
+        final apiService = ApiService(baseUrl: AppConfig.serverBaseUrl);
 
         // Call logout API
         await apiService.post('auth/logout', {'refreshToken': refreshToken});
