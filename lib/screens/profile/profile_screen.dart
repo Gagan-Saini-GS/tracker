@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/providers/logout_provider.dart';
+import 'package:tracker/providers/user_api_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 
@@ -15,8 +16,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String activeId = "logout";
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userApiProvider.notifier).fetchUserProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final logoutState = ref.watch(logoutProvider);
+    final userState = ref.watch(userApiProvider);
 
     // Show error message if logout fails
     if (logoutState.error != null) {
@@ -52,7 +63,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Gagan Saini',
+                  '${userState.user?.name}',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -61,7 +72,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '@gsprocoder',
+                  '${userState.user?.email}',
                   style: TextStyle(fontSize: 16, color: grayColor),
                 ),
                 const SizedBox(height: 20),

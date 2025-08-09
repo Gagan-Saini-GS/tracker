@@ -16,7 +16,6 @@ class AuthTokenStorage {
   }
 
   Future<void> deleteToken() async {
-    debugPrint("Deleting access token");
     await _storage.delete(key: _accessTokenKey);
   }
 
@@ -30,13 +29,11 @@ class AuthTokenStorage {
   }
 
   Future<void> deleteRefreshToken() async {
-    debugPrint("Deleting refresh token");
     await _storage.delete(key: _refreshTokenKey);
   }
 
   // Clear all tokens (for logout)
   Future<void> clearAllTokens() async {
-    debugPrint("Clearing all tokens");
     await _storage.delete(key: _accessTokenKey);
     await _storage.delete(key: _refreshTokenKey);
   }

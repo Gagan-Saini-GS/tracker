@@ -34,7 +34,6 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
     final timeFilter = ref.watch(timeFilterProvider);
     final selectedExpenseType = ref.watch(expenseTypeProvider);
     final chartDataState = ref.watch(chartDataProvider(timeFilter));
-    Logger().f("UI Chart Data ${chartDataState.transactions}");
 
     if (chartDataState.isLoading) {
       return Container(

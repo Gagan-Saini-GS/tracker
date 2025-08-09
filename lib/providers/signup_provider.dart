@@ -107,7 +107,6 @@ class SignupFormNotifier extends StateNotifier<SignupFormState> {
       });
 
       // Signup successful, navigate to login or show success message
-      debugPrint("Signup successful: ${response['message']}");
       if (mounted) {
         // Navigate back to login screen after successful signup
         context.go("/onboarding");

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/providers/user_api_provider.dart';
 import 'package:tracker/screens/home/balance_card.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
@@ -23,11 +25,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Fetch recent transactions when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(transactionListProvider.notifier).fetchRecentTransactions();
+      ref.read(userApiProvider.notifier).fetchUserProfile();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final userState = ref.watch(userApiProvider);
+
+    if (userState.isLoading) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: whiteColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              backgroundColor: greenColor,
+              color: whiteColor,
+              strokeWidth: 5,
+            ),
+            SizedBox(height: 16),
+            Text("Loading User details...", style: TextStyle(fontSize: 18)),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: greenColor,
       body: Stack(
@@ -70,7 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Gagan Saini',
+                              '${userState.user?.name}',
                               style: TextStyle(
                                 color: whiteColor,
                                 fontSize: 20,

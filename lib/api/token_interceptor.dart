@@ -28,8 +28,6 @@ class TokenInterceptor {
     } catch (e) {
       // If first attempt fails with 401, try to refresh token
       if (e.toString().contains('401')) {
-        debugPrint('Token expired, attempting to refresh...');
-
         final refreshed = await _refreshToken();
         if (refreshed) {
           // Retry with new token
@@ -102,7 +100,6 @@ class TokenInterceptor {
         return false;
       }
     } catch (e) {
-      debugPrint('Token refresh failed: $e');
       _isRefreshing = false;
       return false;
     }

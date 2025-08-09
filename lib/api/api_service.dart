@@ -21,9 +21,6 @@ class ApiService {
 
   // POST request
   Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
-    debugPrint(
-      "Base URL ${Uri.parse('$baseUrl$endpoint')}, Body ${jsonEncode(body)}",
-    );
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: _buildHeaders(),
@@ -53,7 +50,6 @@ class ApiService {
       headers['Authorization'] = 'Bearer $authToken';
     }
 
-    debugPrint("Header $headers");
     return headers;
   }
 
@@ -61,8 +57,6 @@ class ApiService {
   dynamic _processResponse(http.Response response) {
     final statusCode = response.statusCode;
     final body = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-
-    debugPrint("Response $body");
 
     if (statusCode >= 200 && statusCode < 300) {
       return body;

@@ -91,8 +91,6 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       // Extract access token and refresh token from response
       final accessToken = response['data']['accessToken'] as String?;
       final refreshToken = response['data']['refreshToken'] as String?;
-      debugPrint("Access Token: $accessToken");
-      debugPrint("Refresh Token: $refreshToken");
 
       if (accessToken != null && refreshToken != null) {
         await authTokenStorage.saveToken(accessToken);
