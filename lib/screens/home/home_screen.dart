@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               style: TextStyle(color: whiteColor, fontSize: 14),
                             ),
                             const SizedBox(height: 2),
-                            userState.isLoading
+                            userState.isLoading && userState.user == null
                                 ? Loader(
                                     showText: false,
                                     transparent: true,
