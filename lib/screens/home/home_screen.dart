@@ -8,6 +8,7 @@ import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/utils/getGreeting.dart';
+import 'package:tracker/widgets/loader.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -31,32 +32,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userApiProvider);
-
-    if (userState.isLoading) {
-      return Container(
-        padding: const EdgeInsets.all(20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(
-              backgroundColor: greenColor,
-              color: whiteColor,
-              strokeWidth: 5,
-            ),
-            SizedBox(height: 16),
-            Text("Loading User details...", style: TextStyle(fontSize: 18)),
-          ],
-        ),
-      );
-    }
 
     return Scaffold(
       backgroundColor: greenColor,
@@ -99,14 +74,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               style: TextStyle(color: whiteColor, fontSize: 14),
                             ),
                             const SizedBox(height: 2),
-                            Text(
-                              '${userState.user?.name}',
-                              style: TextStyle(
-                                color: whiteColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            userState.isLoading
+                                ? Loader(title: "Loading User Details")
+                                : Text(
+                                    '${userState.user?.name}',
+                                    style: TextStyle(
+                                      color: whiteColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ],
                         ),
                         Container(
@@ -170,8 +147,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Expanded _buildTransactionHistory() {
-    final transactions = ref.watch(transactionListProvider).transactions;
+  Widget _buildTransactionHistory() {
+    final transactionsState = ref.watch(transactionListProvider);
+    final transactions = transactionsState.transactions;
+
+    if (transactionsState.isLoading) {
+      return Loader();
+    }
 
     return Expanded(
       child: Container(
@@ -236,52 +218,3 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 }
-
-// class _Avatar extends StatelessWidget {
-//   final String image;
-//   const _Avatar({required this.image});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return CircleAvatar(radius: 28, backgroundImage: AssetImage(image));
-//   }
-// }
-
-// const SizedBox(height: 30),
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//   children: const [
-//     Text(
-//       'Send Again',
-//       style: TextStyle(
-//         fontWeight: FontWeight.bold,
-//         fontSize: 16,
-//       ),
-//     ),
-//     Text(
-//       'See all',
-//       style: TextStyle(
-//         color: Color(0xFF63B5AF),
-//         fontWeight: FontWeight.w600,
-//       ),
-//     ),
-//   ],
-// ),
-// const SizedBox(height: 16),
-// SizedBox(
-//   height: 60,
-//   child: ListView(
-//     scrollDirection: Axis.horizontal,
-//     children: [
-//       _Avatar(image: 'assets/images/man.png'),
-//       const SizedBox(width: 12),
-//       _Avatar(image: 'assets/images/man.png'),
-//       const SizedBox(width: 12),
-//       _Avatar(image: 'assets/images/man.png'),
-//       const SizedBox(width: 12),
-//       _Avatar(image: 'assets/images/man.png'),
-//       const SizedBox(width: 12),
-//       _Avatar(image: 'assets/images/man.png'),
-//     ],
-//   ),
-// ),

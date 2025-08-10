@@ -6,6 +6,7 @@ import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/widgets/loader.dart';
 
 class ReusableLineChart extends ConsumerStatefulWidget {
   const ReusableLineChart({super.key});
@@ -35,29 +36,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
     final chartDataState = ref.watch(chartDataProvider(timeFilter));
 
     if (chartDataState.isLoading) {
-      return Container(
-        padding: const EdgeInsets.all(20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(
-              backgroundColor: greenColor,
-              color: whiteColor,
-              strokeWidth: 5,
-            ),
-            SizedBox(height: 16),
-            Text("Loading transactions...", style: TextStyle(fontSize: 18)),
-          ],
-        ),
-      );
+      return Loader(title: "Loading Transactions...");
     }
 
     // Find the data point to highlight (e.g., the one with a specific color)

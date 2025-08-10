@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
+import 'package:tracker/widgets/loader.dart';
 // import 'package:tracker/utils/constants.dart';
 
 class TransactionDetailsBottomSheet extends ConsumerStatefulWidget {
@@ -32,32 +33,7 @@ class _TransactionDetailsBottomSheetState
     final trancsationState = ref.watch(transactionListProvider);
 
     if (trancsationState.isLoading) {
-      return Container(
-        padding: const EdgeInsets.all(20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(
-              backgroundColor: greenColor,
-              color: whiteColor,
-              strokeWidth: 5,
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Loading transaction details...",
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      );
+      return Loader(title: "Loading Transaction Details");
     }
 
     final details = trancsationState.selectedTransaction;
