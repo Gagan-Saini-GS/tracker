@@ -151,8 +151,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final transactionsState = ref.watch(transactionListProvider);
     final transactions = transactionsState.transactions;
 
-    if (transactionsState.isLoading) {
-      return Loader();
+    if (transactionsState.isLoading && transactions.isEmpty) {
+      return Loader(title: "Loading transactions...");
     }
 
     return Expanded(
@@ -164,14 +164,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Transactions History',
+                  'Recent Transactions',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                Text(
-                  'See all',
-                  style: TextStyle(
-                    color: greenColor,
-                    fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () => {context.go("/wallet")},
+                  child: Text(
+                    'See all',
+                    style: TextStyle(
+                      color: greenColor,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

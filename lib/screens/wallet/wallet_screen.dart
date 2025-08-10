@@ -4,6 +4,7 @@ import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
+import 'package:tracker/widgets/loader.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
@@ -25,7 +26,8 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final transactions = ref.watch(transactionListProvider).transactions;
+    final transactionsState = ref.watch(transactionListProvider);
+    final transactions = transactionsState.transactions;
 
     final calculatedAmount = _calculateTotalBalance(transactions);
 
@@ -40,95 +42,105 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
         foregroundColor: whiteColor,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          // Header section with total balance
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: calculatedAmount > 0
-                  ? darkGreenColor.withAlpha(200)
-                  : darkRedColor.withAlpha(175),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: transactionsState.isLoading
+          ? Expanded(
+              child: Center(child: Loader(title: "Loading Transactions...")),
+            )
+          : Column(
               children: [
-                Text(
-                  'Total Balance',
-                  style: TextStyle(
-                    color: whiteColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                // Header section with total balance
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: calculatedAmount > 0
+                        ? darkGreenColor.withAlpha(200)
+                        : darkRedColor.withAlpha(175),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total Balance',
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        '₹${calculatedAmount.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  '₹${calculatedAmount.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: whiteColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                // Transaction list
+                Expanded(
+                  child: transactions.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.account_balance_wallet_outlined,
+                                size: 64,
+                                color: grayColor,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No Transactions Yet',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: grayColor,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Your transaction history will appear here',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: grayColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          itemCount: transactions.length,
+                          itemBuilder: (context, index) {
+                            final tx = transactions[index];
+                            return TransactionItem(
+                              icon: tx.isIncome
+                                  ? Icons.trending_up_outlined
+                                  : Icons.trending_down_outlined,
+                              iconBg: tx.isIncome
+                                  ? greenColor.withAlpha(65)
+                                  : redColor.withAlpha(65),
+                              iconAsset: null,
+                              title: tx.name,
+                              date: formatDateTimeWithMonthName(tx.date),
+                              amount: tx.amount.toStringAsFixed(2),
+                              isIncome: tx.isIncome,
+                              transactionId: tx.id,
+                            );
+                          },
+                        ),
                 ),
               ],
             ),
-          ),
-          // Transaction list
-          Expanded(
-            child: transactions.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.account_balance_wallet_outlined,
-                          size: 64,
-                          color: grayColor,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No Transactions Yet',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: grayColor,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Your transaction history will appear here',
-                          style: TextStyle(fontSize: 14, color: grayColor),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      final tx = transactions[index];
-                      return TransactionItem(
-                        icon: tx.isIncome
-                            ? Icons.trending_up_outlined
-                            : Icons.trending_down_outlined,
-                        iconBg: tx.isIncome
-                            ? greenColor.withAlpha(65)
-                            : redColor.withAlpha(65),
-                        iconAsset: null,
-                        title: tx.name,
-                        date: formatDateTimeWithMonthName(tx.date),
-                        amount: tx.amount.toStringAsFixed(2),
-                        isIncome: tx.isIncome,
-                        transactionId: tx.id,
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 2),
     );
   }
