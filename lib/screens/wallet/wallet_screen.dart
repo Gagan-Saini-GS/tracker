@@ -20,13 +20,13 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     super.initState();
     // Fetch transaction history when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(transactionListProvider.notifier).fetchTransactionHistory();
+      ref.read(allTransactionListProvider.notifier).fetchTransactionHistory();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final transactionsState = ref.watch(transactionListProvider);
+    final transactionsState = ref.watch(allTransactionListProvider);
     final transactions = transactionsState.transactions;
 
     final calculatedAmount = _calculateTotalBalance(transactions);

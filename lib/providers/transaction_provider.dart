@@ -143,3 +143,57 @@ final transactionListProvider =
     StateNotifierProvider<TransactionListNotifier, TransactionState>(
       (ref) => TransactionListNotifier(ref),
     );
+
+// Recent Transactions Provider
+class RecentTransactionListNotifier extends StateNotifier<TransactionState> {
+  final Ref ref;
+  RecentTransactionListNotifier(this.ref) : super(TransactionState());
+
+  Future<void> fetchRecentTransactions() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final List<Transaction> transactions = await ref
+          .read(transactionApiProvider.notifier)
+          .fetchRecentTransactions();
+      state = state.copyWith(transactions: transactions);
+    } catch (e) {
+      Logger().e(e);
+      state = state.copyWith(transactions: []);
+      throw Exception("Can't fetch recent transactions");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+}
+
+final recentTransactionListProvider =
+    StateNotifierProvider<RecentTransactionListNotifier, TransactionState>(
+      (ref) => RecentTransactionListNotifier(ref),
+    );
+
+// All Transactions Provider
+class AllTransactionListNotifier extends StateNotifier<TransactionState> {
+  final Ref ref;
+  AllTransactionListNotifier(this.ref) : super(TransactionState());
+
+  Future<void> fetchTransactionHistory() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final List<Transaction> transactions = await ref
+          .read(transactionApiProvider.notifier)
+          .fetchTransactionHistory();
+      state = state.copyWith(transactions: transactions);
+    } catch (e) {
+      Logger().e(e);
+      state = state.copyWith(transactions: []);
+      throw Exception("Can't fetch transactions");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+}
+
+final allTransactionListProvider =
+    StateNotifierProvider<AllTransactionListNotifier, TransactionState>(
+      (ref) => AllTransactionListNotifier(ref),
+    );

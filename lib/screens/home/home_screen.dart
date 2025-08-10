@@ -24,7 +24,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     // Fetch recent transactions when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(transactionListProvider.notifier).fetchRecentTransactions();
+      ref
+          .read(recentTransactionListProvider.notifier)
+          .fetchRecentTransactions();
       ref.read(userApiProvider.notifier).fetchUserProfile();
     });
   }
@@ -148,12 +150,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildTransactionHistory() {
-    final transactionsState = ref.watch(transactionListProvider);
+    final transactionsState = ref.watch(recentTransactionListProvider);
     final transactions = transactionsState.transactions;
 
     if (transactionsState.isLoading && transactions.isEmpty) {
       return Expanded(
-        child: Center(child: Loader(title: "Loading transactions...")),
+        child: Center(child: Loader(title: "Loading Recent transactions...")),
       );
     }
 
