@@ -3,30 +3,67 @@ import 'package:tracker/utils/constants.dart';
 
 class Loader extends StatelessWidget {
   final String title;
-  const Loader({super.key, this.title = "Loading..."});
+  final bool showText;
+  final double loaderSize;
+  final double? stroke;
+  final double? containerWidth;
+  final double? containerPadding;
+  final Color? foregroundColor;
+  final Color? backgroundColor;
+  final bool transparent;
+  final bool isCenter;
+  final TextStyle? textStyle;
+  final double borderRadius;
+
+  const Loader({
+    super.key,
+    this.title = "Loading...",
+    this.showText = true,
+    this.loaderSize = 40.0,
+    this.stroke = 5.0,
+    this.containerWidth = double.infinity,
+    this.containerPadding = 20.0,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.transparent = false,
+    this.isCenter = false,
+    this.textStyle,
+    this.borderRadius = 30.0,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final Color fgColor = foregroundColor ?? whiteColor;
+    final Color bgColor = backgroundColor ?? greenColor;
     return Container(
-      padding: const EdgeInsets.all(20),
-      width: double.infinity,
+      padding: EdgeInsets.all(containerPadding ?? 20.0),
+      width: containerWidth,
       decoration: BoxDecoration(
-        color: whiteColor,
+        color: transparent ? Colors.transparent : whiteColor,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+          topLeft: Radius.circular(borderRadius),
+          topRight: Radius.circular(borderRadius),
         ),
       ),
       child: Column(
+        crossAxisAlignment: isCenter
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(
-            backgroundColor: greenColor,
-            color: whiteColor,
-            strokeWidth: 5,
+          SizedBox(
+            width: loaderSize,
+            height: loaderSize,
+            child: CircularProgressIndicator(
+              backgroundColor: bgColor,
+              color: fgColor,
+              strokeWidth: stroke,
+            ),
           ),
-          SizedBox(height: 16),
-          Text(title, style: TextStyle(fontSize: 18)),
+          if (showText) ...[
+            const SizedBox(height: 16),
+            Text(title, style: textStyle ?? const TextStyle(fontSize: 18)),
+          ],
         ],
       ),
     );

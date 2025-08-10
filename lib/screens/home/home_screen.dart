@@ -77,7 +77,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             const SizedBox(height: 2),
                             userState.isLoading
-                                ? Loader(title: "Loading User Details")
+                                ? Loader(
+                                    showText: false,
+                                    transparent: true,
+                                    loaderSize: 20,
+                                    stroke: 2.0,
+                                    containerWidth: 100,
+                                    containerPadding: 2,
+                                    isCenter: false,
+                                  )
                                 : Text(
                                     '${userState.user?.name}',
                                     style: TextStyle(
