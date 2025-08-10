@@ -152,7 +152,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final transactions = transactionsState.transactions;
 
     if (transactionsState.isLoading && transactions.isEmpty) {
-      return Loader(title: "Loading transactions...");
+      return Expanded(
+        child: Center(child: Loader(title: "Loading transactions...")),
+      );
     }
 
     return Expanded(
@@ -167,7 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   'Recent Transactions',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () => {context.go("/wallet")},
                   child: Text(
                     'See all',
