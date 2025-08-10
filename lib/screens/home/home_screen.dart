@@ -160,11 +160,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-        child: Column(
-          children: [
-            Row(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 20.0),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -183,44 +183,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: transactions.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No Transactions Yet.',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: grayColor,
-                        ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: transactions.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Transactions Yet.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: grayColor,
                       ),
-                    )
-                  : ListView.builder(
-                      padding: EdgeInsets.all(0),
-                      itemCount: transactions.length,
-                      itemBuilder: (context, index) {
-                        final tx = transactions[index];
-                        return TransactionItem(
-                          icon: tx.isIncome
-                              ? Icons.trending_up_outlined
-                              : Icons.trending_down_outlined,
-                          iconBg: tx.isIncome
-                              ? greenColor.withAlpha(65)
-                              : redColor.withAlpha(65),
-                          iconAsset: null,
-                          title: tx.name,
-                          date: formatDateTimeWithMonthName(tx.date),
-                          amount:
-                              "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
-                          isIncome: tx.isIncome,
-                          transactionId: tx.id,
-                        );
-                      },
                     ),
-            ),
-          ],
-        ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      final tx = transactions[index];
+                      return TransactionItem(
+                        icon: tx.isIncome
+                            ? Icons.trending_up_outlined
+                            : Icons.trending_down_outlined,
+                        iconBg: tx.isIncome
+                            ? greenColor.withAlpha(65)
+                            : redColor.withAlpha(65),
+                        iconAsset: null,
+                        title: tx.name,
+                        date: formatDateTimeWithMonthName(tx.date),
+                        amount:
+                            "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
+                        isIncome: tx.isIncome,
+                        transactionId: tx.id,
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }

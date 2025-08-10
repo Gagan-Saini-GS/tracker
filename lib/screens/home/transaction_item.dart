@@ -98,13 +98,9 @@ class TransactionItem extends ConsumerWidget {
           ? () => showTransactionDetails(context, transactionId!)
           : null,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
           color: transactionId != null ? grayColor.withAlpha(10) : null,
-          // color: transactionId != null
-          //     ? (isIncome ? greenColor.withAlpha(40) : redColor.withAlpha(30))
-          //     : null,
         ),
         child: Row(
           children: [

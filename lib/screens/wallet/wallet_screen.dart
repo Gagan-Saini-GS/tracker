@@ -42,7 +42,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
         foregroundColor: whiteColor,
         elevation: 0,
       ),
-      body: transactionsState.isLoading
+      body: transactionsState.isLoading && transactions.isEmpty
           ? Expanded(
               child: Center(child: Loader(title: "Loading Transactions...")),
             )
@@ -115,10 +115,6 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                           ),
                         )
                       : ListView.builder(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ),
                           itemCount: transactions.length,
                           itemBuilder: (context, index) {
                             final tx = transactions[index];
