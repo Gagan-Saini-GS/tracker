@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/enums/timefilter.dart';
+import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/utils/capitalize.dart';
@@ -22,6 +23,10 @@ class TimeFilterButtons extends ConsumerWidget {
           child: GestureDetector(
             onTap: () {
               ref.read(timeFilterProvider.notifier).state = filter;
+              // Fetch chart data for the new time filter selected
+              ref
+                  .read(chartDataProvider(filter).notifier)
+                  .fetchChartData(filter);
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 0),

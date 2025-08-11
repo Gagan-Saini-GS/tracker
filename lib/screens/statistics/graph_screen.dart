@@ -35,8 +35,14 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
     final chartDataState = ref.watch(chartDataProvider(timeFilter));
 
-    if (chartDataState.isLoading) {
-      return Loader(title: "Loading Transactions...");
+    if (chartDataState.isLoading && chartDataState.transactions.isEmpty) {
+      final bool isIncome = selectedExpenseType == "Income";
+
+      return Loader(
+        title: isIncome ? "Loading Income..." : "Loading Expense...",
+        backgroundColor: whiteColor,
+        foregroundColor: isIncome ? greenColor : redColor,
+      );
     }
 
     // Find the data point to highlight (e.g., the one with a specific color)

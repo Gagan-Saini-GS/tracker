@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
+import 'package:tracker/providers/time_filter_provider.dart';
+import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/utils/constants.dart';
 
 class ExpenseTypeDropdown extends ConsumerWidget {
@@ -41,6 +43,11 @@ class ExpenseTypeDropdown extends ConsumerWidget {
               onChanged: (String? newValue) {
                 if (newValue != null) {
                   ref.read(expenseTypeProvider.notifier).state = newValue;
+                  // Fetch chart data for the new expense type
+                  final timeFilter = ref.read(timeFilterProvider);
+                  ref
+                      .read(chartDataProvider(timeFilter).notifier)
+                      .fetchChartData(timeFilter);
                 }
               },
               // I'll add Saving later.

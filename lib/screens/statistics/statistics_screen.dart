@@ -16,7 +16,7 @@ class StatisticsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(transactionListProvider).transactions;
+    final transactions = ref.watch(allTransactionListProvider).transactions;
     final selectedExpenseType = ref.watch(expenseTypeProvider);
 
     return Scaffold(

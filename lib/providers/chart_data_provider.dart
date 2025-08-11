@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/models/chart_data.dart';
@@ -32,10 +33,10 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
     try {
       // Fetch transaction history first
       await ref
-          .read(transactionListProvider.notifier)
+          .read(allTransactionListProvider.notifier)
           .fetchTransactionHistory();
 
-      final transactions = ref.watch(transactionListProvider).transactions;
+      final transactions = ref.watch(allTransactionListProvider).transactions;
       final selectedExpenseType = ref.watch(expenseTypeProvider);
 
       // Determine the start date based on the selected range.
