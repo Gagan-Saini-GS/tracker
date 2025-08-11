@@ -36,9 +36,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final userState = ref.watch(userApiProvider);
 
     return Scaffold(
-      backgroundColor: greenColor,
+      backgroundColor: whiteColor,
       body: Stack(
         children: [
+          Container(height: double.infinity, color: greenColor),
           // Background top decoration (optional, for effect)
           Positioned(
             top: -100,
@@ -137,7 +138,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                   // Transaction History Section
-                  _buildTransactionHistory(),
+                  Expanded(
+                    child: Transform.translate(
+                      offset: const Offset(0, -30),
+                      child: _buildTransactionHistory(),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -148,7 +154,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: greenColor,
         onPressed: () {
-          context.go('/add-transaction');
+          context.push('/add-transaction');
         },
         elevation: 4,
         child: Icon(Icons.add, color: whiteColor),
@@ -162,74 +168,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final transactions = transactionsState.transactions;
 
     if (transactionsState.isLoading && transactions.isEmpty) {
-      return Expanded(
-        child: Center(child: Loader(title: "Loading Recent transactions...")),
-      );
+      return Center(child: Loader(title: "Loading Recent transactions..."));
     }
 
-    return Expanded(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recent Transactions',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Recent Transactions',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              InkWell(
+                onTap: () => {context.go("/wallet")},
+                child: Text(
+                  'See all',
+                  style: TextStyle(
+                    color: greenColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                InkWell(
-                  onTap: () => {context.go("/wallet")},
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Expanded(
+          child: transactions.isEmpty
+              ? Center(
                   child: Text(
-                    'See all',
+                    'No Transactions Yet.',
                     style: TextStyle(
-                      color: greenColor,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: grayColor,
                     ),
                   ),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  itemCount: transactions.length,
+                  itemBuilder: (context, index) {
+                    final tx = transactions[index];
+                    return TransactionItem(
+                      icon: tx.isIncome
+                          ? Icons.trending_up_outlined
+                          : Icons.trending_down_outlined,
+                      iconBg: tx.isIncome
+                          ? greenColor.withAlpha(65)
+                          : redColor.withAlpha(65),
+                      iconAsset: null,
+                      title: tx.name,
+                      date: formatDateTimeWithMonthName(tx.date),
+                      amount:
+                          "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
+                      isIncome: tx.isIncome,
+                      transactionId: tx.id,
+                    );
+                  },
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: transactions.isEmpty
-                ? Center(
-                    child: Text(
-                      'No Transactions Yet.',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: grayColor,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: EdgeInsets.all(0),
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      final tx = transactions[index];
-                      return TransactionItem(
-                        icon: tx.isIncome
-                            ? Icons.trending_up_outlined
-                            : Icons.trending_down_outlined,
-                        iconBg: tx.isIncome
-                            ? greenColor.withAlpha(65)
-                            : redColor.withAlpha(65),
-                        iconAsset: null,
-                        title: tx.name,
-                        date: formatDateTimeWithMonthName(tx.date),
-                        amount:
-                            "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
-                        isIncome: tx.isIncome,
-                        transactionId: tx.id,
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

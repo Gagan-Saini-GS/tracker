@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
@@ -138,6 +139,15 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
               ],
             ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 2),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: greenColor,
+        onPressed: () {
+          context.push('/add-transaction');
+        },
+        elevation: 4,
+        child: Icon(Icons.add, color: whiteColor),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 

@@ -33,13 +33,11 @@ class BottomNavBar extends StatelessWidget {
       height: 60,
       padding: EdgeInsets.zero,
       child: Row(
-        mainAxisAlignment: currentIndex == 0
-            ? MainAxisAlignment.spaceAround
-            : MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildIconButton(Icons.home_outlined, 0, context),
           _buildIconButton(Icons.data_saver_off_outlined, 1, context),
-          if (currentIndex == 0) const SizedBox(width: 40),
+          const SizedBox(width: 40),
           _buildIconButton(Icons.account_balance_wallet_outlined, 2, context),
           _buildIconButton(Icons.person_outline, 3, context),
         ],

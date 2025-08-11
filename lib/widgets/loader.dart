@@ -26,7 +26,7 @@ class Loader extends StatelessWidget {
     this.foregroundColor,
     this.backgroundColor,
     this.transparent = false,
-    this.isCenter = false,
+    this.isCenter = true,
     this.textStyle,
     this.borderRadius = 30.0,
   });

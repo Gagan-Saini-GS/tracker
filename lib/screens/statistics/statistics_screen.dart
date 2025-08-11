@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
@@ -115,7 +116,6 @@ class StatisticsScreen extends ConsumerWidget {
                     ),
                   )
                 : ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                     itemCount: transactions.length,
                     itemBuilder: (context, index) {
                       final tx = transactions[index];
@@ -139,6 +139,15 @@ class StatisticsScreen extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: greenColor,
+        onPressed: () {
+          context.push('/add-transaction');
+        },
+        elevation: 4,
+        child: Icon(Icons.add, color: whiteColor),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

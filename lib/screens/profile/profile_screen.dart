@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/logout_provider.dart';
 import 'package:tracker/providers/user_api_provider.dart';
 import 'package:tracker/utils/constants.dart';
@@ -85,6 +86,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavBar(currentIndex: 3),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: greenColor,
+        onPressed: () {
+          context.push('/add-transaction');
+        },
+        elevation: 4,
+        child: Icon(Icons.add, color: whiteColor),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 

@@ -349,7 +349,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
         backgroundColor: _isIncome ? greenColor : redColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: whiteColor),
-          onPressed: () => context.go('/home'),
+          onPressed: () => context.pop(),
         ),
         title: Text(
           'Add ${_isIncome ? "Income" : "Expense"}',
