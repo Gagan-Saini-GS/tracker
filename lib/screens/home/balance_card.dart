@@ -2,13 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/widgets/loader.dart';
 
-class BalanceCard extends ConsumerWidget {
+class BalanceCard extends ConsumerStatefulWidget {
   const BalanceCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(allTransactionListProvider).transactions;
+  ConsumerState<BalanceCard> createState() => _BalanceCardState();
+}
+
+class _BalanceCardState extends ConsumerState<BalanceCard> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch transaction history when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(allTransactionListProvider.notifier).fetchTransactionHistory();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final transactionsState = ref.watch(allTransactionListProvider);
+    final transactions = transactionsState.transactions;
+
+    if (transactions.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: balanceCardGreenColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Loader(
+            title: "Loading Balance...",
+            textStyle: TextStyle(color: whiteColor, fontSize: 18.0),
+            backgroundColor: balanceCardGreenColor,
+            transparent: true,
+          ),
+        ),
+      );
+    }
 
     final totalAmount = transactions.fold(
       0.0,
