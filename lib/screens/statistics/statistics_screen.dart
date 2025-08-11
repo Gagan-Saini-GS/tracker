@@ -24,13 +24,6 @@ class StatisticsScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: blackColor),
-        //   onPressed: () {
-        //     context.go("/home");
-        //   },
-        // ),
-        // centerTitle: true,
         title: Text(
           'Statistics',
           style: TextStyle(
@@ -39,32 +32,32 @@ class StatisticsScreen extends ConsumerWidget {
             fontSize: 24,
           ),
         ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(
-              color: selectedExpenseType == "Income"
-                  ? greenColor.withAlpha(65)
-                  : redColor.withAlpha(65),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                // Handle Download click
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(6),
-                child: Icon(
-                  Icons.file_download_outlined,
-                  color: selectedExpenseType == "Income"
-                      ? greenColor
-                      : redColor,
-                  size: 24,
-                ),
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   Container(
+        //     margin: const EdgeInsets.only(right: 10),
+        //     decoration: BoxDecoration(
+        //       color: selectedExpenseType == "Income"
+        //           ? greenColor.withAlpha(65)
+        //           : redColor.withAlpha(65),
+        //       borderRadius: BorderRadius.circular(8),
+        //     ),
+        //     child: GestureDetector(
+        //       onTap: () {
+        //         // Handle Download click
+        //       },
+        //       child: Padding(
+        //         padding: const EdgeInsets.all(6),
+        //         child: Icon(
+        //           Icons.file_download_outlined,
+        //           color: selectedExpenseType == "Income"
+        //               ? greenColor
+        //               : redColor,
+        //           size: 24,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: Column(
         children: [
