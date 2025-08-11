@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/models/chart_data.dart';

@@ -66,6 +66,8 @@ class LogoutNotifier extends StateNotifier<LogoutState> {
       if (context.mounted) {
         context.go("/onboarding");
       }
+    } finally {
+      state = state.copyWith(isLoggingOut: false);
     }
   }
 

@@ -98,14 +98,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ],
                         ),
                         Container(
+                          width: 45,
+                          height: 45,
                           decoration: BoxDecoration(
                             color: whiteColor.withAlpha(65),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.all(8),
-                          child: Icon(
-                            Icons.notifications_none,
-                            color: whiteColor,
+                          child: IconButton(
+                            onPressed: () => {context.go("/profile")},
+                            icon: Icon(Icons.person_outline, color: whiteColor),
+                            iconSize: 25,
                           ),
                         ),
                       ],

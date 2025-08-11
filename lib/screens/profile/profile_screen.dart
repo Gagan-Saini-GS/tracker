@@ -59,7 +59,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Image.asset(
                     'assets/images/man.png',
                     fit: BoxFit.contain,
-                    height: 50,
+                    height: 150,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -109,36 +109,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             icon: Icons.logout_outlined,
             title: 'Logout',
           ),
-          // _buildMenuListItem(
-          //   id: "invite_friends",
-          //   icon: Icons.diamond_outlined,
-          //   title: 'Invite Friends',
-          // ),
-          // _buildMenuListItem(
-          //   id: "account_info",
-          //   icon: Icons.person_outline,
-          //   title: 'Account info',
-          // ),
-          // _buildMenuListItem(
-          //   id: "personal_profile",
-          //   icon: Icons.group_outlined,
-          //   title: 'Personal profile',
-          // ),
-          // _buildMenuListItem(
-          //   id: "message_center",
-          //   icon: Icons.mail_outline,
-          //   title: 'Message center',
-          // ),
-          // _buildMenuListItem(
-          //   id: "security",
-          //   icon: Icons.shield_outlined,
-          //   title: 'Login and security',
-          // ),
-          // _buildMenuListItem(
-          //   id: "privacy",
-          //   icon: Icons.lock_outline,
-          //   title: 'Data and privacy',
-          // ),
         ],
       ),
     );
@@ -190,9 +160,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         onTap: logoutState.isLoggingOut
             ? null
             : () async {
-                // setState(() {
-                //   activeId = id;
-                // });
                 await ref.read(logoutProvider.notifier).logout(context);
               },
       ),
@@ -237,13 +204,6 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            // leading: IconButton(
-            //   icon: const Icon(Icons.arrow_back, color: whiteColor),
-            //   onPressed: () {
-            //     // Handle back button press
-            //   },
-            // ),
-            // centerTitle: true,
             title: Text(
               'Profile',
               style: TextStyle(
@@ -252,45 +212,25 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                 fontSize: 24,
               ),
             ),
-            actions: [
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  color: whiteColor.withAlpha(65),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    // Handle Download click
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Icon(
-                      Icons.notifications_none,
-                      color: whiteColor,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-
             // actions: [
             //   Container(
-            //     margin: EdgeInsets.only(right: 10),
+            //     margin: const EdgeInsets.only(right: 10),
             //     decoration: BoxDecoration(
             //       color: whiteColor.withAlpha(65),
             //       borderRadius: BorderRadius.circular(10),
             //     ),
-            //     // padding: const EdgeInsets.all(4),
-            //     child: IconButton(
-            //       icon: const Icon(
-            //         Icons.notifications_none,
-            //         color: whiteColor,
-            //       ),
-            //       onPressed: () {
-            //         // Handle Notification click
+            //     child: GestureDetector(
+            //       onTap: () {
+            //         // Handle Download click
             //       },
+            //       child: Padding(
+            //         padding: const EdgeInsets.all(6),
+            //         child: Icon(
+            //           Icons.notifications_none,
+            //           color: whiteColor,
+            //           size: 24,
+            //         ),
+            //       ),
             //     ),
             //   ),
             // ],
