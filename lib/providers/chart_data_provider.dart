@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/models/chart_data.dart';
+import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 
@@ -10,13 +11,23 @@ final today = DateTime(now.year, now.month, now.day);
 
 class ChartDataState {
   final List<ChartData> transactions;
+  final List<Transaction> listTransactions;
   final bool isLoading;
 
-  ChartDataState({this.transactions = const [], this.isLoading = false});
+  ChartDataState({
+    this.transactions = const [],
+    this.listTransactions = const [],
+    this.isLoading = false,
+  });
 
-  ChartDataState copyWith({List<ChartData>? transactions, bool? isLoading}) {
+  ChartDataState copyWith({
+    List<ChartData>? transactions,
+    List<Transaction>? listTransactions,
+    bool? isLoading,
+  }) {
     return ChartDataState(
       transactions: transactions ?? this.transactions,
+      listTransactions: listTransactions ?? this.listTransactions,
       isLoading: isLoading ?? this.isLoading,
     );
   }
@@ -96,11 +107,38 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
           .reversed
           .toList();
 
-      state = state.copyWith(transactions: chartData);
+      final listTransactions = transactions
+          .where((transaction) {
+            final transactionDate = DateTime(
+              transaction.date.year,
+              transaction.date.month,
+              transaction.date.day,
+            );
+            // Check if the transaction's date and show only if within the selected range.
+            final bool isInDateRange =
+                !transactionDate.isBefore(startDate) &&
+                !transactionDate.isAfter(today);
+
+            // Match the dropdown value type
+            final bool isCorrectType = selectedExpenseType == "Income"
+                ? transaction.isIncome
+                : !transaction.isIncome;
+
+            return isInDateRange && isCorrectType;
+          })
+          .toList()
+          .reversed
+          .toList();
+
+      state = state.copyWith(
+        transactions: chartData,
+        listTransactions: listTransactions,
+      );
+
       return chartData;
     } catch (e) {
       Logger().e(e);
-      state = state.copyWith(transactions: []);
+      state = state.copyWith(transactions: [], listTransactions: []);
       return [];
     } finally {
       state = state.copyWith(isLoading: false);

@@ -8,6 +8,7 @@ import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/loader.dart';
 
+// Convert this to normal consumer widget.
 class ReusableLineChart extends ConsumerStatefulWidget {
   const ReusableLineChart({super.key});
 
@@ -16,19 +17,6 @@ class ReusableLineChart extends ConsumerStatefulWidget {
 }
 
 class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
-  @override
-  void initState() {
-    super.initState();
-    // Fetch transaction history when screen loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Calling fetchChartData to get real data for chart.
-      final timeFilter = ref.read(timeFilterProvider);
-      ref
-          .read(chartDataProvider(timeFilter).notifier)
-          .fetchChartData(timeFilter);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final timeFilter = ref.watch(timeFilterProvider);
