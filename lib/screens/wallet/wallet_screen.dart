@@ -57,7 +57,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: calculatedAmount > 0
+                    color: calculatedAmount >= 0
                         ? darkGreenColor.withAlpha(200)
                         : darkRedColor.withAlpha(175),
                   ),

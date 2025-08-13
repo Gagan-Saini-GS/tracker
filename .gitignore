@@ -45,6 +45,7 @@ app.*.map.json
 /android/app/release
 
 api-docs.md
+app-config-docs.md
 
 # Ignoring the API secrets and SERVER URL
 /assets/config

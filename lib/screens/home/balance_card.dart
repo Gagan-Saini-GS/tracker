@@ -26,7 +26,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
     final transactionsState = ref.watch(allTransactionListProvider);
     final transactions = transactionsState.transactions;
 
-    if (transactions.isEmpty) {
+    if (transactionsState.isLoading && transactions.isEmpty) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),

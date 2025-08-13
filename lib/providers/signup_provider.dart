@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/providers/api_service_provider.dart';
+import 'package:tracker/providers/auth_token_provider.dart';
 
 class SignupFormState {
   final String name;
@@ -98,19 +100,38 @@ class SignupFormNotifier extends StateNotifier<SignupFormState> {
 
     try {
       final api = ref.read(apiServiceProvider);
+      final authTokenStorage = ref.read(authTokenStorageProvider);
 
-      await api.post('auth/signup', {
+      final response = await api.post('auth/signup', {
         'name': state.name,
         'email': state.email,
         'password': state.password,
         'currency': 'INR', // Default currency as per API docs
       });
 
-      // Signup successful, navigate to login or show success message
-      if (mounted) {
-        // Navigate back to login screen after successful signup
-        context.go("/onboarding");
+      // Extract access token and refresh token from response
+      final accessToken = response['data']['accessToken'] as String?;
+      final refreshToken = response['data']['refreshToken'] as String?;
+
+      if (accessToken != null && refreshToken != null) {
+        await authTokenStorage.saveToken(accessToken);
+        await authTokenStorage.saveRefreshToken(refreshToken);
+        ref.read(authTokenProvider.notifier).state = accessToken;
+        if (mounted) {
+          context.go("/home");
+        }
+      } else {
+        state = state.copyWith(
+          emailError: 'Registration failed',
+          passwordError: 'Invalid credentials',
+        );
       }
+
+      // Signup successful, navigate to login or show success message
+      // if (mounted) {
+      //   // Navigate back to login screen after successful signup
+      //   context.go("/onboarding");
+      // }
     } catch (e) {
       state = state.copyWith(
         emailError: 'Registration failed',
