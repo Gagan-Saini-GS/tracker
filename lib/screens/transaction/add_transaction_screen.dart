@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/enums/notification_type.dart';
+import 'package:tracker/models/notification_props.dart';
 import 'package:tracker/models/transaction.dart';
+import 'package:tracker/providers/notification_provider.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
@@ -114,6 +117,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       );
 
       final transactionController = ref.read(transactionListProvider.notifier);
+      final notification = ref.read(notificationServiceProvider);
       transactionController.addTransaction(transaction);
 
       // Clear the form
@@ -127,6 +131,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
           ),
           backgroundColor: darkGreenColor,
           duration: const Duration(seconds: 2),
+        ),
+      );
+
+      notification.sendNotification(
+        NotificationProps(
+          title: _isIncome ? "Income Added" : "Expense Added",
+          body:
+              "Your ${_isIncome ? "Income" : "Expense"} is successfully added!",
+          type: NotificationType.simple,
         ),
       );
 
