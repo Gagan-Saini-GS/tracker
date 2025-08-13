@@ -6,6 +6,7 @@ final darkGreenColor = Color(0xFF0C4C48); // Dark Green color in ARGB format
 final grayColor = Color(0xFF808080); // Gray color in ARGB format
 final lightGrayColor = Color(0xFFD3D3D3); // Light Gray color in ARGB format
 final darkGrayColor = Color(0xFFA9A9A9); // Dark Gray color in ARGB format
+final lightTransparentGray = Color(0xFFF4F4F4);
 
 final redColor = Color(0xFFE83559); // Red color in ARGB format
 final darkRedColor = Color(0xFFE70F0F); // Dark Red color in ARGB format

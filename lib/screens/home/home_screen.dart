@@ -123,7 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             top: 220,
             child: Container(
               decoration: BoxDecoration(
-                color: whiteColor,
+                color: lightTransparentGray,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
