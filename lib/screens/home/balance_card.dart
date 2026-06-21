@@ -56,7 +56,11 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
     );
     final totalExpense = transactions.fold(
       0.0,
-      (sum, item) => sum + (item.isIncome ? 0 : item.amount),
+      (sum, item) =>
+          sum +
+          (item.isIncome || item.type == TransactionType.saving
+              ? 0
+              : item.amount),
     );
     final totalSaving = transactions.fold(
       0.0,
@@ -118,6 +122,12 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
                 amount: totalExpense,
                 icon: Icons.arrow_upward,
               ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               _BalanceDetail(
                 label: 'Saving',
                 amount: totalSaving,
@@ -162,7 +172,7 @@ class _BalanceDetail extends StatelessWidget {
               '₹ ${amount.toStringAsFixed(2)}',
               style: TextStyle(
                 color: whiteColor,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w900,
                 fontSize: 14,
               ),
             ),

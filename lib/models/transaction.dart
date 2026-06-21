@@ -1,4 +1,3 @@
-import 'package:logger/logger.dart';
 import 'package:tracker/enums/transaction_type.dart';
 
 class Transaction {

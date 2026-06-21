@@ -93,14 +93,26 @@ class _TransactionDetailsBottomSheetState
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                details.name,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  details.name,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
+              // Text(
+              //   details.name,
+              //   style: const TextStyle(
+              //     fontSize: 20,
+              //     fontWeight: FontWeight.bold,
+              //     // overflow: TextOverflow.ellipsis,
+              //   ),
+              //   maxLines: 3,
+              // ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
                 decoration: BoxDecoration(

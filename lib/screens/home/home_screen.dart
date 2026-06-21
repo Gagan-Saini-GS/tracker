@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/providers/user_api_provider.dart';
 import 'package:tracker/screens/home/balance_card.dart';
@@ -134,16 +133,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   // BalanceCard positioned to overlap
                   Transform.translate(
-                    offset: const Offset(0, -80), // Move card up to overlap
+                    offset: const Offset(0, -100), // Move card up to overlap
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: BalanceCard(),
                     ),
                   ),
+                  // Transform.translate(
+                  //   offset: const Offset(0, -50),
+                  //   child: Text(
+                  //     "Future Quick Action Block",
+                  //     style: TextStyle(
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w600,
+                  //     ),
+                  //   ),
+                  // ),
                   // Transaction History Section
                   Expanded(
                     child: Transform.translate(
-                      offset: const Offset(0, -30),
+                      offset: const Offset(0, 0),
                       child: _buildTransactionHistory(),
                     ),
                   ),
