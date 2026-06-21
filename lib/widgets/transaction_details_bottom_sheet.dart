@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
@@ -37,6 +38,32 @@ class _TransactionDetailsBottomSheetState
     }
 
     final details = trancsationState.selectedTransaction;
+
+    String getTransactionType(TransactionType type) {
+      switch (type) {
+        case TransactionType.expense:
+          return "Expense";
+        case TransactionType.income:
+          return "Income";
+        case TransactionType.saving:
+          return "Saving";
+        case TransactionType.goal:
+          return "Goal";
+      }
+    }
+
+    Color getIconColorByType(TransactionType type) {
+      switch (type) {
+        case TransactionType.expense:
+          return redColor;
+        case TransactionType.income:
+          return greenColor;
+        case TransactionType.saving:
+          return blueColor;
+        case TransactionType.goal:
+          return blackColor;
+      }
+    }
 
     return Container(
       padding: const EdgeInsets.all(24.0),
@@ -79,19 +106,17 @@ class _TransactionDetailsBottomSheetState
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 2,
-                    color: (details.isIncome ? greenColor : redColor),
+                    color: getIconColorByType(details.type),
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(8)),
-                  color: (details.isIncome ? greenColor : redColor).withAlpha(
-                    50,
-                  ),
+                  color: getIconColorByType(details.type).withAlpha(50),
                 ),
                 child: Text(
-                  (details.isIncome ? "Income" : "Expense").toUpperCase(),
+                  (getTransactionType(details.type)).toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
-                    color: details.isIncome ? greenColor : redColor,
+                    color: getIconColorByType(details.type),
                   ),
                 ),
               ),
@@ -107,11 +132,15 @@ class _TransactionDetailsBottomSheetState
               ),
               const Spacer(),
               Text(
-                '${details.isIncome ? '+ ' : '- '}₹ ${details.amount.toString().replaceAll(RegExp(r'[^0-9.,]'), '')}',
+                '${details.type == TransactionType.saving
+                    ? ''
+                    : details.isIncome
+                    ? '+ '
+                    : '- '}₹ ${details.amount.toString().replaceAll(RegExp(r'[^0-9.,]'), '')}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: details.isIncome ? greenColor : redColor,
+                  color: getIconColorByType(details.type),
                 ),
               ),
             ],

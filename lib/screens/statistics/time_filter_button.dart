@@ -10,6 +10,21 @@ import 'package:tracker/utils/constants.dart';
 class TimeFilterButtons extends ConsumerWidget {
   const TimeFilterButtons({super.key});
 
+  Color getColorByType(String type) {
+    switch (type) {
+      case "Expense":
+        return redColor;
+      case "Income":
+        return greenColor;
+      case "Saving":
+        return blueColor;
+      case "Goal":
+        return blackColor;
+      default:
+        return whiteColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedFilter = ref.watch(timeFilterProvider);
@@ -33,9 +48,7 @@ class TimeFilterButtons extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? selectedExpenseType == "Income"
-                          ? greenColor
-                          : redColor
+                    ? getColorByType(selectedExpenseType)
                     : grayColor.withAlpha(50),
                 borderRadius: BorderRadius.circular(8),
               ),

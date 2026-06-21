@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
@@ -34,6 +35,36 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     });
   }
 
+  Color getColorByType(String type) {
+    switch (type) {
+      case "Expense":
+        return redColor;
+      case "Income":
+        return greenColor;
+      case "Saving":
+        return blueColor;
+      case "Goal":
+        return blackColor;
+      default:
+        return whiteColor;
+    }
+  }
+
+  String getLoadingByType(String type) {
+    switch (type) {
+      case "Expense":
+        return "Loading Expense...";
+      case "Income":
+        return "Loading Income...";
+      case "Saving":
+        return "Loading Saving";
+      case "Goal":
+        return "Loading Goals...";
+      default:
+        return "Loading...";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
@@ -55,42 +86,12 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
             fontSize: 24,
           ),
         ),
-        // actions: [
-        //   Container(
-        //     margin: const EdgeInsets.only(right: 10),
-        //     decoration: BoxDecoration(
-        //       color: selectedExpenseType == "Income"
-        //           ? greenColor.withAlpha(65)
-        //           : redColor.withAlpha(65),
-        //       borderRadius: BorderRadius.circular(8),
-        //     ),
-        //     child: GestureDetector(
-        //       onTap: () {
-        //         // Handle Download click
-        //       },
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(6),
-        //         child: Icon(
-        //           Icons.file_download_outlined,
-        //           color: selectedExpenseType == "Income"
-        //               ? greenColor
-        //               : redColor,
-        //           size: 24,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ],
       ),
       body: transactionState.isLoading
           ? Center(
               child: Loader(
-                title: selectedExpenseType == "Income"
-                    ? "Loading Income..."
-                    : "Loading Expense...",
-                backgroundColor: selectedExpenseType == "Income"
-                    ? greenColor
-                    : redColor,
+                title: getLoadingByType(selectedExpenseType),
+                backgroundColor: getColorByType(selectedExpenseType),
                 foregroundColor: whiteColor,
                 transparent: true,
               ),
@@ -133,9 +134,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         height: 25,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: selectedExpenseType == "Income"
-                              ? greenColor
-                              : redColor,
+                          color: getColorByType(selectedExpenseType),
                           shape: BoxShape.circle,
                         ),
                         child: Text(
@@ -168,18 +167,13 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           itemBuilder: (context, index) {
                             final tx = transactions[index];
                             return TransactionItem(
-                              icon: tx.isIncome
-                                  ? Icons.trending_up_outlined
-                                  : Icons.trending_down_outlined,
-                              iconBg: tx.isIncome
-                                  ? greenColor.withAlpha(65)
-                                  : redColor.withAlpha(65),
                               iconAsset: null,
                               title: tx.name,
                               date: formatDateTimeWithMonthName(tx.date),
                               amount:
                                   "${tx.isIncome ? '+' : '-'} ₹${tx.amount}",
                               isIncome: tx.isIncome,
+                              type: tx.type,
                               transactionId: tx.id,
                             );
                           },

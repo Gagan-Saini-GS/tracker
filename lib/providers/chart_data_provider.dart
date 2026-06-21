@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/enums/timefilter.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
@@ -36,6 +37,17 @@ class ChartDataState {
 class ChartDataNotifier extends StateNotifier<ChartDataState> {
   final Ref ref;
   ChartDataNotifier(this.ref) : super(ChartDataState());
+
+  bool getTypeValue(String type, TransactionType txType) {
+    if (type == "Expense") {
+      return txType == TransactionType.expense;
+    } else if (type == "Income") {
+      return txType == TransactionType.income;
+    } else if (type == "Saving") {
+      return txType == TransactionType.saving;
+    }
+    return false;
+  }
 
   Future<List<ChartData>> fetchChartData(TimeFilter filter) async {
     state = state.copyWith(isLoading: true);
@@ -83,9 +95,10 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
                 !transactionDate.isAfter(today);
 
             // Match the dropdown value type
-            final bool isCorrectType = selectedExpenseType == "Income"
-                ? transaction.isIncome
-                : !transaction.isIncome;
+            final bool isCorrectType = getTypeValue(
+              selectedExpenseType,
+              transaction.type,
+            );
 
             return isInDateRange && isCorrectType;
           })
@@ -120,9 +133,13 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
                 !transactionDate.isAfter(today);
 
             // Match the dropdown value type
-            final bool isCorrectType = selectedExpenseType == "Income"
-                ? transaction.isIncome
-                : !transaction.isIncome;
+            final bool isCorrectType = getTypeValue(
+              selectedExpenseType,
+              transaction.type,
+            );
+            // final bool isCorrectType = selectedExpenseType == "Income"
+            //     ? transaction.isIncome
+            //     : !transaction.isIncome;
 
             return isInDateRange && isCorrectType;
           })

@@ -8,6 +8,21 @@ import 'package:tracker/utils/constants.dart';
 class ExpenseTypeDropdown extends ConsumerWidget {
   const ExpenseTypeDropdown({super.key});
 
+  Color getColorByType(String type) {
+    switch (type) {
+      case "Expense":
+        return redColor;
+      case "Income":
+        return greenColor;
+      case "Saving":
+        return blueColor;
+      case "Goal":
+        return blackColor;
+      default:
+        return whiteColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
@@ -21,7 +36,8 @@ class ExpenseTypeDropdown extends ConsumerWidget {
             '$selectedExpenseType Graph',
             style: TextStyle(
               fontSize: 20,
-              color: selectedExpenseType == "Income" ? greenColor : redColor,
+              color: getColorByType(selectedExpenseType),
+              // color: selectedExpenseType == "Income" ? greenColor : redColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -29,9 +45,10 @@ class ExpenseTypeDropdown extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: selectedExpenseType == "Income"
-                ? greenColor.withAlpha(65)
-                : redColor.withAlpha(65),
+            color: getColorByType(selectedExpenseType).withAlpha(65),
+            // color: selectedExpenseType == "Income"
+            //     ? greenColor.withAlpha(65)
+            //     : redColor.withAlpha(65),
             borderRadius: BorderRadius.circular(4),
           ),
           child: DropdownButtonHideUnderline(
@@ -51,7 +68,7 @@ class ExpenseTypeDropdown extends ConsumerWidget {
                 }
               },
               // I'll add Saving later.
-              items: <String>['Expense', 'Income']
+              items: <String>['Expense', 'Income', 'Saving']
                   .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

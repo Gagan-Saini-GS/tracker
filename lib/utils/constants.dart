@@ -11,6 +11,9 @@ final lightTransparentGray = Color(0xFFF4F4F4);
 final redColor = Color(0xFFE83559); // Red color in ARGB format
 final darkRedColor = Color(0xFFE70F0F); // Dark Red color in ARGB format
 
+final blueColor = Color(0xFF3574E8); // Blue color in ARGB format
+final darkBlueColor = Color(0xFF142C59); // Dark Blue color in ARGB format
+
 final blackColor = Color(0xFF000000); // Black color in ARGB format
 final whiteColor = Color(0xFFFFFFFF); // White color in ARGB format
 

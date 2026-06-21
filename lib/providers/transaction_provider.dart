@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_api_provider.dart';
 import '../models/transaction.dart';
 
@@ -20,6 +21,8 @@ class TransactionState {
              name: '',
              date: DateTime(2025),
              isIncome: true,
+             type:
+                 TransactionType.expense, // Using goal as it's not implemented
              note: "",
            );
 
@@ -40,6 +43,19 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
   final Ref ref;
   TransactionListNotifier(this.ref) : super(TransactionState());
 
+  String getTransactionType(TransactionType type) {
+    switch (type) {
+      case TransactionType.expense:
+        return "Expense";
+      case TransactionType.income:
+        return "Income";
+      case TransactionType.saving:
+        return "Saving";
+      case TransactionType.goal:
+        return "Goal";
+    }
+  }
+
   Future<void> addTransaction(Transaction transaction) async {
     state = state.copyWith(isLoading: true);
     try {
@@ -47,7 +63,7 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
           .read(transactionApiProvider.notifier)
           .addTransaction(
             title: transaction.name,
-            type: transaction.isIncome ? 'Income' : 'Expense',
+            type: getTransactionType(transaction.type),
             amount: transaction.amount,
             date: transaction.date.toIso8601String(),
             note: transaction.note,

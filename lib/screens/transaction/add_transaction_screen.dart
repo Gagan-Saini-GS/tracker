@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
@@ -25,6 +27,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
 
   DateTime _selectedDate = DateTime.now();
   bool _isIncome = false;
+  bool isSaving = false;
 
   @override
   void initState() {
@@ -99,7 +102,11 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
   void _addTransaction() {
     if (_formKey.currentState!.validate()) {
       // Here you would typically save the transaction to your database
-      final transactionType = _isIncome ? 'Income' : 'Expense';
+      final transactionType = _isIncome
+          ? 'Income'
+          : isSaving
+          ? 'Saving'
+          : 'Expense';
       final name = _nameController.text.trim();
       final amount = double.parse(_amountController.text.trim());
       final note = _noteController.text.trim();
@@ -111,9 +118,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
         note: note,
         date: _selectedDate,
         isIncome: _isIncome,
+        type: _isIncome
+            ? TransactionType.income
+            : isSaving
+            ? TransactionType.saving
+            : TransactionType.expense,
       );
 
       final transactionController = ref.read(transactionListProvider.notifier);
+      Logger().f("Transaction $transaction");
       transactionController.addTransaction(transaction);
 
       // Clear the form
@@ -302,6 +315,29 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Is Saving?'),
+                        Switch(
+                          value: isSaving,
+                          onChanged: (value) {
+                            setState(() {
+                              isSaving = value;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
 

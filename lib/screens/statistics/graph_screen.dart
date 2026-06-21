@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
@@ -17,6 +18,17 @@ class ReusableLineChart extends ConsumerStatefulWidget {
 }
 
 class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
+  Color getColorByType(String type) {
+    if (type == "Expense") {
+      return redColor;
+    } else if (type == "Income") {
+      return greenColor;
+    } else if (type == "Saving") {
+      return blueColor;
+    }
+    return whiteColor;
+  }
+
   @override
   Widget build(BuildContext context) {
     final timeFilter = ref.watch(timeFilterProvider);
@@ -75,17 +87,13 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                     : redColor.withAlpha(100), // Area fill color
                 gradient: LinearGradient(
                   colors: [
-                    selectedExpenseType == "Income"
-                        ? greenColor.withAlpha(100)
-                        : redColor.withAlpha(100),
+                    getColorByType(selectedExpenseType).withAlpha(100),
                     Colors.transparent,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderColor: selectedExpenseType == "Income"
-                    ? greenColor
-                    : redColor, // Line color
+                borderColor: getColorByType(selectedExpenseType), // Line color
                 borderWidth: 2,
                 splineType: SplineType.natural, // Smooth curve
                 markerSettings: MarkerSettings(
@@ -93,9 +101,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                   height: 8,
                   width: 8,
                   shape: DataMarkerType.circle,
-                  color: selectedExpenseType == "Income"
-                      ? greenColor
-                      : redColor,
+                  color: getColorByType(selectedExpenseType),
                 ),
                 // Data label settings for the highlighted point
                 dataLabelSettings: DataLabelSettings(
@@ -118,9 +124,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: selectedExpenseType == "Income"
-                                  ? greenColor
-                                  : redColor,
+                              color: getColorByType(selectedExpenseType),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(

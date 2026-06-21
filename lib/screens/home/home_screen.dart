@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/providers/user_api_provider.dart';
 import 'package:tracker/screens/home/balance_card.dart';
@@ -216,12 +217,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   itemBuilder: (context, index) {
                     final tx = transactions[index];
                     return TransactionItem(
-                      icon: tx.isIncome
-                          ? Icons.trending_up_outlined
-                          : Icons.trending_down_outlined,
-                      iconBg: tx.isIncome
-                          ? greenColor.withAlpha(65)
-                          : redColor.withAlpha(65),
                       iconAsset: null,
                       title: tx.name,
                       date: formatDateTimeWithMonthName(tx.date),
@@ -229,6 +224,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           "${tx.isIncome ? '+' : '-'} ₹${tx.amount.toStringAsFixed(2)}",
                       isIncome: tx.isIncome,
                       transactionId: tx.id,
+                      type: tx.type,
                     );
                   },
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
@@ -120,18 +121,13 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                           itemBuilder: (context, index) {
                             final tx = transactions[index];
                             return TransactionItem(
-                              icon: tx.isIncome
-                                  ? Icons.trending_up_outlined
-                                  : Icons.trending_down_outlined,
-                              iconBg: tx.isIncome
-                                  ? greenColor.withAlpha(65)
-                                  : redColor.withAlpha(65),
                               iconAsset: null,
                               title: tx.name,
                               date: formatDateTimeWithMonthName(tx.date),
                               amount: tx.amount.toStringAsFixed(2),
                               isIncome: tx.isIncome,
                               transactionId: tx.id,
+                              type: tx.type,
                             );
                           },
                         ),
@@ -154,6 +150,13 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
   double _calculateTotalBalance(List transactions) {
     double balance = 0.0;
     for (var transaction in transactions) {
+      if (transaction.type == TransactionType.saving) {
+        balance -= transaction.amount;
+
+        // Continue as don't wanna reduce the amount twice
+        continue;
+      }
+
       if (transaction.isIncome) {
         balance += transaction.amount;
       } else {

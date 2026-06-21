@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/loader.dart';
@@ -57,6 +58,11 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
       0.0,
       (sum, item) => sum + (item.isIncome ? 0 : item.amount),
     );
+    final totalSaving = transactions.fold(
+      0.0,
+      (sum, item) =>
+          sum + (item.type == TransactionType.saving ? item.amount : 0),
+    );
 
     return Container(
       width: double.infinity,
@@ -111,6 +117,11 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
                 label: 'Expenses',
                 amount: totalExpense,
                 icon: Icons.arrow_upward,
+              ),
+              _BalanceDetail(
+                label: 'Saving',
+                amount: totalSaving,
+                icon: Icons.account_balance_outlined,
               ),
             ],
           ),
