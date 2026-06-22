@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
@@ -126,7 +125,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       );
 
       final transactionController = ref.read(transactionListProvider.notifier);
-      Logger().f("Transaction $transaction");
       transactionController.addTransaction(transaction);
 
       // Clear the form

@@ -1,27 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/models/transaction.dart';
+import 'package:tracker/models/transaction_summary.dart';
 import 'package:tracker/providers/token_interceptor_provider.dart';
 
 class TransactionApiState {
   final List<Transaction> transactions;
+  final double income;
+  final double expense;
+  final double saving;
   final bool isLoading;
   final String? error;
 
   TransactionApiState({
     this.transactions = const [],
     this.isLoading = false,
+    this.income = 0,
+    this.expense = 0,
+    this.saving = 0,
     this.error,
   });
 
   TransactionApiState copyWith({
     List<Transaction>? transactions,
     bool? isLoading,
+    double? income,
+    double? expense,
+    double? saving,
     String? error,
   }) {
     return TransactionApiState(
       transactions: transactions ?? this.transactions,
       isLoading: isLoading ?? this.isLoading,
+      income: income ?? this.income,
+      expense: expense ?? this.expense,
+      saving: saving ?? this.saving,
       error: error,
     );
   }
@@ -61,7 +74,7 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
     return [];
   }
 
-  Future<List<Transaction>> fetchTransactionHistory() async {
+  Future<TransactionSummary> fetchTransactionHistory() async {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
@@ -72,14 +85,27 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
         'GET',
       );
 
+      final totals = response['data']['totalCount'];
       final List<dynamic> transactionsData =
           response['data']['transactions'] ?? [];
       final transactions = transactionsData
           .map((data) => Transaction.fromJson(data))
           .toList();
 
-      state = state.copyWith(transactions: transactions, isLoading: false);
-      return transactions;
+      state = state.copyWith(
+        transactions: transactions,
+        expense: double.tryParse(totals[0]['_sum']['amount'].toString()) ?? 0.0,
+        income: double.tryParse(totals[1]['_sum']['amount'].toString()) ?? 0.0,
+        saving: double.tryParse(totals[2]['_sum']['amount'].toString()) ?? 0.0,
+        isLoading: false,
+      );
+
+      return TransactionSummary(
+        transactions: transactions,
+        expense: double.tryParse(totals[0]['_sum']['amount'].toString()) ?? 0.0,
+        income: double.tryParse(totals[1]['_sum']['amount'].toString()) ?? 0.0,
+        saving: double.tryParse(totals[2]['_sum']['amount'].toString()) ?? 0.0,
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -87,7 +113,12 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       );
     }
 
-    return [];
+    return TransactionSummary(
+      transactions: [],
+      expense: 0,
+      income: 0,
+      saving: 0,
+    );
   }
 
   Future<bool> addTransaction({

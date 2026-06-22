@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/loader.dart';
@@ -46,27 +45,27 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
       );
     }
 
-    final totalAmount = transactions.fold(
-      0.0,
-      (sum, item) => sum + (item.isIncome ? item.amount : -item.amount),
-    );
-    final totalIncome = transactions.fold(
-      0.0,
-      (sum, item) => sum + (item.isIncome ? item.amount : 0),
-    );
-    final totalExpense = transactions.fold(
-      0.0,
-      (sum, item) =>
-          sum +
-          (item.isIncome || item.type == TransactionType.saving
-              ? 0
-              : item.amount),
-    );
-    final totalSaving = transactions.fold(
-      0.0,
-      (sum, item) =>
-          sum + (item.type == TransactionType.saving ? item.amount : 0),
-    );
+    // final totalAmount = transactions.fold(
+    //   0.0,
+    //   (sum, item) => sum + (item.isIncome ? item.amount : -item.amount),
+    // );
+    // final totalIncome = transactions.fold(
+    //   0.0,
+    //   (sum, item) => sum + (item.isIncome ? item.amount : 0),
+    // );
+    // final totalExpense = transactions.fold(
+    //   0.0,
+    //   (sum, item) =>
+    //       sum +
+    //       (item.isIncome || item.type == TransactionType.saving
+    //           ? 0
+    //           : item.amount),
+    // );
+    // final totalSaving = transactions.fold(
+    //   0.0,
+    //   (sum, item) =>
+    //       sum + (item.type == TransactionType.saving ? item.amount : 0),
+    // );
 
     return Container(
       width: double.infinity,
@@ -101,7 +100,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
           ),
           // const SizedBox(height: 10),
           Text(
-            '₹ ${totalAmount.toStringAsFixed(2)}',
+            '₹ ${(transactionsState.income - transactionsState.expense - transactionsState.saving).toStringAsFixed(2)}',
             style: TextStyle(
               color: whiteColor,
               fontSize: 32,
@@ -113,28 +112,33 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _BalanceDetail(
-                label: 'Income',
-                amount: totalIncome,
-                icon: Icons.arrow_downward,
-              ),
-              _BalanceDetail(
                 label: 'Expenses',
-                amount: totalExpense,
+                amount: transactionsState.expense,
                 icon: Icons.arrow_upward,
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
               _BalanceDetail(
                 label: 'Saving',
-                amount: totalSaving,
+                amount: transactionsState.saving,
                 icon: Icons.account_balance_outlined,
               ),
+              // _BalanceDetail(
+              //   label: 'Income',
+              //   amount: totalIncome,
+              //   icon: Icons.arrow_downward,
+              // ),
             ],
           ),
+          // const SizedBox(height: 12),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     _BalanceDetail(
+          //       label: 'Saving',
+          //       amount: totalSaving,
+          //       icon: Icons.account_balance_outlined,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker/enums/transaction_type.dart';
+// import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
@@ -31,7 +31,11 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     final transactionsState = ref.watch(allTransactionListProvider);
     final transactions = transactionsState.transactions;
 
-    final calculatedAmount = _calculateTotalBalance(transactions);
+    // final calculatedAmount = _calculateTotalBalance(transactions);
+    final calculatedAmount =
+        transactionsState.income -
+        transactionsState.expense -
+        transactionsState.saving;
 
     return Scaffold(
       backgroundColor: whiteColor,
@@ -147,22 +151,22 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
     );
   }
 
-  double _calculateTotalBalance(List transactions) {
-    double balance = 0.0;
-    for (var transaction in transactions) {
-      if (transaction.type == TransactionType.saving) {
-        balance -= transaction.amount;
+  // double _calculateTotalBalance(List transactions) {
+  //   double balance = 0.0;
+  //   for (var transaction in transactions) {
+  //     if (transaction.type == TransactionType.saving) {
+  //       balance -= transaction.amount;
 
-        // Continue as don't wanna reduce the amount twice
-        continue;
-      }
+  //       // Continue as don't wanna reduce the amount twice
+  //       continue;
+  //     }
 
-      if (transaction.isIncome) {
-        balance += transaction.amount;
-      } else {
-        balance -= transaction.amount;
-      }
-    }
-    return balance;
-  }
+  //     if (transaction.isIncome) {
+  //       balance += transaction.amount;
+  //     } else {
+  //       balance -= transaction.amount;
+  //     }
+  //   }
+  //   return balance;
+  // }
 }

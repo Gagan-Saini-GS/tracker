@@ -1,16 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/enums/transaction_type.dart';
+import 'package:tracker/models/transaction_summary.dart';
 import 'package:tracker/providers/transaction_api_provider.dart';
 import '../models/transaction.dart';
 
 class TransactionState {
   final List<Transaction> transactions;
+  final double income;
+  final double expense;
+  final double saving;
   final Transaction selectedTransaction;
   bool isLoading;
 
   TransactionState({
     this.transactions = const [],
+    this.income = 0,
+    this.expense = 0,
+    this.saving = 0,
     Transaction? selectedTransaction,
     this.isLoading = false,
   }) : selectedTransaction =
@@ -28,6 +35,9 @@ class TransactionState {
 
   TransactionState copyWith({
     List<Transaction>? transactions,
+    double? income,
+    double? expense,
+    double? saving,
     Transaction? selectedTransaction,
     bool? isLoading,
   }) {
@@ -35,6 +45,9 @@ class TransactionState {
       transactions: transactions ?? this.transactions,
       selectedTransaction: selectedTransaction ?? this.selectedTransaction,
       isLoading: isLoading ?? this.isLoading,
+      income: income ?? this.income,
+      expense: expense ?? this.expense,
+      saving: saving ?? this.saving,
     );
   }
 }
@@ -100,10 +113,16 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final List<Transaction> transactions = await ref
+      final TransactionSummary summary = await ref
           .read(transactionApiProvider.notifier)
           .fetchTransactionHistory();
-      state = state.copyWith(transactions: transactions);
+
+      state = state.copyWith(
+        transactions: summary.transactions,
+        expense: summary.expense,
+        income: summary.income,
+        saving: summary.saving,
+      );
     } catch (e) {
       Logger().e(e);
       throw Exception("Can't fetch transactions");
@@ -195,13 +214,23 @@ class AllTransactionListNotifier extends StateNotifier<TransactionState> {
   Future<void> fetchTransactionHistory() async {
     state = state.copyWith(isLoading: true);
     try {
-      final List<Transaction> transactions = await ref
+      final TransactionSummary summary = await ref
           .read(transactionApiProvider.notifier)
           .fetchTransactionHistory();
-      state = state.copyWith(transactions: transactions);
+      state = state.copyWith(
+        transactions: summary.transactions,
+        expense: summary.expense,
+        income: summary.income,
+        saving: summary.saving,
+      );
     } catch (e) {
       Logger().e(e);
-      state = state.copyWith(transactions: []);
+      state = state.copyWith(
+        transactions: [],
+        expense: 0,
+        income: 0,
+        saving: 0,
+      );
       throw Exception("Can't fetch transactions");
     } finally {
       state = state.copyWith(isLoading: false);
