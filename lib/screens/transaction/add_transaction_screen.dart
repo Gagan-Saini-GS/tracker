@@ -70,6 +70,20 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: whiteColor, // selected date
+              onPrimary: darkGrayColor, // selected date text
+              surface: darkGrayColor, // dialog background
+              onSurface: lightGrayColor.withAlpha(200), // calendar text:
+            ),
+            dialogTheme: DialogThemeData(backgroundColor: darkGrayColor),
+          ),
+          child: child!,
+        );
+      },
     );
 
     // If the user didn't cancel the date picker
@@ -78,6 +92,20 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_selectedDate),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.dark(
+                primary: whiteColor, // selected date
+                onPrimary: darkGrayColor, // selected date text
+                surface: darkGrayColor, // dialog background
+                onSurface: lightGrayColor.withAlpha(200), // calendar text:
+              ),
+              dialogTheme: DialogThemeData(backgroundColor: darkGrayColor),
+            ),
+            child: child!,
+          );
+        },
       );
 
       // If the user didn't cancel the time picker
@@ -159,7 +187,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
       padding: EdgeInsets.all(14),
       height: double.infinity,
       decoration: BoxDecoration(
-        color: whiteColor,
+        color: darkGrayColor,
         boxShadow: [
           BoxShadow(
             color: blackColor.withAlpha(100),
@@ -176,7 +204,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
             // Custom Tab Bar - 50% width each
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(color: whiteColor),
+              color: darkGrayColor,
               child: Row(
                 children: [
                   // Expense Tab - 50% width
@@ -186,14 +214,16 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
-                          color: !_isIncome ? redColor : redColor.withAlpha(65),
+                          color: !_isIncome
+                              ? redColor
+                              : grayColor.withAlpha(100),
                           borderRadius: BorderRadius.circular(7),
                         ),
                         child: Text(
                           'Expense',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: !_isIncome ? whiteColor : grayColor,
+                            color: !_isIncome ? whiteColor : lightGrayColor,
                             fontWeight: !_isIncome
                                 ? FontWeight.w800
                                 : FontWeight.w500,
@@ -212,14 +242,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                         decoration: BoxDecoration(
                           color: _isIncome
                               ? greenColor
-                              : greenColor.withAlpha(65),
+                              : grayColor.withAlpha(100),
                           borderRadius: BorderRadius.circular(7),
                         ),
                         child: Text(
                           'Income',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: _isIncome ? whiteColor : grayColor,
+                            color: _isIncome ? whiteColor : lightGrayColor,
                             fontWeight: _isIncome
                                 ? FontWeight.w800
                                 : FontWeight.w500,
@@ -242,12 +272,21 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                   // Name Field
                   TextFormField(
                     controller: _nameController,
+                    style: TextStyle(color: whiteColor),
                     decoration: InputDecoration(
                       labelText: 'Name',
                       hintText: 'Enter transaction name',
+                      labelStyle: TextStyle(color: whiteColor),
+                      hintStyle: TextStyle(color: whiteColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: whiteColor.withAlpha(200),
+                        ),
+                      ),
+                      iconColor: whiteColor,
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -262,13 +301,24 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                   // Amount Field
                   TextFormField(
                     controller: _amountController,
+                    style: TextStyle(color: whiteColor),
                     decoration: InputDecoration(
                       labelText: 'Amount',
                       hintText: 'Enter amount',
+                      labelStyle: TextStyle(color: whiteColor),
+                      hintStyle: TextStyle(color: whiteColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      prefixIcon: const Icon(Icons.currency_rupee_outlined),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: whiteColor.withAlpha(200),
+                        ),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.currency_rupee_outlined,
+                        color: lightGrayColor,
+                      ),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
@@ -290,14 +340,26 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                   // Date Field
                   TextFormField(
                     controller: _dateController,
+                    style: TextStyle(color: whiteColor),
                     decoration: InputDecoration(
                       labelText: 'Date',
                       hintText: 'Select date',
+                      labelStyle: TextStyle(color: whiteColor),
+                      hintStyle: TextStyle(color: whiteColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      suffixIcon: const Icon(Icons.calendar_today_outlined),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: whiteColor.withAlpha(200),
+                        ),
+                      ),
+                      suffixIcon: Icon(
+                        Icons.calendar_today_outlined,
+                        color: lightGrayColor,
+                      ),
                     ),
+
                     readOnly: true,
                     onTap: () => _selectDateAndTime(context),
                   ),
@@ -307,11 +369,19 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                   TextFormField(
                     controller: _noteController,
                     maxLines: 3,
+                    style: TextStyle(color: whiteColor),
                     decoration: InputDecoration(
                       labelText: 'Note',
                       hintText: 'Enter transaction note',
+                      labelStyle: TextStyle(color: whiteColor),
+                      hintStyle: TextStyle(color: whiteColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: whiteColor.withAlpha(200),
+                        ),
                       ),
                     ),
                   ),
@@ -322,11 +392,16 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: whiteColor.withAlpha(200),
+                        ),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Is Saving?'),
+                        Text('Is Saving?', style: TextStyle(color: whiteColor)),
                         Switch(
                           value: isSaving,
                           onChanged: (value) {
@@ -334,6 +409,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                               isSaving = value;
                             });
                           },
+                          activeThumbColor: blueColor,
                         ),
                       ],
                     ),
