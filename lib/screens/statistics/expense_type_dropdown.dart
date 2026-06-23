@@ -45,18 +45,16 @@ class ExpenseTypeDropdown extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: getColorByType(selectedExpenseType).withAlpha(65),
-            // color: selectedExpenseType == "Income"
-            //     ? greenColor.withAlpha(65)
-            //     : redColor.withAlpha(65),
+            color: getColorByType(selectedExpenseType).withAlpha(190),
             borderRadius: BorderRadius.circular(4),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               isDense: true,
               value: selectedExpenseType,
-              icon: Icon(Icons.arrow_drop_down, color: blackColor),
-              style: TextStyle(color: blackColor, fontSize: 16),
+              icon: Icon(Icons.arrow_drop_down, color: whiteColor),
+              style: TextStyle(color: whiteColor, fontSize: 16),
+              dropdownColor: darkGrayColor,
               onChanged: (String? newValue) {
                 if (newValue != null) {
                   ref.read(expenseTypeProvider.notifier).state = newValue;
@@ -72,7 +70,7 @@ class ExpenseTypeDropdown extends ConsumerWidget {
                   .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(value, style: TextStyle(color: whiteColor)),
                     );
                   })
                   .toList(),

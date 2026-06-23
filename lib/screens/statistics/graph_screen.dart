@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
@@ -17,6 +18,7 @@ class ReusableLineChart extends ConsumerStatefulWidget {
 }
 
 class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
+  int? _selectedIndex;
   Color getColorByType(String type) {
     if (type == "Expense") {
       return redColor;
@@ -45,10 +47,15 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
     }
 
     // Find the data point to highlight (e.g., the one with a specific color)
-    final highlightedPoint = chartDataState.transactions.firstWhere(
-      (data) => data.pointColor != null,
-      orElse: () => ChartData("", "", 0), // Return a dummy if no highlight
-    );
+    // final highlightedPoint = chartDataState.transactions.firstWhere(
+    //   (data) => data.pointColor != null,
+    //   orElse: () => ChartData("", "", 0), // Return a dummy if no highlight
+    // );
+    final highlightedPoint =
+        _selectedIndex != null &&
+            _selectedIndex! < chartDataState.transactions.length
+        ? chartDataState.transactions[_selectedIndex!]
+        : ChartData("", "", 0);
 
     return Container(
       height: 250, // Fixed height for the chart
@@ -59,31 +66,32 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
           SfCartesianChart(
             plotAreaBorderWidth: 0, // Remove chart border
             primaryXAxis: CategoryAxis(
-              majorGridLines: const MajorGridLines(
+              majorGridLines: MajorGridLines(
                 width: 0,
+                color: whiteColor.withAlpha(50),
               ), // Remove vertical grid lines
               axisLine: const AxisLine(width: 1), // Remove X-axis line
-              labelStyle: TextStyle(color: grayColor), // X-axis label color
+              labelStyle: TextStyle(color: whiteColor), // X-axis label color
               majorTickLines: const MajorTickLines(
                 width: 0,
               ), // Remove X-axis ticks
             ),
             primaryYAxis: NumericAxis(
               // isVisible: false, // Hide Y-axis
-              majorGridLines: const MajorGridLines(
+              majorGridLines: MajorGridLines(
                 width: 1,
+                color: whiteColor.withAlpha(50),
               ), // Remove horizontal grid lines
               axisLine: const AxisLine(width: 1), // Remove Y-axis line
               majorTickLines: const MajorTickLines(width: 0),
+              labelStyle: TextStyle(color: whiteColor), // Y-axis label color
             ),
             series: <CartesianSeries>[
               SplineAreaSeries<ChartData, String>(
                 dataSource: chartDataState.transactions,
                 xValueMapper: (ChartData data, _) => data.time,
                 yValueMapper: (ChartData data, _) => data.amount,
-                color: selectedExpenseType == "Income"
-                    ? greenColor.withAlpha(100)
-                    : redColor.withAlpha(100), // Area fill color
+                color: getColorByType(selectedExpenseType), // Area fill color
                 gradient: LinearGradient(
                   colors: [
                     getColorByType(selectedExpenseType).withAlpha(100),
@@ -95,6 +103,12 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                 borderColor: getColorByType(selectedExpenseType), // Line color
                 borderWidth: 2,
                 splineType: SplineType.natural, // Smooth curve
+                onPointTap: (ChartPointDetails details) {
+                  setState(() {
+                    _selectedIndex = details.pointIndex;
+                  });
+                },
+
                 markerSettings: MarkerSettings(
                   isVisible: true,
                   height: 8,
@@ -116,7 +130,8 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                         int pointIndex,
                         int seriesIndex,
                       ) {
-                        if (data.x == highlightedPoint.amount) {
+                        if (_selectedIndex != null &&
+                            pointIndex == _selectedIndex) {
                           return Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
@@ -127,8 +142,14 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              '₹${data.y.toStringAsFixed(0)}',
-                              style: TextStyle(color: whiteColor, fontSize: 12),
+                              '₹${chartDataState.transactions[_selectedIndex!].amount}',
+                              style: TextStyle(
+                                color: whiteColor,
+                                backgroundColor: getColorByType(
+                                  selectedExpenseType,
+                                ),
+                                fontSize: 12,
+                              ),
                             ),
                           );
                         }

@@ -44,8 +44,8 @@ class TimeFilterButtons extends ConsumerWidget {
                   .fetchChartData(filter);
             },
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 0),
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
                 color: isSelected
                     ? getColorByType(selectedExpenseType)
@@ -56,10 +56,11 @@ class TimeFilterButtons extends ConsumerWidget {
                 child: Text(
                   filter.name.capitalize(),
                   style: TextStyle(
-                    color: isSelected ? whiteColor : blackColor,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    fontSize: 20,
+                    color: isSelected
+                        ? whiteColor
+                        : lightGrayColor.withAlpha(200),
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.bold,
                   ),
                 ),
               ),

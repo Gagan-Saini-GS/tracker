@@ -180,7 +180,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final transactions = transactionsState.transactions;
 
     if (transactionsState.isLoading && transactions.isEmpty) {
-      return Center(child: Loader(title: "Loading Recent transactions..."));
+      return Center(
+        child: Loader(
+          title: "Loading Recent transactions...",
+          transparent: true,
+          foregroundColor: whiteColor,
+          backgroundColor: darkGrayColor,
+          textStyle: TextStyle(color: whiteColor),
+        ),
+      );
     }
 
     return Column(

@@ -34,7 +34,16 @@ class _TransactionDetailsBottomSheetState
     final trancsationState = ref.watch(transactionListProvider);
 
     if (trancsationState.isLoading) {
-      return Loader(title: "Loading Transaction Details");
+      return Container(
+        color: darkGrayColor,
+        child: Loader(
+          title: "Loading Transaction Details",
+          transparent: true,
+          foregroundColor: whiteColor,
+          backgroundColor: darkGrayColor,
+          textStyle: TextStyle(color: whiteColor),
+        ),
+      );
     }
 
     final details = trancsationState.selectedTransaction;

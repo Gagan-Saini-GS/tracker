@@ -91,8 +91,9 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
               child: Loader(
                 title: getLoadingByType(selectedExpenseType),
                 backgroundColor: getColorByType(selectedExpenseType),
-                foregroundColor: whiteColor,
+                foregroundColor: darkGrayColor,
                 transparent: true,
+                textStyle: TextStyle(color: whiteColor),
               ),
             )
           : Column(
