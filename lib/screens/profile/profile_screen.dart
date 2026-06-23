@@ -43,7 +43,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       });
     }
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: darkGrayColor,
       body: CustomScrollView(
         slivers: [
           SliverPersistentHeader(
@@ -68,7 +68,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: blackColor,
+                    color: whiteColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -104,6 +104,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       padding: const EdgeInsets.all(8),
       child: Column(
         children: [
+          // _buildMenuListItem(id: "theme", icon: Icons.sunny, title: 'Theme'),
           _buildMenuListItem(
             id: "logout",
             icon: Icons.logout_outlined,
@@ -128,7 +129,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       shadowColor: isActive ? greenColor : blackColor,
       // margin: const EdgeInsets.symmetric(vertical: 6.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: isActive ? whiteColor : lightGrayColor,
+      color: isActive ? darkGrayColor : lightGrayColor,
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isActive ? greenColor : Colors.transparent,
@@ -145,7 +146,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         title: Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.w500, color: blackColor),
+          style: TextStyle(fontWeight: FontWeight.w500, color: whiteColor),
         ),
         trailing: logoutState.isLoggingOut
             ? SizedBox(

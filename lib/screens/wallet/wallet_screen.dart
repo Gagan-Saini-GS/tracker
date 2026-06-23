@@ -38,7 +38,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
         transactionsState.saving;
 
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: darkGrayColor,
       appBar: AppBar(
         title: const Text(
           'Wallet',

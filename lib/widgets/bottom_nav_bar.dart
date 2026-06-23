@@ -31,6 +31,7 @@ class BottomNavBar extends StatelessWidget {
       shape: const CircularNotchedRectangle(),
       notchMargin: 0,
       height: 60,
+      color: blackColor,
       padding: EdgeInsets.zero,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

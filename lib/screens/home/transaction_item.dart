@@ -125,7 +125,7 @@ class TransactionItem extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
         decoration: BoxDecoration(
-          color: transactionId != null ? grayColor.withAlpha(10) : null,
+          color: transactionId != null ? darkGrayColor : null,
         ),
         child: Row(
           children: [
@@ -133,7 +133,7 @@ class TransactionItem extends ConsumerWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: getIconColorByType(type).withAlpha(65),
+                color: getIconColorByType(type).withAlpha(200),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: iconAsset != null
@@ -150,12 +150,16 @@ class TransactionItem extends ConsumerWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      color: whiteColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
                   ),
-                  Text(date, style: TextStyle(color: grayColor, fontSize: 12)),
+                  Text(
+                    date,
+                    style: TextStyle(color: lightGrayColor, fontSize: 12),
+                  ),
                 ],
               ),
             ),

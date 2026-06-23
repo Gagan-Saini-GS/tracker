@@ -70,17 +70,17 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
     final filter = ref.watch(timeFilterProvider);
     final transactionState = ref.watch(chartDataProvider(filter));
-    final transactions = transactionState.listTransactions;
+    final transactions = transactionState.listTransactions.reversed.toList();
 
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: darkGrayColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           'Statistics',
           style: TextStyle(
-            color: blackColor,
+            color: whiteColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -125,7 +125,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: blackColor,
+                          color: whiteColor,
                         ),
                       ),
                       Container(

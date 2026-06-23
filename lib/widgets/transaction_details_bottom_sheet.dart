@@ -69,7 +69,7 @@ class _TransactionDetailsBottomSheetState
       padding: const EdgeInsets.all(24.0),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: whiteColor,
+        color: darkGrayColor,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -85,7 +85,7 @@ class _TransactionDetailsBottomSheetState
               height: 4,
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                color: darkGreenColor,
+                color: whiteColor.withAlpha(50),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -98,9 +98,10 @@ class _TransactionDetailsBottomSheetState
                   details.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: whiteColor,
                   ),
                 ),
               ),
@@ -138,9 +139,13 @@ class _TransactionDetailsBottomSheetState
 
           Row(
             children: [
-              const Text(
+              Text(
                 "Amount",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: whiteColor,
+                ),
               ),
               const Spacer(),
               Text(
@@ -158,20 +163,30 @@ class _TransactionDetailsBottomSheetState
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             "Date",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+              color: whiteColor,
+            ),
           ),
           Text(
             formatDateTimeWithMonthName(details.date),
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(
+              fontSize: 18,
+              color: lightGrayColor.withAlpha(200),
+            ),
           ),
           const SizedBox(height: 16),
 
           if (details.note != "") ...[
-            Text("Note", style: TextStyle(color: blackColor, fontSize: 18)),
+            Text("Note", style: TextStyle(color: whiteColor, fontSize: 18)),
             const SizedBox(height: 2),
-            Text(details.note, style: TextStyle(fontSize: 18)),
+            Text(
+              details.note,
+              style: TextStyle(fontSize: 18, color: lightGrayColor),
+            ),
 
             const SizedBox(height: 16),
           ],

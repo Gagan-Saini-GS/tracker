@@ -36,7 +36,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final userState = ref.watch(userApiProvider);
 
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: blackColor,
       body: Stack(
         children: [
           Container(height: double.infinity, color: greenColor),
@@ -123,7 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             top: 220,
             child: Container(
               decoration: BoxDecoration(
-                color: lightTransparentGray,
+                color: darkGrayColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
@@ -192,7 +192,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: [
               Text(
                 'Recent Transactions',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: whiteColor,
+                ),
               ),
               InkWell(
                 onTap: () => {context.go("/wallet")},
