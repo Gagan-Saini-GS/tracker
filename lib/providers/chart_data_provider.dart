@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/enums/transaction_type.dart';
@@ -47,6 +48,14 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
       return txType == TransactionType.saving;
     }
     return false;
+  }
+
+  String _formatXLabel(DateTime date) {
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+    final day = date.day.toString();
+    final month = DateFormat('MMM').format(date);
+    return '$month $day\n($hour:$minute)';
   }
 
   Future<List<ChartData>> fetchChartData(TimeFilter filter) async {
@@ -103,16 +112,9 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
             return isInDateRange && isCorrectType;
           })
           .map((transaction) {
-            final String hour = transaction.date.hour < 10
-                ? "0${transaction.date.hour}"
-                : transaction.date.hour.toString();
-            final String minute = transaction.date.minute < 10
-                ? "0${transaction.date.minute}"
-                : transaction.date.minute.toString();
-
             return ChartData(
               transaction.name,
-              '$hour:$minute',
+              _formatXLabel(transaction.date),
               transaction.amount,
             );
           })
@@ -160,6 +162,25 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  void updateChartFromTransactions(List<Transaction> transactions) {
+    final chartData = transactions
+        .map((transaction) {
+          return ChartData(
+            transaction.name,
+            _formatXLabel(transaction.date),
+            transaction.amount,
+          );
+        })
+        .toList()
+        .reversed
+        .toList();
+
+    state = state.copyWith(
+      transactions: chartData,
+      listTransactions: transactions.reversed.toList(),
+    );
   }
 }
 

@@ -16,13 +16,20 @@ class TokenInterceptor {
     String endpoint,
     String method, {
     Map<String, dynamic>? body,
+    Map<String, String>? queryParams,
   }) async {
     try {
       // First attempt with current token
       final token = await _authTokenStorage.getToken();
       final apiService = ApiService(baseUrl: _baseUrl, authToken: token);
 
-      final response = await _makeRequest(apiService, endpoint, method, body);
+      final response = await _makeRequest(
+        apiService,
+        endpoint,
+        method,
+        body,
+        queryParams: queryParams,
+      );
       return response;
     } catch (e) {
       // If first attempt fails with 401, try to refresh token
@@ -33,7 +40,13 @@ class TokenInterceptor {
           final newToken = await _authTokenStorage.getToken();
           final apiService = ApiService(baseUrl: _baseUrl, authToken: newToken);
 
-          return await _makeRequest(apiService, endpoint, method, body);
+          return await _makeRequest(
+            apiService,
+            endpoint,
+            method,
+            body,
+            queryParams: queryParams,
+          );
         } else {
           // Refresh failed, throw the original error
           rethrow;
@@ -49,11 +62,12 @@ class TokenInterceptor {
     ApiService apiService,
     String endpoint,
     String method,
-    Map<String, dynamic>? body,
-  ) async {
+    Map<String, dynamic>? body, {
+    Map<String, String>? queryParams,
+  }) async {
     switch (method.toUpperCase()) {
       case 'GET':
-        return await apiService.get(endpoint);
+        return await apiService.get(endpoint, queryParams: queryParams);
       case 'POST':
         return await apiService.post(endpoint, body ?? {});
       case 'DELETE':

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
+import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
 import 'package:tracker/screens/statistics/graph_screen.dart';
@@ -21,6 +23,8 @@ class StatisticsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
+  bool _isDateRangeLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -64,29 +68,123 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     }
   }
 
+  String _formatDateRange(DateTimeRange range) {
+    final DateFormat fmt = DateFormat('MMM d, yy');
+    return '${fmt.format(range.start)} - ${fmt.format(range.end)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
-
     final filter = ref.watch(timeFilterProvider);
-    final transactionState = ref.watch(chartDataProvider(filter));
-    final transactions = transactionState.listTransactions.reversed.toList();
+    final selectedDateRange = ref.watch(selectedDateRangeProvider);
+    final chartDataState = ref.watch(chartDataProvider(filter));
+    final transactions = chartDataState.listTransactions.reversed.toList();
+    final transactionController = ref.read(transactionListProvider.notifier);
+    final chartDataController = ref.read(chartDataProvider(filter).notifier);
+    final transactionState = ref.watch(transactionListProvider);
 
     return Scaffold(
       backgroundColor: darkGrayColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          'Statistics',
-          style: TextStyle(
-            color: whiteColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Statistics',
+              style: TextStyle(
+                color: whiteColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+
+            if (selectedDateRange != null) ...[
+              Text(
+                _formatDateRange(selectedDateRange),
+                style: TextStyle(
+                  color: getColorByType(selectedExpenseType),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.date_range_outlined, color: whiteColor),
+            onPressed: () async {
+              final range = await showDateRangePicker(
+                context: context,
+                firstDate: DateTime(2020),
+                lastDate: DateTime.now(),
+                initialDateRange: selectedDateRange,
+                builder: (context, child) {
+                  return Theme(
+                    data: ThemeData.dark().copyWith(
+                      colorScheme: ColorScheme.dark(
+                        primary: whiteColor,
+                        onPrimary: darkGrayColor,
+                        surface: darkGrayColor,
+                        onSurface: whiteColor,
+                        surfaceContainerHigh: darkGrayColor,
+                        surfaceContainer: darkGrayColor,
+                        surfaceTint: Colors.transparent,
+                      ),
+                      datePickerTheme: DatePickerThemeData(
+                        backgroundColor: darkGrayColor,
+                        headerBackgroundColor: darkGrayColor,
+                        headerForegroundColor: whiteColor,
+                        surfaceTintColor: Colors.transparent,
+                        rangeSelectionBackgroundColor: whiteColor.withAlpha(50),
+                      ),
+                    ),
+                    child: child!,
+                  );
+                },
+              );
+
+              if (range != null) {
+                ref.read(selectedDateRangeProvider.notifier).state = range;
+                setState(() {
+                  _isDateRangeLoading = true; // show loader
+                });
+
+                try {
+                  final endOfDay = DateTime(
+                    range.end.year,
+                    range.end.month,
+                    range.end.day,
+                    23,
+                    59,
+                    59,
+                    999,
+                  );
+
+                  // Fetch statistics using range.start and range.end
+                  final transactions = await transactionController
+                      .getTransactionsByDateRange(
+                        startDate: range.start.toIso8601String(),
+                        endDate: endOfDay.toIso8601String(),
+                        type: selectedExpenseType,
+                      );
+
+                  chartDataController.updateChartFromTransactions(transactions);
+                } finally {
+                  setState(() => _isDateRangeLoading = false);
+                }
+              }
+            },
+          ),
+        ],
       ),
-      body: transactionState.isLoading
+      body:
+          chartDataState.isLoading ||
+              _isDateRangeLoading ||
+              transactionState.isLoading
           ? Center(
               child: Loader(
                 title: getLoadingByType(selectedExpenseType),

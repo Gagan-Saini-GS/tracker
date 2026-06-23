@@ -33,12 +33,23 @@ class TimeFilterButtons extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: TimeFilter.values.map((filter) {
-        final isSelected = selectedFilter == filter;
+        final selectedDateRange = ref.watch(selectedDateRangeProvider);
+        final isSelected =
+            selectedDateRange == null && selectedFilter == filter;
+
         return Expanded(
           child: GestureDetector(
+            // onTap: () {
+            //   ref.read(timeFilterProvider.notifier).state = filter;
+            //   ref
+            //       .read(chartDataProvider(filter).notifier)
+            //       .fetchChartData(filter);
+            // },
+            // Fetch chart data for the new time filter selected
             onTap: () {
               ref.read(timeFilterProvider.notifier).state = filter;
-              // Fetch chart data for the new time filter selected
+              ref.read(selectedDateRangeProvider.notifier).state =
+                  null; // clear date range
               ref
                   .read(chartDataProvider(filter).notifier)
                   .fetchChartData(filter);

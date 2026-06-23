@@ -10,11 +10,22 @@ class ApiService {
   ApiService({required this.baseUrl, this.authToken});
 
   // GET request
-  Future<dynamic> get(String endpoint) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl$endpoint'),
-      headers: _buildHeaders(),
-    );
+  // Future<dynamic> get(String endpoint) async {
+  //   final response = await http.get(
+  //     Uri.parse('$baseUrl$endpoint'),
+  //     headers: _buildHeaders(),
+  //   );
+  //   return _processResponse(response);
+  // }
+
+  Future<dynamic> get(
+    String endpoint, {
+    Map<String, String>? queryParams,
+  }) async {
+    final uri = Uri.parse(
+      '$baseUrl$endpoint',
+    ).replace(queryParameters: queryParams);
+    final response = await http.get(uri, headers: _buildHeaders());
     return _processResponse(response);
   }
 

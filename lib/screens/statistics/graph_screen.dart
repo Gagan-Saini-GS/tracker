@@ -103,16 +103,22 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                 borderWidth: 2,
                 splineType: SplineType.natural, // Smooth curve
                 onPointTap: (ChartPointDetails details) {
-                  setState(() {
-                    _selectedIndex = details.pointIndex;
-                  });
+                  final index = details.pointIndex;
+                  if (index != null && index >= 0) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  }
                 },
 
                 markerSettings: MarkerSettings(
                   isVisible: true,
-                  height: 8,
-                  width: 8,
+                  height: 10,
+                  width: 10,
                   shape: DataMarkerType.circle,
+                  // image: const NetworkImage(
+                  //   "https://i.pinimg.com/control1/736x/ea/25/cd/ea25cd897d9693ad276f81b6e6026522.jpg",
+                  // ),
                   color: getColorByType(selectedExpenseType),
                 ),
                 // Data label settings for the highlighted point
@@ -130,6 +136,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                         int seriesIndex,
                       ) {
                         if (_selectedIndex != null &&
+                            _selectedIndex! >= 0 &&
                             pointIndex == _selectedIndex) {
                           return Container(
                             padding: const EdgeInsets.symmetric(
