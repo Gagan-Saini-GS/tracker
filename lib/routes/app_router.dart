@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:tracker/screens/goals/goals_screen.dart';
 import 'package:tracker/screens/onboarding/login_form.dart';
 import 'package:tracker/screens/onboarding/signup_form.dart';
 import 'package:tracker/screens/transaction/add_transaction_screen.dart';
@@ -33,5 +34,6 @@ final GoRouter appRouter = GoRouter(
       path: '/add-transaction',
       builder: (context, state) => const AddTransactionScreen(),
     ),
+    GoRoute(path: '/goals', builder: (context, state) => const GoalsScreen()),
   ],
 );

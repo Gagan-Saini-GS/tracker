@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/widgets/loader.dart';
@@ -88,18 +89,21 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
                 ],
               ),
 
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: whiteColor.withAlpha(50),
-                  border: Border.all(
-                    width: 1,
-                    color: whiteColor.withAlpha(100),
+              GestureDetector(
+                onTap: () => context.push("/goals"),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: whiteColor.withAlpha(50),
+                    border: Border.all(
+                      width: 1,
+                      color: whiteColor.withAlpha(100),
+                    ),
                   ),
+                  child: Icon(Icons.emoji_events_outlined, color: whiteColor),
                 ),
-                child: Icon(Icons.emoji_events_outlined, color: whiteColor),
               ),
             ],
           ),
