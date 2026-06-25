@@ -45,28 +45,6 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
       );
     }
 
-    // final totalAmount = transactions.fold(
-    //   0.0,
-    //   (sum, item) => sum + (item.isIncome ? item.amount : -item.amount),
-    // );
-    // final totalIncome = transactions.fold(
-    //   0.0,
-    //   (sum, item) => sum + (item.isIncome ? item.amount : 0),
-    // );
-    // final totalExpense = transactions.fold(
-    //   0.0,
-    //   (sum, item) =>
-    //       sum +
-    //       (item.isIncome || item.type == TransactionType.saving
-    //           ? 0
-    //           : item.amount),
-    // );
-    // final totalSaving = transactions.fold(
-    //   0.0,
-    //   (sum, item) =>
-    //       sum + (item.type == TransactionType.saving ? item.amount : 0),
-    // );
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -86,26 +64,44 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Total Balance',
-                style: TextStyle(
-                  color: whiteColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Total Balance',
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    '₹ ${(transactionsState.income - transactionsState.expense - transactionsState.saving).toStringAsFixed(2)}',
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              Icon(Icons.more_horiz, color: whiteColor),
+
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: whiteColor.withAlpha(50),
+                  border: Border.all(
+                    width: 1,
+                    color: whiteColor.withAlpha(100),
+                  ),
+                ),
+                child: Icon(Icons.emoji_events_outlined, color: whiteColor),
+              ),
             ],
-          ),
-          // const SizedBox(height: 10),
-          Text(
-            '₹ ${(transactionsState.income - transactionsState.expense - transactionsState.saving).toStringAsFixed(2)}',
-            style: TextStyle(
-              color: whiteColor,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
           ),
           const SizedBox(height: 18),
           Row(
@@ -121,24 +117,8 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
                 amount: transactionsState.saving,
                 icon: Icons.account_balance_outlined,
               ),
-              // _BalanceDetail(
-              //   label: 'Income',
-              //   amount: totalIncome,
-              //   icon: Icons.arrow_downward,
-              // ),
             ],
           ),
-          // const SizedBox(height: 12),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     _BalanceDetail(
-          //       label: 'Saving',
-          //       amount: totalSaving,
-          //       icon: Icons.account_balance_outlined,
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );

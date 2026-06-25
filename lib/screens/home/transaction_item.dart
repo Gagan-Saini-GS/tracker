@@ -150,6 +150,8 @@ class TransactionItem extends ConsumerWidget {
                 children: [
                   Text(
                     title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: whiteColor,
                       fontWeight: FontWeight.bold,

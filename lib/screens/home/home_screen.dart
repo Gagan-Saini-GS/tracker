@@ -22,7 +22,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch recent transactions when screen loads
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(recentTransactionListProvider.notifier)
@@ -39,8 +39,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: blackColor,
       body: Stack(
         children: [
-          Container(height: double.infinity, color: greenColor),
-          // Background top decoration (optional, for effect)
+          /// Green Header
+          Container(color: greenColor),
+
+          /// Decorative circle
           Positioned(
             top: -100,
             left: -100,
@@ -53,122 +55,106 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              getGreeting(),
-                              style: TextStyle(color: whiteColor, fontSize: 14),
-                            ),
-                            const SizedBox(height: 2),
-                            userState.isLoading && userState.user == null
-                                ? Loader(
-                                    showText: false,
-                                    transparent: true,
-                                    loaderSize: 20,
-                                    stroke: 2.0,
-                                    containerWidth: 100,
-                                    containerPadding: 2,
-                                    isCenter: false,
-                                  )
-                                : Text(
-                                    '${userState.user?.name}',
-                                    style: TextStyle(
-                                      color: whiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                          ],
-                        ),
-                        Container(
-                          width: 45,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            color: whiteColor.withAlpha(65),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: IconButton(
-                            onPressed: () => {context.go("/profile")},
-                            icon: Icon(Icons.person_outline, color: whiteColor),
-                            iconSize: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 50),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Main content
-          Positioned.fill(
-            top: 220,
-            child: Container(
-              decoration: BoxDecoration(
-                color: darkGrayColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
+
+          /// Header
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // BalanceCard positioned to overlap
-                  Transform.translate(
-                    offset: const Offset(0, -100), // Move card up to overlap
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: BalanceCard(),
-                    ),
-                  ),
-                  // Transform.translate(
-                  //   offset: const Offset(0, -50),
-                  //   child: Text(
-                  //     "Future Quick Action Block",
-                  //     style: TextStyle(
-                  //       fontSize: 18,
-                  //       fontWeight: FontWeight.w600,
-                  //     ),
-                  //   ),
-                  // ),
-                  // Transaction History Section
-                  Expanded(
-                    child: Transform.translate(
-                      offset: const Offset(0, 0),
-                      child: _buildTransactionHistory(),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            getGreeting(),
+                            style: TextStyle(color: whiteColor, fontSize: 14),
+                          ),
+                          const SizedBox(height: 2),
+                          userState.isLoading && userState.user == null
+                              ? Loader(
+                                  showText: false,
+                                  transparent: true,
+                                  loaderSize: 20,
+                                  stroke: 2,
+                                  containerWidth: 100,
+                                  containerPadding: 2,
+                                  isCenter: false,
+                                )
+                              : Text(
+                                  userState.user?.name ?? "",
+                                  style: TextStyle(
+                                    color: whiteColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                        ],
+                      ),
+                      Container(
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: whiteColor.withAlpha(65),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () => context.go("/profile"),
+                          icon: Icon(Icons.person_outline, color: whiteColor),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
+
+          /// Bottom Content
+          Positioned.fill(
+            top: 140,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                /// Main Card
+                Positioned.fill(
+                  top: 90,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: darkGrayColor,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 90),
+                      child: _buildTransactionHistory(),
+                    ),
+                  ),
+                ),
+
+                /// Floating Balance Card
+                const Positioned(
+                  left: 20,
+                  right: 20,
+                  top: 0,
+                  child: BalanceCard(),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 0),
+
+      bottomNavigationBar: const BottomNavBar(currentIndex: 0),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: greenColor,
-        onPressed: () {
-          context.push('/add-transaction');
-        },
-        elevation: 4,
+        onPressed: () => context.push("/add-transaction"),
         child: Icon(Icons.add, color: whiteColor),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -182,7 +168,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (transactionsState.isLoading && transactions.isEmpty) {
       return Center(
         child: Loader(
-          title: "Loading Recent transactions...",
+          title: "Loading Recent Transactions...",
           transparent: true,
           foregroundColor: whiteColor,
           backgroundColor: darkGrayColor,
@@ -194,22 +180,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Recent Transactions',
+                "Recent Transactions",
                 style: TextStyle(
+                  color: whiteColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: whiteColor,
                 ),
               ),
               InkWell(
-                onTap: () => {context.go("/wallet")},
+                onTap: () => context.go("/wallet"),
                 child: Text(
-                  'See all',
+                  "See all",
                   style: TextStyle(
                     color: greenColor,
                     fontWeight: FontWeight.w600,
@@ -219,21 +205,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         Expanded(
           child: transactions.isEmpty
               ? Center(
                   child: Text(
-                    'No Transactions Yet.',
+                    "No Transactions Yet.",
                     style: TextStyle(
+                      color: grayColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: grayColor,
                     ),
                   ),
                 )
               : ListView.builder(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.only(bottom: 24),
                   itemCount: transactions.length,
                   itemBuilder: (context, index) {
                     final tx = transactions[index];
