@@ -4,11 +4,23 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/signup_provider.dart';
 import 'package:tracker/utils/constants.dart';
 
-class SignupForm extends ConsumerWidget {
+class SignupForm extends ConsumerStatefulWidget {
   const SignupForm({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SignupForm> createState() => _SignupForm();
+}
+
+class _SignupForm extends ConsumerState<SignupForm> {
+  // Means hide password, true means hide, false means show.
+  bool _obscurePassword = true;
+
+  void _togglePasswordVisibility() {
+    setState(() => _obscurePassword = !_obscurePassword);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final form = ref.watch(signupFormProvider);
     final formNotifier = ref.read(signupFormProvider.notifier);
 
@@ -95,13 +107,21 @@ class SignupForm extends ConsumerWidget {
               const SizedBox(height: 16),
               TextField(
                 onChanged: formNotifier.setPassword,
-                obscureText: true,
+                obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter password',
                   errorText: form.passwordError,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: _togglePasswordVisibility,
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
                   ),
                 ),
               ),
