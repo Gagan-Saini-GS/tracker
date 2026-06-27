@@ -7,6 +7,7 @@ import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/widgets/loader.dart';
+import 'package:tracker/widgets/pull_to_refresh.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
@@ -96,51 +97,66 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                 ),
                 // Transaction list
                 Expanded(
-                  child: transactions.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                  child: PullToRefresh(
+                    onRefresh: () => ref
+                        .read(allTransactionListProvider.notifier)
+                        .fetchTransactionHistory(),
+                    child: transactions.isEmpty
+                        ? ListView(
+                            physics: AlwaysScrollableScrollPhysics(),
                             children: [
-                              Icon(
-                                Icons.account_balance_wallet_outlined,
-                                size: 64,
-                                color: grayColor,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No Transactions Yet',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: grayColor,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Your transaction history will appear here',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: grayColor,
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.7,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.account_balance_wallet_outlined,
+                                        size: 64,
+                                        color: grayColor,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        'No Transactions Yet',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: grayColor,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Your transaction history will appear here',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: grayColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
+                          )
+                        : ListView.builder(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: transactions.length,
+                            itemBuilder: (context, index) {
+                              final tx = transactions[index];
+                              return TransactionItem(
+                                iconAsset: null,
+                                title: tx.name,
+                                date: formatDateTimeWithMonthName(tx.date),
+                                amount: tx.amount.toStringAsFixed(2),
+                                isIncome: tx.isIncome,
+                                transactionId: tx.id,
+                                type: tx.type,
+                              );
+                            },
                           ),
-                        )
-                      : ListView.builder(
-                          itemCount: transactions.length,
-                          itemBuilder: (context, index) {
-                            final tx = transactions[index];
-                            return TransactionItem(
-                              iconAsset: null,
-                              title: tx.name,
-                              date: formatDateTimeWithMonthName(tx.date),
-                              amount: tx.amount.toStringAsFixed(2),
-                              isIncome: tx.isIncome,
-                              transactionId: tx.id,
-                              type: tx.type,
-                            );
-                          },
-                        ),
+                  ),
                 ),
               ],
             ),
