@@ -11,6 +11,9 @@ class TransactionState {
   final double expense;
   final double saving;
   final Transaction selectedTransaction;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final int currentPage;
   bool isLoading;
 
   TransactionState({
@@ -19,6 +22,9 @@ class TransactionState {
     this.expense = 0,
     this.saving = 0,
     Transaction? selectedTransaction,
+    this.isLoadingMore = false,
+    this.hasMore = false,
+    this.currentPage = 1,
     this.isLoading = false,
   }) : selectedTransaction =
            selectedTransaction ??
@@ -39,6 +45,9 @@ class TransactionState {
     double? expense,
     double? saving,
     Transaction? selectedTransaction,
+    bool? isLoadingMore,
+    bool? hasMore,
+    int? currentPage,
     bool? isLoading,
   }) {
     return TransactionState(
@@ -48,6 +57,9 @@ class TransactionState {
       income: income ?? this.income,
       expense: expense ?? this.expense,
       saving: saving ?? this.saving,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
+      currentPage: currentPage ?? this.currentPage,
     );
   }
 }
@@ -143,7 +155,7 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
     try {
       final TransactionSummary summary = await ref
           .read(transactionApiProvider.notifier)
-          .fetchTransactionHistory();
+          .fetchTransactionHistory(page: 1, limit: 15);
 
       state = state.copyWith(
         transactions: summary.transactions,
@@ -240,16 +252,20 @@ class AllTransactionListNotifier extends StateNotifier<TransactionState> {
   AllTransactionListNotifier(this.ref) : super(TransactionState());
 
   Future<void> fetchTransactionHistory() async {
+    if (state.isLoadingMore) return; // Don't reset while a page is fetching.
     state = state.copyWith(isLoading: true);
     try {
       final TransactionSummary summary = await ref
           .read(transactionApiProvider.notifier)
-          .fetchTransactionHistory();
+          .fetchTransactionHistory(page: 1, limit: 15);
+
       state = state.copyWith(
         transactions: summary.transactions,
         expense: summary.expense,
         income: summary.income,
         saving: summary.saving,
+        currentPage: summary.pagination['currentPage'],
+        hasMore: summary.pagination['hasMore'],
       );
     } catch (e) {
       Logger().e(e);
@@ -262,6 +278,27 @@ class AllTransactionListNotifier extends StateNotifier<TransactionState> {
       throw Exception("Can't fetch transactions");
     } finally {
       state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> fetchNextPage() async {
+    if (state.isLoadingMore || !state.hasMore) return;
+
+    state = state.copyWith(isLoadingMore: true);
+    try {
+      final TransactionSummary summary = await ref
+          .read(transactionApiProvider.notifier)
+          .fetchTransactionHistory(page: state.currentPage + 1, limit: 15);
+      state = state.copyWith(
+        transactions: [...state.transactions, ...summary.transactions],
+        currentPage: summary.pagination['currentPage'],
+        hasMore: summary.pagination['hasMore'],
+      );
+    } catch (e) {
+      Logger().e(e);
+      throw Exception("Can't fetch next page transactions");
+    } finally {
+      state = state.copyWith(isLoadingMore: false);
     }
   }
 }

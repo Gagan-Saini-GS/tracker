@@ -88,19 +88,19 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
                 ],
               ),
 
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: whiteColor.withAlpha(50),
-                  border: Border.all(
-                    width: 1,
-                    color: whiteColor.withAlpha(100),
-                  ),
-                ),
-                child: Icon(Icons.emoji_events_outlined, color: whiteColor),
-              ),
+              // Container(
+              //   width: 40,
+              //   height: 40,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(50),
+              //     color: whiteColor.withAlpha(50),
+              //     border: Border.all(
+              //       width: 1,
+              //       color: whiteColor.withAlpha(100),
+              //     ),
+              //   ),
+              //   child: Icon(Icons.emoji_events_outlined, color: whiteColor),
+              // ),
             ],
           ),
           const SizedBox(height: 18),

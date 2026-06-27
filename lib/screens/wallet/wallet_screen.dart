@@ -7,6 +7,7 @@ import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/widgets/loader.dart';
+import 'package:tracker/widgets/paginated_list_view.dart';
 import 'package:tracker/widgets/pull_to_refresh.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
@@ -140,19 +141,24 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                               ),
                             ],
                           )
-                        : ListView.builder(
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: transactions.length,
-                            itemBuilder: (context, index) {
-                              final tx = transactions[index];
+                        : PaginatedListView(
+                            items: transactions,
+                            onLoadMore: ref
+                                .read(allTransactionListProvider.notifier)
+                                .fetchNextPage,
+                            hasMore: transactionsState.hasMore,
+                            isLoadingMore: transactionsState.isLoadingMore,
+                            itemBuilder: (context, transaction, index) {
                               return TransactionItem(
                                 iconAsset: null,
-                                title: tx.name,
-                                date: formatDateTimeWithMonthName(tx.date),
-                                amount: tx.amount.toStringAsFixed(2),
-                                isIncome: tx.isIncome,
-                                transactionId: tx.id,
-                                type: tx.type,
+                                title: transaction.name,
+                                date: formatDateTimeWithMonthName(
+                                  transaction.date,
+                                ),
+                                amount: transaction.amount.toStringAsFixed(2),
+                                isIncome: transaction.isIncome,
+                                transactionId: transaction.id,
+                                type: transaction.type,
                               );
                             },
                           ),

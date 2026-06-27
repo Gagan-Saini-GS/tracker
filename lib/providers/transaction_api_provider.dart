@@ -11,6 +11,7 @@ class TransactionApiState {
   final double saving;
   final bool isLoading;
   final String? error;
+  final Map<String, dynamic> pagination;
 
   TransactionApiState({
     this.transactions = const [],
@@ -19,6 +20,7 @@ class TransactionApiState {
     this.expense = 0,
     this.saving = 0,
     this.error,
+    this.pagination = const {},
   });
 
   TransactionApiState copyWith({
@@ -28,6 +30,7 @@ class TransactionApiState {
     double? expense,
     double? saving,
     String? error,
+    Map<String, dynamic>? pagination,
   }) {
     return TransactionApiState(
       transactions: transactions ?? this.transactions,
@@ -35,7 +38,8 @@ class TransactionApiState {
       income: income ?? this.income,
       expense: expense ?? this.expense,
       saving: saving ?? this.saving,
-      error: error,
+      error: error ?? this.error,
+      pagination: pagination ?? this.pagination,
     );
   }
 }
@@ -53,6 +57,7 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       final response = await tokenInterceptor.makeAuthenticatedRequest(
         'transactions/recent',
         'GET',
+        queryParams: {'page': '1', 'limit': '10'},
       );
 
       final List<dynamic> transactionsData = response['data'] ?? [];
@@ -113,7 +118,10 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
     return [];
   }
 
-  Future<TransactionSummary> fetchTransactionHistory() async {
+  Future<TransactionSummary> fetchTransactionHistory({
+    int page = 1,
+    int limit = 20,
+  }) async {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
@@ -122,9 +130,10 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       final response = await tokenInterceptor.makeAuthenticatedRequest(
         'transactions/history',
         'GET',
+        queryParams: {'page': '$page', 'limit': '$limit'},
       );
 
-      final totals = response['data']['totalCount'];
+      final totalAggregates = response['data']['totalAggregates'];
       final List<dynamic> transactionsData =
           response['data']['transactions'] ?? [];
       final transactions = transactionsData
@@ -133,17 +142,19 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
 
       state = state.copyWith(
         transactions: transactions,
-        expense: double.tryParse(totals[0]['_sum']['amount'].toString()) ?? 0.0,
-        income: double.tryParse(totals[1]['_sum']['amount'].toString()) ?? 0.0,
-        saving: double.tryParse(totals[2]['_sum']['amount'].toString()) ?? 0.0,
+        expense: double.tryParse(totalAggregates['expense'].toString()) ?? 0.0,
+        income: double.tryParse(totalAggregates['income'].toString()) ?? 0.0,
+        saving: double.tryParse(totalAggregates['saving'].toString()) ?? 0.0,
         isLoading: false,
+        pagination: response['data']['pagination'],
       );
 
       return TransactionSummary(
         transactions: transactions,
-        expense: double.tryParse(totals[0]['_sum']['amount'].toString()) ?? 0.0,
-        income: double.tryParse(totals[1]['_sum']['amount'].toString()) ?? 0.0,
-        saving: double.tryParse(totals[2]['_sum']['amount'].toString()) ?? 0.0,
+        expense: double.tryParse(totalAggregates['expense'].toString()) ?? 0.0,
+        income: double.tryParse(totalAggregates['income'].toString()) ?? 0.0,
+        saving: double.tryParse(totalAggregates['saving'].toString()) ?? 0.0,
+        pagination: response['data']['pagination'],
       );
     } catch (e) {
       state = state.copyWith(
@@ -157,6 +168,7 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       expense: 0,
       income: 0,
       saving: 0,
+      pagination: {},
     );
   }
 
