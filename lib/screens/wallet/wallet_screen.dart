@@ -50,7 +50,15 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
       ),
       body: transactionsState.isLoading && transactions.isEmpty
           ? Expanded(
-              child: Center(child: Loader(title: "Loading Transactions...")),
+              child: Center(
+                child: Loader(
+                  title: "Loading Transactions...",
+                  transparent: true,
+                  foregroundColor: whiteColor,
+                  backgroundColor: darkGrayColor,
+                  textStyle: TextStyle(color: whiteColor),
+                ),
+              ),
             )
           : Column(
               children: [
