@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatAmount.dart';
 import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/widgets/loader.dart';
 import 'package:tracker/widgets/paginated_list_view.dart';
@@ -86,7 +87,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                         ),
                       ),
                       Text(
-                        '₹${calculatedAmount.toStringAsFixed(2)}',
+                        '₹${formatAmount(calculatedAmount)}',
                         style: TextStyle(
                           color: whiteColor,
                           fontSize: 20,

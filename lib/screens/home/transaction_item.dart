@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatAmount.dart';
 import 'package:tracker/utils/getTransactionType.dart';
 import 'package:tracker/utils/show_transaction_details.dart';
 import 'package:tracker/providers/transaction_provider.dart';
@@ -147,7 +148,7 @@ class TransactionItem extends ConsumerWidget {
                       ? ''
                       : isIncome
                       ? '+ '
-                      : '- '}₹ ${amount.replaceAll(RegExp(r'[^0-9.,]'), '')}',
+                      : '- '}₹${formatAmount(double.tryParse(cleanAmount(amount)) ?? 0)}',
                   style: TextStyle(
                     color: getColorByTransactionType(type),
                     fontWeight: FontWeight.bold,

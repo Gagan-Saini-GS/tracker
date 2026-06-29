@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatAmount.dart';
 import 'package:tracker/utils/formatDate.dart';
 import 'package:tracker/utils/getTransactionType.dart';
 import 'package:tracker/widgets/loader.dart';
@@ -137,7 +138,7 @@ class _TransactionDetailsBottomSheetState
                     ? ''
                     : details.isIncome
                     ? '+ '
-                    : '- '}₹ ${details.amount.toString().replaceAll(RegExp(r'[^0-9.,]'), '')}',
+                    : '- '}₹${formatAmount(double.tryParse(cleanAmount(details.amount.toString())) ?? 0)}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

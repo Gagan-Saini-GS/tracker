@@ -5,6 +5,7 @@ import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/providers/transaction_filter_provider.dart';
 import 'package:tracker/providers/transaction_rollup_api_provider.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatAmount.dart';
 import 'package:tracker/utils/formatDateWithLabel.dart';
 import 'package:tracker/utils/getDateFormatStyleByPeriodType.dart';
 import 'package:tracker/utils/getTransactionType.dart';
@@ -148,7 +149,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              '₹${rollupDataState.graphData[_selectedIndex!].amount}',
+                              '₹${formatAmount(rollupDataState.graphData[_selectedIndex!].amount)}',
                               style: TextStyle(
                                 color: whiteColor,
                                 backgroundColor: getColorByTransactionType(
