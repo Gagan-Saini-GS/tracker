@@ -34,7 +34,7 @@ class Transaction {
     return Transaction(
       id: json['id'] ?? '',
       name: json['title'] ?? json['name'] ?? '',
-      amount: double.parse(json['amount'] ?? 0),
+      amount: (json['amount'] as num).toDouble(),
       date: DateTime.parse(json['date'] ?? DateTime.now().toIso8601String()),
       isIncome: json['type'] == 'Income',
       type: getTypeValue(json['type']),

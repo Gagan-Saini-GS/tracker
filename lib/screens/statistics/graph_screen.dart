@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:tracker/enums/dateformat.dart';
 import 'package:tracker/models/chart_data.dart';
-import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
-import 'package:tracker/providers/time_filter_provider.dart';
+import 'package:tracker/providers/transaction_rollup_api_provider.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/formatDateWithLabel.dart';
 import 'package:tracker/widgets/loader.dart';
 
 // Convert this to normal consumer widget.
@@ -31,11 +32,10 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
 
   @override
   Widget build(BuildContext context) {
-    final timeFilter = ref.watch(timeFilterProvider);
     final selectedExpenseType = ref.watch(expenseTypeProvider);
-    final chartDataState = ref.watch(chartDataProvider(timeFilter));
+    final rollupDataState = ref.watch(transactionRollupApiProvider);
 
-    if (chartDataState.isLoading && chartDataState.transactions.isEmpty) {
+    if (rollupDataState.isLoading && rollupDataState.graphData.isEmpty) {
       final bool isIncome = selectedExpenseType == "Income";
 
       return Loader(
@@ -45,15 +45,10 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
       );
     }
 
-    // Find the data point to highlight (e.g., the one with a specific color)
-    // final highlightedPoint = chartDataState.transactions.firstWhere(
-    //   (data) => data.pointColor != null,
-    //   orElse: () => ChartData("", "", 0), // Return a dummy if no highlight
-    // );
     final highlightedPoint =
         _selectedIndex != null &&
-            _selectedIndex! < chartDataState.transactions.length
-        ? chartDataState.transactions[_selectedIndex!]
+            _selectedIndex! < rollupDataState.graphData.length
+        ? rollupDataState.graphData[_selectedIndex!]
         : ChartData("", "", 0);
 
     return Container(
@@ -87,8 +82,9 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
             ),
             series: <CartesianSeries>[
               SplineAreaSeries<ChartData, String>(
-                dataSource: chartDataState.transactions,
-                xValueMapper: (ChartData data, _) => data.time,
+                dataSource: rollupDataState.graphData,
+                xValueMapper: (ChartData data, _) =>
+                    formatDateWithLabel(data.time, DateLabelFormat.dMMM),
                 yValueMapper: (ChartData data, _) => data.amount,
                 color: getColorByType(selectedExpenseType), // Area fill color
                 gradient: LinearGradient(
@@ -148,7 +144,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              '₹${chartDataState.transactions[_selectedIndex!].amount}',
+                              '₹${rollupDataState.graphData[_selectedIndex!].amount}',
                               style: TextStyle(
                                 color: whiteColor,
                                 backgroundColor: getColorByType(

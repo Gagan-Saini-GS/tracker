@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
-import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/providers/transaction_rollup_api_provider.dart';
 import 'package:tracker/utils/constants.dart';
 
 class ExpenseTypeDropdown extends ConsumerWidget {
@@ -29,7 +30,10 @@ class ExpenseTypeDropdown extends ConsumerWidget {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
     final filter = ref.watch(timeFilterProvider);
     final chartDataController = ref.read(chartDataProvider(filter).notifier);
-    final transactionController = ref.read(transactionListProvider.notifier);
+    // final transactionController = ref.read(transactionListProvider.notifier);
+    final transactionRollupController = ref.read(
+      transactionRollupApiProvider.notifier,
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,11 +81,19 @@ class ExpenseTypeDropdown extends ConsumerWidget {
                       59,
                       999,
                     );
-                    final transactions = await transactionController
-                        .getTransactionsByDateRange(
-                          startDate: dateRange.start.toIso8601String(),
-                          endDate: endOfDay.toIso8601String(),
-                          type: newValue,
+                    // final transactions = await transactionController
+                    //     .getTransactionsByDateRange(
+                    //       startDate: dateRange.start.toIso8601String(),
+                    //       endDate: endOfDay.toIso8601String(),
+                    //       type: newValue,
+                    //     );
+
+                    final transactions = await transactionRollupController
+                        .getStats(
+                          filter,
+                          dateRange.start.toIso8601String().split("T").first,
+                          endOfDay.toIso8601String().split("T").first,
+                          selectedExpenseType,
                         );
 
                     chartDataController.updateChartFromTransactions(
@@ -92,6 +104,11 @@ class ExpenseTypeDropdown extends ConsumerWidget {
                     ref
                         .read(chartDataProvider(timeFilter).notifier)
                         .fetchChartData(timeFilter);
+
+                    Logger().f("Calling from expense type dropdown");
+                    // ref
+                    //     .read(transactionRollupApiProvider.notifier)
+                    //     .getStats(timeFilter);
                   }
                 }
               },

@@ -7,6 +7,7 @@ import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/utils/formatXLabelForGraph.dart';
 
 final now = DateTime.now();
 final today = DateTime(now.year, now.month, now.day);
@@ -48,14 +49,6 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
       return txType == TransactionType.saving;
     }
     return false;
-  }
-
-  String _formatXLabel(DateTime date) {
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
-    final day = date.day.toString();
-    final month = DateFormat('MMM').format(date);
-    return '$month $day\n($hour:$minute)';
   }
 
   Future<List<ChartData>> fetchChartData(TimeFilter filter) async {
@@ -114,7 +107,7 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
           .map((transaction) {
             return ChartData(
               transaction.name,
-              _formatXLabel(transaction.date),
+              formatXLabel(transaction.date),
               transaction.amount,
             );
           })
@@ -169,7 +162,7 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
         .map((transaction) {
           return ChartData(
             transaction.name,
-            _formatXLabel(transaction.date),
+            formatXLabel(transaction.date),
             transaction.amount,
           );
         })

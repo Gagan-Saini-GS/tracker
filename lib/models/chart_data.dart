@@ -10,6 +10,6 @@ class ChartData {
 
   @override
   String toString() {
-    return "Title $title, Amount $amount, $time $time";
+    return "Title $title, Amount $amount, Time $time";
   }
 }

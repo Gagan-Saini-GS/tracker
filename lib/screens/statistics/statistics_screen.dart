@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
-import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/providers/transaction_rollup_api_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
 import 'package:tracker/screens/statistics/graph_screen.dart';
@@ -32,9 +33,24 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Calling fetchChartData to get real data for chart.
       final timeFilter = ref.read(timeFilterProvider);
+      final selectedExpenseType = ref.read(expenseTypeProvider);
+      // ref
+      //     .read(chartDataProvider(timeFilter).notifier)
+      //     .fetchChartData(timeFilter);
+
+      Logger().f("Calling from statistics screen");
+
+      final now = DateTime.now();
+
+      final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+      final startDate = endDate.subtract(const Duration(days: 29));
+
+      final startDateStr = startDate.toIso8601String().split('T').first;
+      final endDateStr = endDate.toIso8601String().split('T').first;
+
       ref
-          .read(chartDataProvider(timeFilter).notifier)
-          .fetchChartData(timeFilter);
+          .read(transactionRollupApiProvider.notifier)
+          .getStats(timeFilter, startDateStr, endDateStr, selectedExpenseType);
     });
   }
 
@@ -78,11 +94,15 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     final selectedExpenseType = ref.watch(expenseTypeProvider);
     final filter = ref.watch(timeFilterProvider);
     final selectedDateRange = ref.watch(selectedDateRangeProvider);
-    final chartDataState = ref.watch(chartDataProvider(filter));
-    final transactions = chartDataState.listTransactions.reversed.toList();
-    final transactionController = ref.read(transactionListProvider.notifier);
+    // final chartDataState = ref.watch(chartDataProvider(filter));
+    // final transactionController = ref.read(transactionListProvider.notifier);
     final chartDataController = ref.read(chartDataProvider(filter).notifier);
-    final transactionState = ref.watch(transactionListProvider);
+    // final transactionState = ref.watch(transactionListProvider);
+
+    final transactionRollupController = ref.read(
+      transactionRollupApiProvider.notifier,
+    );
+    final rollupDataState = ref.watch(transactionRollupApiProvider);
 
     return Scaffold(
       backgroundColor: darkGrayColor,
@@ -165,11 +185,18 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                   );
 
                   // Fetch statistics using range.start and range.end
-                  final transactions = await transactionController
-                      .getTransactionsByDateRange(
-                        startDate: range.start.toIso8601String(),
-                        endDate: endOfDay.toIso8601String(),
-                        type: selectedExpenseType,
+                  // final transactions = await transactionController
+                  //     .getTransactionsByDateRange(
+                  //       startDate: range.start.toIso8601String(),
+                  //       endDate: endOfDay.toIso8601String(),
+                  //       type: selectedExpenseType,
+                  //     );
+                  final transactions = await transactionRollupController
+                      .getStats(
+                        filter,
+                        range.start.toIso8601String().split("T").first,
+                        endOfDay.toIso8601String().split("T").first,
+                        selectedExpenseType,
                       );
 
                   chartDataController.updateChartFromTransactions(transactions);
@@ -181,10 +208,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
           ),
         ],
       ),
-      body:
-          chartDataState.isLoading ||
-              _isDateRangeLoading ||
-              transactionState.isLoading
+      body: _isDateRangeLoading || rollupDataState.isLoading
           ? Center(
               child: Loader(
                 title: getLoadingByType(selectedExpenseType),
@@ -236,7 +260,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          transactions.length.toString(),
+                          rollupDataState.transactions.length.toString(),
                           style: TextStyle(
                             color: whiteColor,
                             fontSize: 18,
@@ -249,7 +273,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 ),
                 const SizedBox(height: 10),
                 Expanded(
-                  child: transactions.isEmpty
+                  child: rollupDataState.transactions.isEmpty
                       ? Center(
                           child: Text(
                             'No Transactions Yet.',
@@ -261,9 +285,9 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: transactions.length,
+                          itemCount: rollupDataState.transactions.length,
                           itemBuilder: (context, index) {
-                            final tx = transactions[index];
+                            final tx = rollupDataState.transactions[index];
                             return TransactionItem(
                               iconAsset: null,
                               title: tx.name,

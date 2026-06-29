@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
 import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/time_filter_provider.dart';
-import 'package:tracker/utils/capitalize.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/getTimefilterText.dart';
 
 class TimeFilterButtons extends ConsumerWidget {
   const TimeFilterButtons({super.key});
@@ -39,12 +40,6 @@ class TimeFilterButtons extends ConsumerWidget {
 
         return Expanded(
           child: GestureDetector(
-            // onTap: () {
-            //   ref.read(timeFilterProvider.notifier).state = filter;
-            //   ref
-            //       .read(chartDataProvider(filter).notifier)
-            //       .fetchChartData(filter);
-            // },
             // Fetch chart data for the new time filter selected
             onTap: () {
               ref.read(timeFilterProvider.notifier).state = filter;
@@ -53,6 +48,10 @@ class TimeFilterButtons extends ConsumerWidget {
               ref
                   .read(chartDataProvider(filter).notifier)
                   .fetchChartData(filter);
+
+              Logger().f("Calling from time filter button");
+
+              // ref.read(transactionRollupApiProvider.notifier).getStats(filter);
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 2),
@@ -65,7 +64,7 @@ class TimeFilterButtons extends ConsumerWidget {
               ),
               child: Center(
                 child: Text(
-                  filter.name.capitalize(),
+                  getTimeFilterText(filter.name),
                   style: TextStyle(
                     fontSize: 20,
                     color: isSelected
