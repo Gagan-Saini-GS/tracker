@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/transaction_summary.dart';
 import 'package:tracker/providers/transaction_api_provider.dart';
+import 'package:tracker/utils/getTransactionType.dart';
 import '../models/transaction.dart';
 
 class TransactionState {
@@ -67,19 +68,6 @@ class TransactionState {
 class TransactionListNotifier extends StateNotifier<TransactionState> {
   final Ref ref;
   TransactionListNotifier(this.ref) : super(TransactionState());
-
-  String getTransactionType(TransactionType type) {
-    switch (type) {
-      case TransactionType.expense:
-        return "Expense";
-      case TransactionType.income:
-        return "Income";
-      case TransactionType.saving:
-        return "Saving";
-      case TransactionType.goal:
-        return "Goal";
-    }
-  }
 
   Future<void> addTransaction(Transaction transaction) async {
     state = state.copyWith(isLoading: true);

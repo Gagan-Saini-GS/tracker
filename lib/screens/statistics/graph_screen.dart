@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:tracker/enums/dateformat.dart';
 import 'package:tracker/models/chart_data.dart';
-import 'package:tracker/providers/expense_type_provider.dart';
+import 'package:tracker/providers/transaction_filter_provider.dart';
 import 'package:tracker/providers/transaction_rollup_api_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDateWithLabel.dart';
+import 'package:tracker/utils/getDateFormatStyleByPeriodType.dart';
+import 'package:tracker/utils/getTransactionType.dart';
 import 'package:tracker/widgets/loader.dart';
 
 // Convert this to normal consumer widget.
@@ -19,20 +20,11 @@ class ReusableLineChart extends ConsumerStatefulWidget {
 
 class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
   int? _selectedIndex;
-  Color getColorByType(String type) {
-    if (type == "Expense") {
-      return redColor;
-    } else if (type == "Income") {
-      return greenColor;
-    } else if (type == "Saving") {
-      return blueColor;
-    }
-    return whiteColor;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final selectedExpenseType = ref.watch(expenseTypeProvider);
+    final transactionFilterState = ref.watch(transactionFilterProvider);
+    final selectedExpenseType = transactionFilterState.type;
     final rollupDataState = ref.watch(transactionRollupApiProvider);
 
     if (rollupDataState.isLoading && rollupDataState.graphData.isEmpty) {
@@ -50,6 +42,10 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
             _selectedIndex! < rollupDataState.graphData.length
         ? rollupDataState.graphData[_selectedIndex!]
         : ChartData("", "", 0);
+
+    final dateFormatStyle = getDateFormatStyleByPeriodType(
+      transactionFilterState.periodType,
+    );
 
     return Container(
       height: 250, // Fixed height for the chart
@@ -84,18 +80,24 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
               SplineAreaSeries<ChartData, String>(
                 dataSource: rollupDataState.graphData,
                 xValueMapper: (ChartData data, _) =>
-                    formatDateWithLabel(data.time, DateLabelFormat.dMMM),
+                    formatDateWithLabel(data.time, dateFormatStyle),
                 yValueMapper: (ChartData data, _) => data.amount,
-                color: getColorByType(selectedExpenseType), // Area fill color
+                color: getColorByTransactionType(
+                  selectedExpenseType,
+                ), // Area fill color
                 gradient: LinearGradient(
                   colors: [
-                    getColorByType(selectedExpenseType).withAlpha(100),
+                    getColorByTransactionType(
+                      selectedExpenseType,
+                    ).withAlpha(100),
                     Colors.transparent,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderColor: getColorByType(selectedExpenseType), // Line color
+                borderColor: getColorByTransactionType(
+                  selectedExpenseType,
+                ), // Line color
                 borderWidth: 2,
                 splineType: SplineType.natural, // Smooth curve
                 onPointTap: (ChartPointDetails details) {
@@ -115,7 +117,7 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                   // image: const NetworkImage(
                   //   "https://i.pinimg.com/control1/736x/ea/25/cd/ea25cd897d9693ad276f81b6e6026522.jpg",
                   // ),
-                  color: getColorByType(selectedExpenseType),
+                  color: getColorByTransactionType(selectedExpenseType),
                 ),
                 // Data label settings for the highlighted point
                 dataLabelSettings: DataLabelSettings(
@@ -140,14 +142,16 @@ class _ReusableLineChart extends ConsumerState<ReusableLineChart> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: getColorByType(selectedExpenseType),
+                              color: getColorByTransactionType(
+                                selectedExpenseType,
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '₹${rollupDataState.graphData[_selectedIndex!].amount}',
                               style: TextStyle(
                                 color: whiteColor,
-                                backgroundColor: getColorByType(
+                                backgroundColor: getColorByTransactionType(
                                   selectedExpenseType,
                                 ),
                                 fontSize: 12,

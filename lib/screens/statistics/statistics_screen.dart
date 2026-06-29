@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
+import 'package:tracker/enums/dateformat.dart';
 import 'package:tracker/providers/chart_data_provider.dart';
-import 'package:tracker/providers/expense_type_provider.dart';
-import 'package:tracker/providers/time_filter_provider.dart';
+import 'package:tracker/providers/transaction_filter_provider.dart';
 import 'package:tracker/providers/transaction_rollup_api_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/screens/statistics/expense_type_dropdown.dart';
@@ -13,6 +11,8 @@ import 'package:tracker/screens/statistics/graph_screen.dart';
 import 'package:tracker/screens/statistics/time_filter_button.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
+import 'package:tracker/utils/formatDateWithLabel.dart';
+import 'package:tracker/utils/getTransactionType.dart';
 import 'package:tracker/widgets/bottom_nav_bar.dart';
 import 'package:tracker/widgets/loader.dart';
 
@@ -31,74 +31,33 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     super.initState();
     // Fetch transaction history when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Calling fetchChartData to get real data for chart.
-      final timeFilter = ref.read(timeFilterProvider);
-      final selectedExpenseType = ref.read(expenseTypeProvider);
-      // ref
-      //     .read(chartDataProvider(timeFilter).notifier)
-      //     .fetchChartData(timeFilter);
+      ref.read(transactionFilterProvider.notifier).setDefault();
 
-      Logger().f("Calling from statistics screen");
-
-      final now = DateTime.now();
-
-      final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
-      final startDate = endDate.subtract(const Duration(days: 29));
-
-      final startDateStr = startDate.toIso8601String().split('T').first;
-      final endDateStr = endDate.toIso8601String().split('T').first;
-
+      final transactionFilterState = ref.read(transactionFilterProvider);
       ref
           .read(transactionRollupApiProvider.notifier)
-          .getStats(timeFilter, startDateStr, endDateStr, selectedExpenseType);
+          .getStats(
+            transactionFilterState.periodType,
+            transactionFilterState.startDate,
+            transactionFilterState.endDate,
+            transactionFilterState.type,
+          );
     });
   }
 
-  Color getColorByType(String type) {
-    switch (type) {
-      case "Expense":
-        return redColor;
-      case "Income":
-        return greenColor;
-      case "Saving":
-        return blueColor;
-      case "Goal":
-        return blackColor;
-      default:
-        return whiteColor;
-    }
-  }
-
-  String getLoadingByType(String type) {
-    switch (type) {
-      case "Expense":
-        return "Loading Expense...";
-      case "Income":
-        return "Loading Income...";
-      case "Saving":
-        return "Loading Saving";
-      case "Goal":
-        return "Loading Goals...";
-      default:
-        return "Loading...";
-    }
-  }
-
   String _formatDateRange(DateTimeRange range) {
-    final DateFormat fmt = DateFormat('MMM d, yy');
-    return '${fmt.format(range.start)} - ${fmt.format(range.end)}';
+    return '${formatDateWithLabel(range.start.toIso8601String(), DateLabelFormat.MMMd)} - ${formatDateWithLabel(range.end.toIso8601String(), DateLabelFormat.MMMd)}';
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedExpenseType = ref.watch(expenseTypeProvider);
-    final filter = ref.watch(timeFilterProvider);
-    final selectedDateRange = ref.watch(selectedDateRangeProvider);
-    // final chartDataState = ref.watch(chartDataProvider(filter));
-    // final transactionController = ref.read(transactionListProvider.notifier);
-    final chartDataController = ref.read(chartDataProvider(filter).notifier);
-    // final transactionState = ref.watch(transactionListProvider);
-
+    final transactionFilterController = ref.watch(
+      transactionFilterProvider.notifier,
+    );
+    final transactionFilterState = ref.watch(transactionFilterProvider);
+    final chartDataController = ref.read(
+      chartDataProvider(transactionFilterState.periodType).notifier,
+    );
     final transactionRollupController = ref.read(
       transactionRollupApiProvider.notifier,
     );
@@ -121,11 +80,11 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
               ),
             ),
 
-            if (selectedDateRange != null) ...[
+            ...[
               Text(
-                _formatDateRange(selectedDateRange),
+                _formatDateRange(transactionFilterController.getDateRange()),
                 style: TextStyle(
-                  color: getColorByType(selectedExpenseType),
+                  color: getColorByTransactionType(transactionFilterState.type),
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -141,7 +100,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 context: context,
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
-                initialDateRange: selectedDateRange,
+                initialDateRange: transactionFilterController.getDateRange(),
                 builder: (context, child) {
                   return Theme(
                     data: ThemeData.dark().copyWith(
@@ -168,35 +127,22 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
               );
 
               if (range != null) {
-                ref.read(selectedDateRangeProvider.notifier).state = range;
+                transactionFilterController.setDateRange(
+                  range.start,
+                  range.end,
+                );
+
                 setState(() {
                   _isDateRangeLoading = true; // show loader
                 });
 
                 try {
-                  final endOfDay = DateTime(
-                    range.end.year,
-                    range.end.month,
-                    range.end.day,
-                    23,
-                    59,
-                    59,
-                    999,
-                  );
-
-                  // Fetch statistics using range.start and range.end
-                  // final transactions = await transactionController
-                  //     .getTransactionsByDateRange(
-                  //       startDate: range.start.toIso8601String(),
-                  //       endDate: endOfDay.toIso8601String(),
-                  //       type: selectedExpenseType,
-                  //     );
                   final transactions = await transactionRollupController
                       .getStats(
-                        filter,
-                        range.start.toIso8601String().split("T").first,
-                        endOfDay.toIso8601String().split("T").first,
-                        selectedExpenseType,
+                        transactionFilterState.periodType,
+                        range.start,
+                        range.end,
+                        transactionFilterState.type,
                       );
 
                   chartDataController.updateChartFromTransactions(transactions);
@@ -211,8 +157,10 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
       body: _isDateRangeLoading || rollupDataState.isLoading
           ? Center(
               child: Loader(
-                title: getLoadingByType(selectedExpenseType),
-                backgroundColor: getColorByType(selectedExpenseType),
+                title: getLoadingByTransactionType(transactionFilterState.type),
+                backgroundColor: getColorByTransactionType(
+                  transactionFilterState.type,
+                ),
                 foregroundColor: darkGrayColor,
                 transparent: true,
                 textStyle: TextStyle(color: whiteColor),
@@ -256,7 +204,9 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         height: 25,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: getColorByType(selectedExpenseType),
+                          color: getColorByTransactionType(
+                            transactionFilterState.type,
+                          ),
                           shape: BoxShape.circle,
                         ),
                         child: Text(

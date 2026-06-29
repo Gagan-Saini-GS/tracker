@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:tracker/enums/timefilter.dart';
+import 'package:tracker/enums/timePeriod.dart';
+import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/token_interceptor_provider.dart';
-import 'package:tracker/utils/getTimefilterText.dart';
+import 'package:tracker/utils/capitalize.dart';
+import 'package:tracker/utils/getTransactionType.dart';
 
 class RollupDataState {
   final String periodKey;
@@ -69,10 +71,10 @@ class TransactionRollupApiNotifier
   TransactionRollupApiNotifier(this.ref) : super(TransactionRollupApiState());
 
   Future<List<Transaction>> getStats(
-    TimeFilter timefilter,
-    String startDate,
-    String endDate,
-    String type,
+    TimePeriod periodType,
+    DateTime startDate,
+    DateTime endDate,
+    TransactionType type,
   ) async {
     state = state.copyWith(isLoading: true);
 
@@ -83,10 +85,10 @@ class TransactionRollupApiNotifier
         'rollups/stats',
         'GET',
         queryParams: {
-          "type": type,
-          "period": getTimeFilterText(timefilter.name),
-          "start_date": startDate,
-          "end_date": endDate,
+          "type": getTransactionType(type),
+          "period": periodType.name.capitalize(),
+          "start_date": startDate.toIso8601String(),
+          "end_date": endDate.toIso8601String(),
         },
       );
 

@@ -4,6 +4,7 @@ enum DateLabelFormat {
   dMMMyyyy,
   ddmmyy,
   MMMdyyyy,
+  MMMdyy,
   dMMM,
   MMMd,
   month,

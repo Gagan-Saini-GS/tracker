@@ -1,11 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:tracker/enums/timePeriod.dart';
 import 'package:tracker/enums/timefilter.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/chart_data.dart';
 import 'package:tracker/models/transaction.dart';
-import 'package:tracker/providers/expense_type_provider.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/formatXLabelForGraph.dart';
 
@@ -61,49 +60,8 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
           .fetchTransactionHistory();
 
       final transactions = ref.watch(allTransactionListProvider).transactions;
-      final selectedExpenseType = ref.watch(expenseTypeProvider);
-
-      // Determine the start date based on the selected range.
-      DateTime startDate;
-      switch (filter) {
-        case TimeFilter.week:
-          // The last 7 days means we go back 6 days from today.
-          startDate = today.subtract(const Duration(days: 6));
-          break;
-        case TimeFilter.month:
-          // The last 30 days means we go back 29 days from today.
-          startDate = today.subtract(const Duration(days: 29));
-          break;
-        case TimeFilter.year:
-          // The last year (365 days).
-          startDate = today.subtract(const Duration(days: 365));
-          break;
-        case TimeFilter.day:
-          // If just "Today", the start and end dates are the same.
-          startDate = today;
-          break;
-      }
 
       final chartData = transactions
-          .where((transaction) {
-            final transactionDate = DateTime(
-              transaction.date.year,
-              transaction.date.month,
-              transaction.date.day,
-            );
-            // Check if the transaction's date and show only if within the selected range.
-            final bool isInDateRange =
-                !transactionDate.isBefore(startDate) &&
-                !transactionDate.isAfter(today);
-
-            // Match the dropdown value type
-            final bool isCorrectType = getTypeValue(
-              selectedExpenseType,
-              transaction.type,
-            );
-
-            return isInDateRange && isCorrectType;
-          })
           .map((transaction) {
             return ChartData(
               transaction.name,
@@ -115,32 +73,7 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
           .reversed
           .toList();
 
-      final listTransactions = transactions
-          .where((transaction) {
-            final transactionDate = DateTime(
-              transaction.date.year,
-              transaction.date.month,
-              transaction.date.day,
-            );
-            // Check if the transaction's date and show only if within the selected range.
-            final bool isInDateRange =
-                !transactionDate.isBefore(startDate) &&
-                !transactionDate.isAfter(today);
-
-            // Match the dropdown value type
-            final bool isCorrectType = getTypeValue(
-              selectedExpenseType,
-              transaction.type,
-            );
-            // final bool isCorrectType = selectedExpenseType == "Income"
-            //     ? transaction.isIncome
-            //     : !transaction.isIncome;
-
-            return isInDateRange && isCorrectType;
-          })
-          .toList()
-          .reversed
-          .toList();
+      final listTransactions = transactions.toList().reversed.toList();
 
       state = state.copyWith(
         transactions: chartData,
@@ -178,6 +111,6 @@ class ChartDataNotifier extends StateNotifier<ChartDataState> {
 }
 
 final chartDataProvider =
-    StateNotifierProvider.family<ChartDataNotifier, ChartDataState, TimeFilter>(
+    StateNotifierProvider.family<ChartDataNotifier, ChartDataState, TimePeriod>(
       (ref, filter) => ChartDataNotifier(ref),
     );

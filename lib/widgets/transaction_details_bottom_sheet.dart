@@ -4,6 +4,7 @@ import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatDate.dart';
+import 'package:tracker/utils/getTransactionType.dart';
 import 'package:tracker/widgets/loader.dart';
 // import 'package:tracker/utils/constants.dart';
 
@@ -47,32 +48,6 @@ class _TransactionDetailsBottomSheetState
     }
 
     final details = trancsationState.selectedTransaction;
-
-    String getTransactionType(TransactionType type) {
-      switch (type) {
-        case TransactionType.expense:
-          return "Expense";
-        case TransactionType.income:
-          return "Income";
-        case TransactionType.saving:
-          return "Saving";
-        case TransactionType.goal:
-          return "Goal";
-      }
-    }
-
-    Color getIconColorByType(TransactionType type) {
-      switch (type) {
-        case TransactionType.expense:
-          return redColor;
-        case TransactionType.income:
-          return greenColor;
-        case TransactionType.saving:
-          return blueColor;
-        case TransactionType.goal:
-          return blackColor;
-      }
-    }
 
     return Container(
       padding: const EdgeInsets.all(24.0),
@@ -128,17 +103,17 @@ class _TransactionDetailsBottomSheetState
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 2,
-                    color: getIconColorByType(details.type),
+                    color: getColorByTransactionType(details.type),
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(8)),
-                  color: getIconColorByType(details.type).withAlpha(50),
+                  color: getColorByTransactionType(details.type).withAlpha(50),
                 ),
                 child: Text(
                   (getTransactionType(details.type)).toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
-                    color: getIconColorByType(details.type),
+                    color: getColorByTransactionType(details.type),
                   ),
                 ),
               ),
@@ -166,7 +141,7 @@ class _TransactionDetailsBottomSheetState
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: getIconColorByType(details.type),
+                  color: getColorByTransactionType(details.type),
                 ),
               ),
             ],

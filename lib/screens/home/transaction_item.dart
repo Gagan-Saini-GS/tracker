@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/utils/constants.dart';
+import 'package:tracker/utils/getTransactionType.dart';
 import 'package:tracker/utils/show_transaction_details.dart';
 import 'package:tracker/providers/transaction_provider.dart';
 
@@ -90,32 +91,6 @@ class TransactionItem extends ConsumerWidget {
     }
   }
 
-  Color getIconColorByType(TransactionType type) {
-    switch (type) {
-      case TransactionType.expense:
-        return redColor;
-      case TransactionType.income:
-        return greenColor;
-      case TransactionType.saving:
-        return blueColor;
-      case TransactionType.goal:
-        return blackColor;
-    }
-  }
-
-  IconData getIconByType(TransactionType type) {
-    switch (type) {
-      case TransactionType.expense:
-        return Icons.trending_down_outlined;
-      case TransactionType.income:
-        return Icons.trending_up_outlined;
-      case TransactionType.saving:
-        return Icons.account_balance_outlined;
-      case TransactionType.goal:
-        return Icons.wallet;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionCard = GestureDetector(
@@ -133,7 +108,7 @@ class TransactionItem extends ConsumerWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: getIconColorByType(type).withAlpha(200),
+                color: getColorByTransactionType(type).withAlpha(200),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: iconAsset != null
@@ -174,7 +149,7 @@ class TransactionItem extends ConsumerWidget {
                       ? '+ '
                       : '- '}₹ ${amount.replaceAll(RegExp(r'[^0-9.,]'), '')}',
                   style: TextStyle(
-                    color: getIconColorByType(type),
+                    color: getColorByTransactionType(type),
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                   ),
