@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/models/transaction_summary.dart';
 import 'package:tracker/providers/token_interceptor_provider.dart';
+import 'package:tracker/providers/wallet_provider.dart';
 
 class TransactionApiState {
   final List<Transaction> transactions;
@@ -57,7 +58,7 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       final response = await tokenInterceptor.makeAuthenticatedRequest(
         'transactions/recent',
         'GET',
-        queryParams: {'page': '1', 'limit': '10'},
+        queryParams: {'page': '1', 'limit': '5'},
       );
 
       final List<dynamic> transactionsData = response['data'] ?? [];
@@ -133,7 +134,6 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
         queryParams: {'page': '$page', 'limit': '$limit'},
       );
 
-      final totalAggregates = response['data']['totalAggregates'];
       final List<dynamic> transactionsData =
           response['data']['transactions'] ?? [];
       final transactions = transactionsData
@@ -142,18 +142,12 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
 
       state = state.copyWith(
         transactions: transactions,
-        expense: double.tryParse(totalAggregates['expense'].toString()) ?? 0.0,
-        income: double.tryParse(totalAggregates['income'].toString()) ?? 0.0,
-        saving: double.tryParse(totalAggregates['saving'].toString()) ?? 0.0,
         isLoading: false,
         pagination: response['data']['pagination'],
       );
 
       return TransactionSummary(
         transactions: transactions,
-        expense: double.tryParse(totalAggregates['expense'].toString()) ?? 0.0,
-        income: double.tryParse(totalAggregates['income'].toString()) ?? 0.0,
-        saving: double.tryParse(totalAggregates['saving'].toString()) ?? 0.0,
         pagination: response['data']['pagination'],
       );
     } catch (e) {
@@ -163,16 +157,10 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       );
     }
 
-    return TransactionSummary(
-      transactions: [],
-      expense: 0,
-      income: 0,
-      saving: 0,
-      pagination: {},
-    );
+    return TransactionSummary(transactions: [], pagination: {});
   }
 
-  Future<bool> addTransaction({
+  Future<List<Transaction>> addTransaction({
     required String title,
     required String type,
     required double amount,
@@ -194,19 +182,30 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
         },
       );
 
-      final newTransaction = Transaction.fromJson(response['data']);
-
-      // Add to current state
-      state = state.copyWith(
-        transactions: [newTransaction, ...state.transactions],
+      final newTransaction = Transaction.fromJson(
+        response['data']['transaction'],
       );
 
-      return true;
+      final updatedWallet = response['data']['updatedWallet'];
+      ref
+          .read(walletProvider.notifier)
+          .updateWallet(
+            (updatedWallet['bank_balance'] as num).toDouble(),
+            (updatedWallet['expense'] as num).toDouble(),
+            (updatedWallet['income'] as num).toDouble(),
+            (updatedWallet['saving'] as num).toDouble(),
+          );
+
+      final updatedTransactions = [newTransaction, ...state.transactions];
+      // Add to current state
+      state = state.copyWith(transactions: updatedTransactions);
+
+      return updatedTransactions;
     } catch (e) {
       state = state.copyWith(
         error: 'Failed to add transaction: ${e.toString()}',
       );
-      return false;
+      return state.transactions;
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/providers/transaction_provider.dart';
+import 'package:tracker/providers/wallet_provider.dart';
 import 'package:tracker/screens/home/transaction_item.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatAmount.dart';
@@ -33,12 +34,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
   Widget build(BuildContext context) {
     final transactionsState = ref.watch(allTransactionListProvider);
     final transactions = transactionsState.transactions;
-
-    // final calculatedAmount = _calculateTotalBalance(transactions);
-    final calculatedAmount =
-        transactionsState.income -
-        transactionsState.expense -
-        transactionsState.saving;
+    final walletState = ref.watch(walletProvider);
 
     return Scaffold(
       backgroundColor: darkGrayColor,
@@ -71,7 +67,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: calculatedAmount >= 0
+                    color: walletState.bankBalance >= 0
                         ? darkGreenColor.withAlpha(200)
                         : darkRedColor.withAlpha(175),
                   ),
@@ -87,7 +83,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                         ),
                       ),
                       Text(
-                        '₹${formatAmount(calculatedAmount)}',
+                        '₹${formatAmount(walletState.bankBalance)}',
                         style: TextStyle(
                           color: whiteColor,
                           fontSize: 20,
@@ -179,23 +175,4 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-
-  // double _calculateTotalBalance(List transactions) {
-  //   double balance = 0.0;
-  //   for (var transaction in transactions) {
-  //     if (transaction.type == TransactionType.saving) {
-  //       balance -= transaction.amount;
-
-  //       // Continue as don't wanna reduce the amount twice
-  //       continue;
-  //     }
-
-  //     if (transaction.isIncome) {
-  //       balance += transaction.amount;
-  //     } else {
-  //       balance -= transaction.amount;
-  //     }
-  //   }
-  //   return balance;
-  // }
 }

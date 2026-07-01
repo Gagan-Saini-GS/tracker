@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tracker/providers/transaction_provider.dart';
+import 'package:logger/logger.dart';
+import 'package:tracker/providers/wallet_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatAmount.dart';
 import 'package:tracker/widgets/loader.dart';
@@ -16,18 +17,19 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
   @override
   void initState() {
     super.initState();
-    // Fetch transaction history when screen loads
+
+    // Fetch Wallet Details
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(allTransactionListProvider.notifier).fetchTransactionHistory();
+      ref.read(walletProvider.notifier).getWalletDetails();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final transactionsState = ref.watch(allTransactionListProvider);
-    final transactions = transactionsState.transactions;
+    final walletState = ref.watch(walletProvider);
+    Logger().f("Wallet State ${walletState.toString()}");
 
-    if (transactionsState.isLoading && transactions.isEmpty) {
+    if (walletState.isLoading) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
@@ -79,7 +81,7 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
                     ),
                   ),
                   Text(
-                    '₹ ${formatAmount(transactionsState.income - transactionsState.expense - transactionsState.saving)}',
+                    '₹${formatAmount(walletState.bankBalance)}',
                     style: TextStyle(
                       color: whiteColor,
                       fontSize: 32,
@@ -110,12 +112,12 @@ class _BalanceCardState extends ConsumerState<BalanceCard> {
             children: [
               _BalanceDetail(
                 label: 'Expenses',
-                amount: formatAmount(transactionsState.expense),
+                amount: formatAmount(walletState.totalExpense),
                 icon: Icons.arrow_upward,
               ),
               _BalanceDetail(
                 label: 'Saving',
-                amount: formatAmount(transactionsState.saving),
+                amount: formatAmount(walletState.totalSaving),
                 icon: Icons.account_balance_outlined,
               ),
             ],

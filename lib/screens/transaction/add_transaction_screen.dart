@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:tracker/enums/transaction_type.dart';
 import 'package:tracker/models/transaction.dart';
 import 'package:tracker/providers/transaction_provider.dart';
@@ -126,7 +127,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
     }
   }
 
-  void _addTransaction() {
+  void _addTransaction() async {
     if (_formKey.currentState!.validate()) {
       // Here you would typically save the transaction to your database
       final transactionType = _isIncome
@@ -152,24 +153,32 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
             : TransactionType.expense,
       );
 
-      final transactionController = ref.read(transactionListProvider.notifier);
-      transactionController.addTransaction(transaction);
+      try {
+        final transactionController = ref.read(
+          transactionListProvider.notifier,
+        );
+        transactionController.addTransaction(transaction);
 
-      // Clear the form
-      _clearForm();
+        // Clear the form
+        _clearForm();
 
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '$transactionType added successfully! $name - ₹$amount',
-          ),
-          backgroundColor: darkGreenColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+        if (mounted) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '$transactionType added successfully! $name - ₹$amount',
+              ),
+              backgroundColor: darkGreenColor,
+              duration: const Duration(seconds: 2),
+            ),
+          );
 
-      context.go('/home');
+          context.pop();
+        }
+      } catch (err) {
+        Logger().e("Error: $err");
+      }
     } else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -386,34 +395,39 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 15),
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: whiteColor.withAlpha(200),
+                  if (!_isIncome) ...[
+                    const SizedBox(height: 15),
+                    InputDecorator(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: whiteColor.withAlpha(200),
+                          ),
                         ),
                       ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Is Saving?',
+                            style: TextStyle(color: whiteColor),
+                          ),
+                          Switch(
+                            value: isSaving,
+                            onChanged: (value) {
+                              setState(() {
+                                isSaving = value;
+                              });
+                            },
+                            activeThumbColor: blueColor,
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Is Saving?', style: TextStyle(color: whiteColor)),
-                        Switch(
-                          value: isSaving,
-                          onChanged: (value) {
-                            setState(() {
-                              isSaving = value;
-                            });
-                          },
-                          activeThumbColor: blueColor,
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
 
                   // Spacer to push button to bottom
                   const Spacer(),

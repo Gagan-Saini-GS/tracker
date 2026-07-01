@@ -72,7 +72,7 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
   Future<void> addTransaction(Transaction transaction) async {
     state = state.copyWith(isLoading: true);
     try {
-      await ref
+      final updatedTransactions = await ref
           .read(transactionApiProvider.notifier)
           .addTransaction(
             title: transaction.name,
@@ -81,8 +81,13 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
             date: transaction.date.toIso8601String(),
             note: transaction.note,
           );
-      // state = [transaction, ...state];
-      state = state.copyWith(transactions: [transaction]);
+
+      // Updating Recent Transaction List
+      ref
+          .read(recentTransactionListProvider.notifier)
+          .updateRecentTransactions(updatedTransactions.first);
+
+      state = state.copyWith(transactions: updatedTransactions);
     } catch (e) {
       Logger().e(e);
       state = state.copyWith(transactions: []);
@@ -145,12 +150,7 @@ class TransactionListNotifier extends StateNotifier<TransactionState> {
           .read(transactionApiProvider.notifier)
           .fetchTransactionHistory(page: 1, limit: 15);
 
-      state = state.copyWith(
-        transactions: summary.transactions,
-        expense: summary.expense,
-        income: summary.income,
-        saving: summary.saving,
-      );
+      state = state.copyWith(transactions: summary.transactions);
     } catch (e) {
       Logger().e(e);
       throw Exception("Can't fetch transactions");
@@ -227,6 +227,12 @@ class RecentTransactionListNotifier extends StateNotifier<TransactionState> {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  void updateRecentTransactions(Transaction newTransaction) {
+    state = state.copyWith(
+      transactions: [newTransaction, ...state.transactions.take(4)],
+    );
+  }
 }
 
 final recentTransactionListProvider =
@@ -249,9 +255,6 @@ class AllTransactionListNotifier extends StateNotifier<TransactionState> {
 
       state = state.copyWith(
         transactions: summary.transactions,
-        expense: summary.expense,
-        income: summary.income,
-        saving: summary.saving,
         currentPage: summary.pagination['currentPage'],
         hasMore: summary.pagination['hasMore'],
       );
