@@ -214,7 +214,7 @@ class TransactionApiNotifier extends StateNotifier<TransactionApiState> {
       final tokenInterceptor = ref.read(tokenInterceptorProvider);
 
       await tokenInterceptor.makeAuthenticatedRequest(
-        'transactions/$transactionId',
+        'transactions/delete/$transactionId',
         'DELETE',
         body: {'date': date},
       );
