@@ -21,7 +21,9 @@ class UserApiState {
 
 class UserApiNotifier extends StateNotifier<UserApiState> {
   final Ref ref;
-  UserApiNotifier(this.ref) : super(UserApiState());
+  UserApiNotifier(this.ref) : super(UserApiState()) {
+    fetchUserProfile();
+  }
 
   Future<User?> fetchUserProfile() async {
     state = state.copyWith(isLoading: true, error: null);

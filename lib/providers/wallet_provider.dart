@@ -54,7 +54,10 @@ class WalletState {
 class WalletNotifier extends StateNotifier<WalletState> {
   final Ref ref;
 
-  WalletNotifier(this.ref) : super(WalletState());
+  // WalletNotifier(this.ref) : super(WalletState());
+  WalletNotifier(this.ref) : super(WalletState()) {
+    getWalletDetails();
+  }
 
   Future<WalletState> getWalletDetails() async {
     state = state.copyWith(isLoading: true, error: null);

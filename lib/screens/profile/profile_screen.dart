@@ -17,15 +17,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String activeId = "logout";
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userApiProvider.notifier).fetchUserProfile();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final logoutState = ref.watch(logoutProvider);
     final userState = ref.watch(userApiProvider);

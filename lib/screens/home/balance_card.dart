@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:logger/logger.dart';
 import 'package:tracker/providers/wallet_provider.dart';
 import 'package:tracker/utils/constants.dart';
 import 'package:tracker/utils/formatAmount.dart';
@@ -15,21 +14,10 @@ class BalanceCard extends ConsumerStatefulWidget {
 
 class _BalanceCardState extends ConsumerState<BalanceCard> {
   @override
-  void initState() {
-    super.initState();
-
-    // Fetch Wallet Details
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(walletProvider.notifier).getWalletDetails();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final walletState = ref.watch(walletProvider);
-    Logger().f("Wallet State ${walletState.toString()}");
 
-    if (walletState.isLoading) {
+    if (walletState.bankBalance == 0 && walletState.isLoading) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
