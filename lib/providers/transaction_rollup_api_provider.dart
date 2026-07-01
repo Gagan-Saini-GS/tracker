@@ -104,12 +104,13 @@ class TransactionRollupApiNotifier
           .map((tx) => Transaction.fromJson(tx))
           .toList();
 
+      final transactionList = transactionData.reversed.toList();
       state = state.copyWith(
         graphData: graphData,
-        transactions: transactionData,
+        transactions: transactionList,
       );
 
-      return transactionData;
+      return transactionList;
     } catch (error) {
       Logger().e(error);
       state = state.copyWith(
